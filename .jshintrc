@@ -1,0 +1,13 @@
+{
+	"eqeqeq": true,
+	"eqnull": true,
+	"funcscope": false,
+	"nocomma": true,
+	"shadow": false,
+	"strict": "implied",
+	"undef": true,
+	"node": true,
+	"jquery": true,
+	"esversion": 6
+
+}

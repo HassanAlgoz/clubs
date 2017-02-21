@@ -1,0 +1,33 @@
+	<% include head.ejs %>
+	<title>Club</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+	
+</head>
+<body>
+	<% include navbar.ejs %>
+	<div class="container">
+		<h1>Club</h1>
+		<h2 id="name"></h2>
+		<div id="description"></div>
+
+		
+		<div class="form-group">
+			<input id="input-name" class="form-control" type="text" placeholder="Club Name.." <%if (club){%> value="<%= club.name %>"<%}%> required>
+		</div>
+		<div class="form-group">
+			<input id="input-logo" class="form-control" type="text" placeholder="Logo URL.." <%if (club){%> value="<%= club.logo %>"<%}%> required>
+		</div>
+		<div class="form-group">
+			<textarea id="input-description" class="form-control" placeholder="Description.." required><%if (club){%><%=club.description%><%}%></textarea>
+		</div>
+		<button id="btn-submit" class="btn btn-primary">Submit</button>
+		<!-- <button id="btn-delete" class="btn btn-danger">Delete</button> -->
+		
+	</div>
+
+	<% include footer.ejs %>
+	<% include scripts.ejs %>
+	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
+	<script src="/js/club-edit.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+	<% include head.ejs %>
+	<title>Club</title>
+	<link rel="stylesheet" href="/css/club.css">
+
+</head>
+<body>
+	<input type="hidden" id="clubName" value="<%=clubName%>">
+	<% include navbar.ejs %>
+	<div class="container-fluid" id="title">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<h1><%=club.name%> <span id="members"><%=club.members.length%> members</span></h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<input type="hidden" id="user" <%if (user) {%> value="x" <%}%>>
+
+		<img id="logo" src="<%=club.logo%>" class="img-responsive center-block" alt="Club Logo">
+		<h2>Description</h2>
+		<div id="description"><%=club.description%></div>
+
+		<% if (!userRole) {%>
+			<div>
+				<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i> Join Club</button>
+			</div>
+		<%}%>
+		<hr>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3 class="text-center">News</h3>
+				<ul class="news-list">
+					<% for(var i=club.news.length-1; i>=0; i--) {%>
+						<li><a href="<%=club.name.replace(/\s/g, '-')%>/news/<%= club.news[i]._id %>"><%= club.news[i].title %></a></li>
+					<%}%>
+				</ul>
+			</div>
+			<div class="col-md-6">
+				<h3 class="text-center">Events</h3>
+				<ul class="events-list">
+					<% for(var i=club.events.length-1; i>=0; i--) {%>
+						<li><a href="<%=club.name.replace(/\s/g, '-')%>/events/<%= club.events[i]._id %>"><%= club.events[i].title %></a></li>
+					<%}%>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<% include footer.ejs %>
+	<% include scripts.ejs %>
+	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
+	<script src="/js/club.js"></script>
+</body>
+</html>

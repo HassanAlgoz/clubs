@@ -1,0 +1,18 @@
+	<% include head.ejs %>
+	<title>News</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+
+</head>
+<body>
+	<% include navbar.ejs %>
+	<div class="container">
+		<h1 id="title"><%= news.title %></h1>
+		<h6>Posted <span id="posted"><%=news.publish_date%></span></h6>
+		<div id="description"><%= news.body %></div>
+	</div>
+
+	<% include footer.ejs %>
+	<% include scripts.ejs %>
+	<script src="/js/news.js"></script>
+</body>
+</html>

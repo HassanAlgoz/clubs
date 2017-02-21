@@ -1,0 +1,62 @@
+	<% include head.ejs %>
+	<title>Event</title>
+	<link rel="stylesheet" href="/css/event.css">
+
+</head>
+<body>
+	<% include navbar.ejs %>
+	<div class="container">
+		<input type="hidden" id="userRole" value="<%=userRole%>">
+		<input type="hidden" id="id" value="<%=event.id%>">
+		<h1 id="title"><%=event.title%></h1>
+		<h6>posted <span id="posted"><%=event.publish_date%></span></h6>
+		<ul>
+			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"><%=event.date%></span></li>
+			<li><i class="glyphicon glyphicon-time"></i> <%=event.time%></li>
+			<li><i class="glyphicon glyphicon-map-marker"></i> <%=event.location%></li>
+		</ul>
+		<h3>Event Briefing</h3>
+		<div id="brief"><%= event.brief %></div>
+
+		<% if (event.open) {%>
+			<% if (event.promisers) { %>
+					<% if (counted === false) {%>
+						<h4 class="promises text-center"><%=event.promisers.length%> members attending</h4>
+						<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>
+					<%} else {%>
+						<% if (event.promisers.length > 1) {%>
+							<h4 class="promises text-success text-center">You and <%=event.promisers.length-1%> others are attending</h4>
+						<%} else {%>
+							<h4 class="promises text-success text-center">Currently, you are the only one attending.</h4>
+						<%}%>
+					<%}%>
+			<% } else {%>
+				<h4 class="promises text-center">Be the first to attend!</h4>
+			<%}%>
+		<%} else {%>
+			<% if (event.promisers) { %>
+				<h4 class="promises text-center"><%=event.promisers.length%> members attended this event</h4>
+			<% } else {%>
+				<h4 class="promises text-center">No one attended this event!</h4>
+			<%}%>
+		<%}%>
+
+		<div class="row">
+			<div class="col-md-12 text-right">
+				<% if (userRole === 'admin' || userRole === 'manager') {%>
+					<% if (event.open) {%>
+						<button id="btn-close" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Close Event</button>
+					<%} else {%>
+						<button id="btn-open" class="btn btn-warning">Reopen Event</button>
+					<%}%>
+				<%}%>
+			</div>
+		</div>
+
+	</div>
+
+	<% include footer.ejs %>
+	<% include scripts.ejs %>
+	<script src="/js/event.js"></script>
+</body>
+</html>
