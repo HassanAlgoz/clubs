@@ -1,0 +1,26 @@
+
+	<% include head.ejs %>
+	<title>Create New Club</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+	
+</head>
+<body>
+	<% include navbar.ejs %>
+	<div class="container">
+		<h1>Create New Club</h1>
+		<div class="form-group">
+			<input id="input-name" class="form-control" type="text" placeholder="Club Name.." required>
+		</div>
+        <div class="form-group">
+			<input id="input-clubPresidentId" class="form-control" type="text" placeholder="president ID" required>
+		</div>
+		<button id="btn-submit" class="btn btn-success">Submit</button>
+        <a href="/admin/club/delete">Or delete a club</a>
+	</div>
+
+	<% include footer.ejs %>
+	<% include scripts.ejs %>
+	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
+	<script src="/js/club-create.js"></script>
+</body>
+</html>
