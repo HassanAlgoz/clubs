@@ -9,8 +9,8 @@ var clubSchema = new mongoose.Schema({
   members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   news: [{ type: Schema.Types.ObjectId, ref: 'News' }],
   events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
-  date: { type: Date, default: Date.now }
-
+  date: { type: Date, default: Date.now },
+  condition: { type: String, default: 'unapproved' }
 });
 
 

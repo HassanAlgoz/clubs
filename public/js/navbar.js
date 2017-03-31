@@ -23,9 +23,9 @@ $(function(){
 		$('#nav-home').attr('href', `/clubs`);
 	}
 
-	$('#nav-users').attr('href', `/clubs/${clubName}/admin/users`);
-	$('#nav-news').attr('href', `/clubs/${clubName}/admin/news`);
-	$('#nav-events').attr('href', `/clubs/${clubName}/admin/events`);
+	$('#nav-users').attr('href', `/clubs/${clubName}/manage/users`);
+	$('#nav-news').attr('href', `/clubs/${clubName}/manage/news`);
+	$('#nav-events').attr('href', `/clubs/${clubName}/manage/events`);
 	$('#nav-club').attr('href', `/clubs/${clubName}/edit`);
 
 	$('#nav-post-news').attr('href', `/clubs/${clubName}/news/x/edit`);

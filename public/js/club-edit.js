@@ -4,17 +4,11 @@ $(function() {
   var originalName = $('#input-name').val(); // Original name when the page loads
   var converter = new showdown.Converter();
 
-  let method = 'PUT';
-  if (originalName === '') {
-    method = 'POST';
-    $('#btn-delete').remove();
-  }
-
   $("#btn-submit").on('click', function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.
 
     $.ajax({
-      method: method,
+      method: 'PUT',
       url: '/api/clubs/'+originalName,
       data: {
         name: $('#input-name').val(),
@@ -31,21 +25,21 @@ $(function() {
 
   });
 
-  $("#btn-delete").on('click', function(e) {
-    e.preventDefault(); // avoid to execute the actual submit of the form.
+  // $("#btn-delete").on('click', function(e) {
+  //   e.preventDefault(); // avoid to execute the actual submit of the form.
 
-    $.ajax({
-      method: 'DELETE',
-      url: '/api/clubs/'+originalName,
-      success: function(data) {
-        location.href = '/clubs';
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
-  });
-
+  //   $.ajax({
+  //     method: 'DELETE',
+  //     url: '/api/clubs/'+originalName,
+  //     success: function(data) {
+  //       location.href = '/clubs';
+  //     },
+  //     error: function(error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // });
+  
   
   // Markdown
   let html;

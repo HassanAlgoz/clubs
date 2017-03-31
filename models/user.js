@@ -8,14 +8,15 @@ var schema = new mongoose.Schema({
   password: String,
   email: { type: String, unique: true, lowercase: true},
   major: { type: String, default: ""},
-  enrollment: { type: String, default: ""},
+  enrollment_year: { type: String, default: ""},
   memberships: [
     {
       club: { type: Schema.Types.ObjectId, ref: 'Club'},
       role: { type: String, default: "unapproved"},
       date: { type: Date, default: Date.now}
     }
-  ]
+  ],
+  isAdmin: { type: Boolean, default: false }
 });
 
 
@@ -38,6 +39,13 @@ schema.statics.isLoggedIn = function(req, res, next) {
   } else {
   	res.redirect('/login');
   }
+};
+
+
+schema.statics.canAdmin = function(req, res, next) {
+  if (req.user.isAdmin === true)
+    res.next();
+  res.sendStatus(403);
 };
 
 
@@ -90,29 +98,26 @@ schema.methods.findMembership = function(club) {
 
 
 schema.methods.isMember = function(club) {
-  
-  var role = this.getRole(club);
-  return (role === 'admin' || role === 'manager' || role === 'member');
-
+  clubID = club._id
+  var role = this.getRole(clubID);
+  return role === 'president' ||
+         role === 'manager' ||
+         role === 'member';
 };
 
 
-
-schema.methods.canManage = function(res, club) {
-
-  var role = this.getRole(club);
-  if (role === 'admin' || role === 'manager')
-    return true;
-  res.sendStatus(403);
-
+schema.methods.canManage = function(club) {
+  clubID = club._id
+  var role = this.getRole(clubID);
+  return role === 'president' ||
+         role === 'manager';
 };
 
-schema.methods.canAdmin = function(res, club) {
 
-  var role = this.getRole(club);
-  if (role === 'admin')
-    return true;
-  res.sendStatus(403);
+schema.methods.isPresident = function(club) {
+  clubID = club._id
+  var role = this.getRole(clubID);
+  return role === 'president';
 };
 
 
