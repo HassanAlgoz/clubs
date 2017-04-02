@@ -11,4 +11,7 @@ To run the server, you'll need both [node.js](https://nodejs.org/en/) and [mongo
 ## Run
 Now `start mongod --port 27027` in another terminal and run `node ./bin/www`. Now you can visit `localhost:3000` in your browser. Once the server starts, it should connect to the mongoDB server. You might face a problem with mongo regarding `dbpath`, read the problem carefully and try to configure the `dbpath` before trying again.
 
+## Bugs
+When you find bugs kindly open a new **issue** for it, if none is already opened for it.
+
 If you face any problems, contact me.
