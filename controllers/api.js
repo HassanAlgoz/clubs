@@ -67,7 +67,7 @@ module.exports = function (app) {
 			club.save(function (err, club) {
 				if (err) console.log(err);
 				user.memberships.push({
-					club: club._id,
+					club: club,
 					role: "president",
 				});
 				user.save(function (err, user) {
@@ -145,20 +145,32 @@ module.exports = function (app) {
 
 			if (err) console.log(err);
 			if (club) {
+				// check if user has no membership in this club
+				let alreadyAMember = false;
+				for(let i=0; i<req.user.memberships.length; i++) {
+					if (req.user.memberships[i].club === club) {
+						alreadyAMember = true;
+						break;
+					}
+				}
 
-				club.members.push(req.user);
-				req.user.memberships.push({
-					club: club._id
-				});
-
-				req.user.save(function (err, user) {
-					if (err) console.log(err);
-					club.save(function (err, club) {
-						if (err) console.log(err);
-						res.sendStatus(201);
+				if (alreadyAMember) {
+					club.members.push(req.user);
+					req.user.memberships.push({
+						club: club
 					});
-				});
 
+					req.user.save(function (err, user) {
+						if (err) console.log(err);
+						club.save(function (err, club) {
+							if (err) console.log(err);
+							res.sendStatus(201);
+						});
+					});
+				} else {
+					console.log("already a member");
+					res.sendStatus(200);
+				}
 			} else {
 				res.sendStatus(404);
 			}
@@ -199,7 +211,7 @@ module.exports = function (app) {
 							}
 						}
 
-						var index = user.findMembership(res, club._id);
+						var index = user.findMembership(res, club);
 						user.memberships.splice(index, 1);
 
 						user.save(function (err, user) {
@@ -237,7 +249,7 @@ module.exports = function (app) {
 
 			if (club) {
 
-				res.json({ users: club.members, clubID: club._id });
+				res.json({ users: club.members, clubID: club });
 
 			} else {
 				res.sendStatus(404);
@@ -700,7 +712,7 @@ module.exports = function (app) {
 
 					if (club) {
 
-						var index = user.findMembership(res, club._id);
+						var index = user.findMembership(res, club);
 						if (index >= 0) {
 							user.memberships[index].role = req.body.role;
 							console.log('role set', user.memberships[index].role);

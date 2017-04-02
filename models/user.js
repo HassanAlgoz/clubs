@@ -64,8 +64,8 @@ schema.methods.getMembership = function(club) {
 
 
 schema.methods.getRole = function(club) {
-
-  var index = this.findMembership(club);
+  var clubID = club;
+  var index = this.findMembership(clubID);
   var role = '';
   if (index >= 0) {
     role = this.memberships[index].role;
@@ -77,13 +77,13 @@ schema.methods.getRole = function(club) {
 
 
 schema.methods.findMembership = function(club) {
-
-  if (typeof club === typeof '')
+  var clubID = club;
+  if (typeof clubID === typeof '')
     console.log('ERROR ', 'parameter passed as string');
 
   var isFound = false;
   for(var i=0; i<this.memberships.length; i++) {
-    if (String(this.memberships[i].club) === String(club)){
+    if (String(this.memberships[i].clubID) === String(clubID)){
       isFound = true;
       break;
     }
@@ -98,7 +98,7 @@ schema.methods.findMembership = function(club) {
 
 
 schema.methods.isMember = function(club) {
-  clubID = club._id
+  var clubID = club
   var role = this.getRole(clubID);
   return role === 'president' ||
          role === 'manager' ||
@@ -107,7 +107,7 @@ schema.methods.isMember = function(club) {
 
 
 schema.methods.canManage = function(club) {
-  clubID = club._id
+  var clubID = club
   var role = this.getRole(clubID);
   return role === 'president' ||
          role === 'manager';
@@ -115,7 +115,7 @@ schema.methods.canManage = function(club) {
 
 
 schema.methods.isPresident = function(club) {
-  clubID = club._id
+  var clubID = club
   var role = this.getRole(clubID);
   return role === 'president';
 };

@@ -9,7 +9,7 @@ var User = require('../models/user');
 module.exports = function(app) {
 
 
-	// ## CLub
+	// ## Club
 	app.get('/', function(req, res) {
 		res.redirect('/clubs');
 	});
@@ -33,7 +33,7 @@ module.exports = function(app) {
 
 			var userRole = '';
 			if (club) {
-				if (req.user) userRole = req.user.getRole(club._id);
+				if (req.user) userRole = req.user.getRole(club);
 
 				res.render('club', {club, userRole, clubName:name});
 			} else {
@@ -58,9 +58,11 @@ module.exports = function(app) {
 			var userRole = '';
 			if (club) {
 
-				userRole = req.user.getRole(club._id);
-				if (req.user.canAdmin(res, club._id)) {
+				userRole = req.user.getRole(club);
+				if (req.user.isPresident(club)) {
 					res.render('club-edit', {club, clubName:name, userRole});
+				} else {
+					res.sendStatus(403);
 				}
 
 			} else {
@@ -83,7 +85,7 @@ module.exports = function(app) {
 			var userRole = '';
 			if (club) {
 				if (req.user) {
-					userRole = req.user.getRole(club._id);
+					userRole = req.user.getRole(club);
 				}
 
 				News.findOne({ _id: req.params.id }).exec(function(err, news) {
@@ -114,10 +116,10 @@ module.exports = function(app) {
 
 			var userRole = "";
 			if (club) {
-				if (req.user.canManage(res, club._id)) {
+				if (req.user.canManage(club)) {
 
 					if (req.user) {
-						userRole = req.user.getRole(club._id);
+						userRole = req.user.getRole(club);
 					}
 
 					News.findOne({ _id: req.params.id }).exec(function(err, news) {
@@ -127,6 +129,8 @@ module.exports = function(app) {
 
 					});
 
+				} else {
+					res.sendStatus(403);
 				}
 			} else {
 				res.sendStatus(404);
@@ -163,7 +167,7 @@ module.exports = function(app) {
 				var userRole = '';
 				if (club) {
 					if (req.user) {
-						userRole = req.user.getRole(club._id);
+						userRole = req.user.getRole(club);
 					}
 				} else {
 					console.log('club not found');
@@ -184,11 +188,11 @@ module.exports = function(app) {
 		Club.findOne({ name: new RegExp(name, 'i') }, (err, club) => {
 			if (err) console.log(err);
 
-			if (req.user.canManage(res, club._id)) {
+			if (req.user.canManage(club)) {
 
 				var userRole = "";
 				if (req.user) {
-					userRole = req.user.getRole(club._id);
+					userRole = req.user.getRole(club);
 				}
 
 				Event.findOne({ _id: req.params.id }).exec(function(err, event) {
@@ -197,6 +201,8 @@ module.exports = function(app) {
 					res.render('event-edit', {event, userRole, clubName:name});
 
 				});
+			} else {
+				res.sendStatus(403);
 			}
 		});
 	});
