@@ -13,7 +13,9 @@ $(function() {
     	let clubID = data.clubID;
     	let users = data.users;
 
+			let html = ``;
     	users.forEach(function(user) {
+				console.log('hello', user);
 
     		let role = "unapproved";
     		for(var i=0; i<user.memberships.length; i++) {
@@ -23,7 +25,7 @@ $(function() {
     			}
     		}
 
-    		let html = `
+    		html += `
         <tr>
           <td align="center">`;
         if (role !== 'president') {

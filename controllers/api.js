@@ -154,7 +154,7 @@ module.exports = function (app) {
 					}
 				}
 
-				if (alreadyAMember) {
+				if (alreadyAMember === false) {
 					club.members.push(req.user);
 					req.user.memberships.push({
 						club: club
@@ -278,31 +278,22 @@ module.exports = function (app) {
 	app.post('/api/users', function (req, res) {
 
 		console.log(req.body);
-		// if (req.body.password === passwd) {
-		// var passHash = hash(req.body.password)
 		new User({
 			name: req.body.name,
 			password: req.body.password,
 			email: req.body.email,
-			role: req.body.role,
-			manages: req.body.manages
+			role: req.body.role
 		}).save(function (err, user) {
 			if (err) console.log(err);
 			console.log('user created correctly!');
 			res.json(user);
 		});
 
-		// } else {
-		// 	res.sendStatus(403);
-		// }
-
 	});
 
 
 	// Modify a user
 	app.put('/api/users/:id', function (req, res) {
-
-		// if (req.body.password === passwd) {
 
 		User.findOne({ _id: req.params.id }, function (err, user) {
 			if (err) console.log(err);
@@ -319,9 +310,6 @@ module.exports = function (app) {
 				res.send('could not modify user');
 			}
 		});
-		// } else {
-		// 	res.sendStatus(403);
-		// }
 
 	});
 
@@ -712,10 +700,10 @@ module.exports = function (app) {
 
 					if (club) {
 
-						var index = user.findMembership(res, club);
+						var index = user.findMembership(club);
 						if (index >= 0) {
 							user.memberships[index].role = req.body.role;
-							console.log('role set', user.memberships[index].role);
+							console.log('role set as:', user.memberships[index].role);
 							user.save(function (err) {
 								if (err) console.log(err);
 								res.sendStatus(204);

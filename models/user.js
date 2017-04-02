@@ -8,7 +8,7 @@ var schema = new mongoose.Schema({
     password: String,
     email: { type: String, unique: true, lowercase: true },
     major: { type: String, default: "" },
-    enrollment_year: { type: String, default: "" },
+    enrollment: { type: String, default: "" },
     memberships: [
         {
             club: { type: Schema.Types.ObjectId, ref: 'Club' },
