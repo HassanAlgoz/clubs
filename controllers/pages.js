@@ -17,7 +17,11 @@ module.exports = function(app) {
 
 
 	app.get('/clubs', function(req, res) {
-		res.render('index');
+		let isAdmin = false;
+		if (req.user) {
+			isAdmin = req.user.isAdmin;
+		}
+		res.render('index', {isAdmin});
 	});
 
 
@@ -72,7 +76,7 @@ module.exports = function(app) {
 				}
 
 			} else {
-				res.render('club-edit', {club, clubName:"", userRole:"admin"});
+				res.sendStatus(404);
 			}
 		});
 
