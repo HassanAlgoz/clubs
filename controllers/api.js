@@ -90,7 +90,7 @@ module.exports = function (app) {
 			if (err) console.log(err);
 
 			if (club) {
-				if (User.isPresident(club)) {
+				if (req.user.isPresident(club)) {
 					club.name = req.body.name;
 					club.description = req.body.description;
 					club.logo = req.body.logo;

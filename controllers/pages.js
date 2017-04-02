@@ -26,16 +26,22 @@ module.exports = function(app) {
 
 		var name = req.params.clubName.replace(/\-/g, ' ');
 
-		Club.findOne({ name: new RegExp(name, 'i') }).populate('news').populate('events').exec((err, club) => {
+		Club.findOne({ name: new RegExp(name, 'i') })
+		.populate('news')
+		.populate('events')
+		.exec((err, club) => {
 
 			if (err) console.log(err);
 
 
 			var userRole = '';
 			if (club) {
-				if (req.user) userRole = req.user.getRole(club);
+				if (req.user) {
+					userRole = req.user.getRole(club);
+					console.log("userRole = " + userRole);
+				}
 
-				res.render('club', {club, userRole, clubName:name});
+				res.render('club', {club, userRole, clubName: name});
 			} else {
 				res.sendStatus(404);
 			}

@@ -25,8 +25,7 @@ module.exports = function(app) {
 		
 	});
 
-
-
+	
 	app.get('/clubs/:clubName/manage/users', User.isLoggedIn, (req, res) => {
 
 		var name = req.params.clubName.replace(/\-/g, ' ');
@@ -42,7 +41,7 @@ module.exports = function(app) {
 					userRole
 				});
 			} else {
-				res.SendStatus(404);
+				res.sendStatus(403);
 			}
 		
 		});
@@ -71,7 +70,7 @@ module.exports = function(app) {
 				});
 
 			} else {
-				res.sendStatus(404);
+				res.sendStatus(403);
 			}
 
 		});
@@ -101,10 +100,15 @@ module.exports = function(app) {
 				});
 
 			} else {
-				res.sendStatus(404);
+				res.sendStatus(403);
 			}
 
 		});
 
+	});
+
+
+	app.get('/clubs/create/club', [User.isLoggedIn, User.canAdmin], (req, res) => {
+		res.render('club-create', {userRole:''});
 	});
 };
