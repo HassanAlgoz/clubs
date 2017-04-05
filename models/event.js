@@ -10,7 +10,8 @@ var schema = new mongoose.Schema({
 	time: {type: String, default: ''},
 	location: {type: String, default: ''},
 	promisers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-	condition: {type: String, default: 'open'}
+	condition: {type: String, default: 'open'},
+	membersOnly: { type: Boolean, default: true }
 });
 
 
