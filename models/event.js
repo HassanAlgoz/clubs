@@ -10,7 +10,7 @@ var schema = new mongoose.Schema({
 	time: {type: String, default: ''},
 	location: {type: String, default: ''},
 	promisers: [{
-			name: {type: Schema.Types.ObjectId, ref: 'User'},
+			userID: {type: Schema.Types.ObjectId, ref: 'User'},
 			attended: {type: Boolean, default: false}
 		}],
 	condition: {type: String, default: 'open'},
