@@ -9,7 +9,10 @@ var schema = new mongoose.Schema({
 	date: {type: Date, default: Date.now},
 	time: {type: String, default: ''},
 	location: {type: String, default: ''},
-	promisers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+	promisers: [{
+			name: {type: Schema.Types.ObjectId, ref: 'User'},
+			attended: {type: Boolean, default: false}
+		}],
 	condition: {type: String, default: 'open'},
 	membersOnly: { type: Boolean, default: true }
 });
