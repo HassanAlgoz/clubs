@@ -22,6 +22,7 @@ $(function(){
         date: $('#input-date').val(),
         time: $('#input-time').val(),
         location: $('#input-location').val(),
+        membersOnly: document.getElementById('input-membersOnly').checked,
         clubName: clubName
       },
       success: function(data) {
@@ -33,6 +34,7 @@ $(function(){
     });
 
   });
+
 
   $("#btn-delete").on('click', function(e) {
     e.preventDefault();

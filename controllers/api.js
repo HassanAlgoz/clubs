@@ -211,7 +211,7 @@ module.exports = function (app) {
 							}
 						}
 
-						var index = user.findMembership(res, club);
+						var index = user.findMembershipIndex(club);
 						user.memberships.splice(index, 1);
 
 						user.save(function (err, user) {
@@ -499,14 +499,14 @@ module.exports = function (app) {
 	app.post('/api/events', function (req, res) {
 
 		console.log(req.body);
-		// if (req.body.password === passwd) {
 
 		new Event({
 			title: req.body.title,
 			brief: req.body.brief,
 			time: req.body.time,
 			location: req.body.location,
-			date: req.body.date
+			date: req.body.date,
+			membersOnly: (req.body.membersOnly == 'true')?true:false,
 		}).save(function (err, event) {
 			if (err) console.log(err);
 
@@ -520,13 +520,7 @@ module.exports = function (app) {
 				});
 
 			});
-
-
 		});
-
-		// } else {
-		// 	res.sendStatus(403);
-		// }
 
 	});
 
@@ -544,6 +538,7 @@ module.exports = function (app) {
 				event.time = req.body.time;
 				event.location = req.body.location;
 				event.date = req.body.date;
+				event.membersOnly = (req.body.membersOnly == 'true')?true:false;
 				event.save(function (err, event) {
 					if (err) console.log(err);
 					res.json({ message: 'successfully updated', event });
@@ -561,14 +556,14 @@ module.exports = function (app) {
 	// Close an event
 	app.get('/api/events/:id/close', function (req, res) {
 
-		console.log('close');
+		console.log('close event');
 
 		if (req.user.canManage()) {
 
 			Event.findOne({ _id: req.params.id }, function (err, event) {
 				if (err) console.log(err);
 				if (event) {
-					event.open = false;
+					event.condition = 'closed';
 					event.save(function (err, event) {
 						if (err) console.log(err);
 						res.json({ message: 'successfully closed event', event });
@@ -587,14 +582,14 @@ module.exports = function (app) {
 	// Open an event
 	app.get('/api/events/:id/open', function (req, res) {
 
-		console.log('open');
+		console.log('open event');
 
 		if (req.user.canManage()) {
 
 			Event.findOne({ _id: req.params.id }, function (err, event) {
 				if (err) console.log(err);
 				if (event) {
-					event.open = true;
+					event.condition = 'open';
 					event.save(function (err, event) {
 						if (err) console.log(err);
 						res.json({ message: 'successfully opend event', event });
@@ -653,36 +648,61 @@ module.exports = function (app) {
 	// Add a promise
 	app.post('/api/events/:id/promise', function (req, res) {
 
-		Event.findOne({ _id: req.params.id }, function (err, event) {
-			if (err) console.error(err);
-			if (event) {
+		let clubName = req.body.clubName;
 
-				var counted = false;
-				if (req.user) {
-					for (var i = 0; i < event.promisers.length; i++) {
-						if (String(event.promisers[i]) === String(req.user._id)) {
-							counted = true;
-							break;
-						}
-					}
-				}
-
-				if (!counted) {
-					event.promisers.push(req.user._id);
-					event.save(function (err, event) {
-						if (err) console.error(err);
-						res.sendStatus(201);
-					});
-				} else {
-					res.sendStatus(404);
-				}
-			} else {
-				res.sendStatus(404);
+		Club.findOne({ name: clubName }, function(err, club) {
+			if (err) {
+				console.error("ERROR", err);
 			}
 
+			if (club) {
+				Event.findOne({ _id: req.params.id }, function (err, event) {
+					if (err) console.error(err);
+					if (event && (!event.membersOnly || (event.membersOnly && req.user.isMember(club)))) {
+
+						let counted = false;
+						if (req.user) {
+							for (let i = 0; i < event.promisers.length; i++) {
+								if (String(event.promisers[i].user) === String(req.user._id)) {
+									counted = true;
+									break;
+								}
+							}
+						}
+
+						if (!counted) {
+							event.promisers.push({
+								user: req.user._id,
+								attended: false
+							});
+							event.save(function (err, event) {
+								if (err) console.error(err);
+								res.sendStatus(201);
+							});
+						} else {
+							console.log("Already promised to attend");
+							res.json({error: true, message: "Already promised to attend"});
+						}
+					} else {
+						if (!event) {
+							console.log("ERROR:", "event not found");
+							res.sendStatus(404);
+						} else {
+							console.log("Not a member of the club");
+							res.sendStatus(403);
+						}
+					}
+
+				});
+			} else {
+				console.log("ERROR: club not found");
+				res.sendStatus(404);
+			}
 		});
 
 	});
+
+	
 
 	// Admin API
 	app.put('/api/:clubName/users-roles/:id', function (req, res) {
@@ -700,7 +720,7 @@ module.exports = function (app) {
 
 					if (club) {
 
-						var index = user.findMembership(club);
+						var index = user.findMembershipIndex(club);
 						if (index >= 0) {
 							user.memberships[index].role = req.body.role;
 							console.log('role set as:', user.memberships[index].role);

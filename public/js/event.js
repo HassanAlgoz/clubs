@@ -8,16 +8,23 @@ $(function(){
   let html = converter.makeHtml($('#brief').text());
   $('#brief').html(html);
 
+  let userRole = $('#userRole').val();
+  let isMember = userRole.length > 0;
+  let clubName = $('#clubName').val();
+  let membersOnly = ($("#membersOnly").val() === 'true')?true:false;
+
+  console.log('membersOnly', membersOnly);
 
   $('#btn-promise').on('click', function(e) {
     e.preventDefault();
 
-    let isMember = ($('#userRole').val().length > 0);
-
-    if (isMember) {
+    if (!membersOnly || membersOnly && isMember) {
       $.ajax({
         method: 'POST',
         url: '/api/events/'+id+'/promise',
+        data: {
+          clubName: clubName
+        },
         success: function(data) {
           location.reload();
         },
@@ -39,9 +46,7 @@ $(function(){
 
   $('#btn-close').on('click', function() {
 
-    let isMember = ($('#userRole').val().length > 0);
-
-    if (isMember) {
+    if (!membersOnly || membersOnly && isMember && (userRole === 'manager' || userRole === 'president')) {
       $.ajax({
         method: 'GET',
         url: '/api/events/'+id+'/close',
@@ -60,9 +65,7 @@ $(function(){
 
   $('#btn-open').on('click', function() {
 
-    let isMember = ($('#userRole').val().length > 0);
-
-    if (isMember) {
+    if (!membersOnly || membersOnly && isMember && (userRole === 'manager' || userRole === 'president')) {
       $.ajax({
         method: 'GET',
         url: '/api/events/'+id+'/open',

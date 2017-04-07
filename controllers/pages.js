@@ -163,7 +163,7 @@ module.exports = function(app) {
 			var counted = false;
 			if (req.user) {
 				for(var i=0; i<event.promisers.length; i++) {
-					if (String(event.promisers[i]) === String(req.user._id)) {
+					if (String(event.promisers[i].user) === String(req.user._id)) {
 						counted = true;
 						break;
 					}
@@ -182,7 +182,12 @@ module.exports = function(app) {
 				} else {
 					console.log('club not found');
 				}
-				res.render('event', {event, counted, userRole, clubName:name});
+				res.render('event', {
+					event,
+					counted,
+					userRole,
+					clubName:name
+				});
 			});
 			
 		});

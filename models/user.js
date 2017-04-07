@@ -61,7 +61,7 @@ schema.methods.getMembership = function (club) {
     }
 
     var clubID = club._id;
-    var index = this.findMembership(club);
+    var index = this.findMembershipIndex(club);
     if (index >= 0) {
         return this.memberships[index];
     } else {
@@ -77,7 +77,7 @@ schema.methods.getRole = function (club) {
         return '';
     }
 
-    var index = this.findMembership(club);
+    var index = this.findMembershipIndex(club);
     var role = '';
     if (index >= 0) {
         role = this.memberships[index].role;
@@ -88,7 +88,7 @@ schema.methods.getRole = function (club) {
 
 
 
-schema.methods.findMembership = function (club) {
+schema.methods.findMembershipIndex = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return -1;

@@ -27,6 +27,10 @@
 		<div class="form-group">
 			<textarea id="input-brief" class="form-control" placeholder="Briefing.." required><%if(event){%><%=event.brief%><%}%></textarea>
 		</div>
+		<div class="form-group">
+			<input type="checkbox" id="input-membersOnly">
+			<span>Members Only</span>
+		</div>
 		<button id="btn-submit" class="btn btn-success">Submit</button>
 		<button id="btn-delete" class="btn btn-danger">Delete</button>
 		
