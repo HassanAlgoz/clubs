@@ -7,6 +7,7 @@
 	<% include navbar.ejs %>
 	
 	<div class="container">
+		<input type="hidden" id="user" <%if (user) {%> value="x" <%}%>>
 		<input type="hidden" id="userRole" value="<%=userRole%>">
 		<input type="hidden" id="id" value="<%=event.id%>">
 		<input type="hidden" id="clubName" value="<%=clubName%>">
@@ -17,6 +18,9 @@
 			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"><%=event.date%></span></li>
 			<li><i class="glyphicon glyphicon-time"></i> <%=event.time%></li>
 			<li><i class="glyphicon glyphicon-map-marker"></i> <%=event.location%></li>
+			<% if (event.membersOnly) { %>
+			<li><i class="text-danger">This event is for members only</i></li>
+			<%}%>
 		</ul>
 		<h3>Event Briefing</h3>
 		<div id="brief"><%= event.brief %></div>
@@ -24,8 +28,12 @@
 		<% if (event.condition === 'open') {%>
 			<% if (event.promisers) { %>
 					<% if (counted === false) {%>
+						<% if (!event.membersOnly || (event.membersOnly && userRole === 'member' || userRole === 'manager' || userRole === 'president')) {%>
 						<h4 class="promises text-center"><%=event.promisers.length%> members attending</h4>
 						<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>
+						<%} else {%>
+						<h4 class="text-danger">This event is for members only</h4>
+						<%}%>
 					<%} else {%>
 						<% if (event.promisers.length > 1) {%>
 							<h4 class="promises text-success text-center">You and <%=event.promisers.length-1%> others are attending</h4>
@@ -38,15 +46,15 @@
 			<%}%>
 		<%} else {%>
 			<% if (event.promisers) { %>
-				<h4 class="promises text-center"><%=event.promisers.length%> members attended this event</h4>
+				<h4 class="promises text-center"><%=event.promisers.length%> members promised to attend this event</h4>
 			<% } else {%>
-				<h4 class="promises text-center">No one attended this event!</h4>
+				<h4 class="promises text-center">No one promised to attend this event!</h4>
 			<%}%>
 		<%}%>
 
 		<div class="row">
 			<div class="col-md-12 text-right">
-				<% if (userRole === 'admin' || userRole === 'manager') {%>
+				<% if (userRole === 'president' || userRole === 'manager') {%>
 					<% if (event.condition === 'open') {%>
 						<button id="btn-close" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Close Event</button>
 					<%} else {%>

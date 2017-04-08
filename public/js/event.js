@@ -8,17 +8,24 @@ $(function(){
   let html = converter.makeHtml($('#brief').text());
   $('#brief').html(html);
 
+  let loggedIn = ($('#user').val().length > 0);
   let userRole = $('#userRole').val();
   let isMember = userRole.length > 0;
   let clubName = $('#clubName').val();
   let membersOnly = ($("#membersOnly").val() === 'true')?true:false;
 
+  if (!loggedIn) {
+    userRole = '';
+    isMember = false;
+  }
+
   console.log('membersOnly', membersOnly);
+  console.log("loggedIn", loggedIn);
 
   $('#btn-promise').on('click', function(e) {
     e.preventDefault();
 
-    if (!membersOnly || membersOnly && isMember) {
+    if (loggedIn && (!membersOnly || membersOnly && isMember)) {
       $.ajax({
         method: 'POST',
         url: '/api/events/'+id+'/promise',
@@ -46,10 +53,13 @@ $(function(){
 
   $('#btn-close').on('click', function() {
 
-    if (!membersOnly || membersOnly && isMember && (userRole === 'manager' || userRole === 'president')) {
+    if (loggedIn && (isMember && (userRole === 'manager' || userRole === 'president'))) {
       $.ajax({
-        method: 'GET',
+        method: 'POST',
         url: '/api/events/'+id+'/close',
+        data: {
+          clubName: clubName
+        },
         success: function(data) {
           location.reload();
         },
@@ -65,10 +75,13 @@ $(function(){
 
   $('#btn-open').on('click', function() {
 
-    if (!membersOnly || membersOnly && isMember && (userRole === 'manager' || userRole === 'president')) {
+    if (loggedIn && (isMember && (userRole === 'manager' || userRole === 'president'))) {
       $.ajax({
-        method: 'GET',
+        method: 'POST',
         url: '/api/events/'+id+'/open',
+        data: {
+          clubName: clubName
+        },
         success: function(data) {
           location.reload();
         },

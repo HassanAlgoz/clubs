@@ -2,12 +2,12 @@
 $(function(){
 
   // Markdown
-  var converter = new showdown.Converter();
+  let converter = new showdown.Converter();
   let html = converter.makeHtml($('#description').text());
   $('#description').html(html);
 
-  var loggedIn = ($('#user').val().length > 0);
-  var clubName = $('#clubName').val().replace(/\s/g, '-');
+  let loggedIn = ($('#user').val().length > 0);
+  let clubName = $('#clubName').val().replace(/\s/g, '-');
 
   if (!loggedIn) {
   	$('#btn-join').html(`<i class="glyphicon glyphicon-check"></i> Login to join`);

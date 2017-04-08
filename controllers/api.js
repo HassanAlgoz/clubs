@@ -238,18 +238,23 @@ module.exports = function (app) {
 	});
 
 
-	// Get all users
+	// Get all users of a club
 	app.get('/api/clubs/:clubName/users', function (req, res) {
 
 		var name = req.params.clubName.replace(/\-/g, ' ');
 
-		Club.findOne({ name: new RegExp(name, 'i') }).populate('members').exec(function (err, club) {
+		Club.findOne({ name: new RegExp(name, 'i') })
+		.populate('members')
+		.exec(function (err, club) {
 
 			if (err) console.log(err);
 
 			if (club) {
 
-				res.json({ users: club.members, clubID: club });
+				res.json({
+					users: club.members,
+					clubID: club._id
+				});
 
 			} else {
 				res.sendStatus(404);
@@ -554,54 +559,82 @@ module.exports = function (app) {
 	});
 
 	// Close an event
-	app.get('/api/events/:id/close', function (req, res) {
+	app.post('/api/events/:id/close', function (req, res) {
 
-		console.log('close event');
+		console.log('closing event');
+		let clubName = req.body.clubName;
 
-		if (req.user.canManage()) {
+		Club.findOne({ name: clubName }, function (err, club) {
+			if (err) {
+				console.error('ERROR:', err);
+			}
 
-			Event.findOne({ _id: req.params.id }, function (err, event) {
-				if (err) console.log(err);
-				if (event) {
-					event.condition = 'closed';
-					event.save(function (err, event) {
+			if (club) {
+				if (req.user.canManage(club)) {
+
+					Event.findOne({ _id: req.params.id }, function (err, event) {
 						if (err) console.log(err);
-						res.json({ message: 'successfully closed event', event });
+						if (event) {
+							event.condition = 'closed';
+							event.save(function (err, event) {
+								if (err) console.log(err);
+								res.json({ message: 'successfully closed event', event });
+							});
+						} else {
+							res.send('could not close event');
+						}
 					});
-				} else {
-					res.send('could not close event');
-				}
-			});
 
-		} else {
-			res.sendStatus(403);
-		}
+				} else {
+					res.sendStatus(403);
+				}
+			} else {
+				console.log("club not found");
+				res.sendStatus(404);
+			}
+
+		})
 
 	});
 
+
 	// Open an event
-	app.get('/api/events/:id/open', function (req, res) {
+	app.post('/api/events/:id/open', function (req, res) {
 
-		console.log('open event');
+		console.log('opening event');
 
-		if (req.user.canManage()) {
+		let clubName = req.body.clubName;
 
-			Event.findOne({ _id: req.params.id }, function (err, event) {
-				if (err) console.log(err);
-				if (event) {
-					event.condition = 'open';
-					event.save(function (err, event) {
+		Club.findOne({ name: clubName }, function (err, club) {
+			if (err) {
+				console.error('ERROR:', err);
+			}
+
+			if (club) {
+				if (req.user.canManage(club)) {
+
+					Event.findOne({ _id: req.params.id }, function (err, event) {
 						if (err) console.log(err);
-						res.json({ message: 'successfully opend event', event });
+						if (event) {
+							event.condition = 'open';
+							event.save(function (err, event) {
+								if (err) console.log(err);
+								res.json({ message: 'successfully opend event', event });
+							});
+						} else {
+							res.send('could not open event');
+						}
 					});
-				} else {
-					res.send('could not open event');
-				}
-			});
 
-		} else {
-			res.sendStatus(403);
-		}
+				} else {
+					res.sendStatus(403);
+				}
+			} else {
+				console.log("club not found");
+				res.sendStatus(404);
+			}
+
+		})
 
 	});
 

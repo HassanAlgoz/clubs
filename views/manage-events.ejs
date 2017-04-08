@@ -36,6 +36,7 @@
                 <th>Title</th>
                 <th>Published</th>
                 <th>Promises</th>
+                <th>Condition</th>
               </tr> 
             </thead>
             <tbody>
@@ -49,6 +50,7 @@
                 <td><%=events[i].title%></td>
                 <td><%=events[i].publish_date%></td>
                 <td align="center"><%=events[i].promisers.length%></td>
+                <td align="center"><%=events[i].condition%></td>
               </tr>
               <%}%>
             </tbody>
@@ -61,6 +63,5 @@
 </div>
 <% include scripts.ejs %>
 <% include footer.ejs %>
-<!-- <script src="/js/manage-events.js" type="text/javascript"></script> -->
 </body>
 </html>
