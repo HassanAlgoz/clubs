@@ -36,29 +36,33 @@ $(function () {
             if (updatedAttendance[i] !== attendance[i]) {
                 tmp1.push(usersIDs[i]);
                 tmp2.push(updatedAttendance[i]);
-            }   
+            }
         }
         let updatedUsers = tmp1;
         updatedAttendance = tmp2;
-        
+
 
         console.log(updatedUsers, updatedAttendance);
 
         $.ajax({
-          method: 'PUT',
-          url: '/api/events/'+id+'/attendance',
-          data: {
-            clubName: clubName,
-            updatedUsers: updatedUsers.join(','),
-            updatedAttendance: updatedAttendance.join(',')
-          },
-          success: function(data) {
-            // location.reload();
-            console.log("PUT sucessful")
-          },
-          error: function(error) {
-            console.log(error);
-          }
+            method: 'PUT',
+            url: '/api/events/' + id + '/attendance',
+            data: {
+                clubName: clubName,
+                updatedUsers: updatedUsers.join(','),
+                updatedAttendance: updatedAttendance.join(',')
+            },
+            success: function (data) {
+                // location.href= `/clubs/${clubName.replace(/\s/g, '-')}/events/${id}`;
+                // location.reload();
+                $('#btn-submit').parent().html(`<span class="text-success">Successfully Updated Attendance!</span>`);
+                console.log("sucessfully updated attendance!");
+            },
+            error: function (error) {
+                $('#btn-submit').parent().html(`<span class="text-danger">Error: ${error}</span>`);
+                console.log("something went wrong");
+                console.log(error);
+            }
         });
 
 
