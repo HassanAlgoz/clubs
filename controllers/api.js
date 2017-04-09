@@ -737,7 +737,7 @@ module.exports = function (app) {
 
 
 	// Update attendance
-	app.put('/api/events/:id/attendance', function (req, res) {
+	app.put('/api/events/:id/attendance', User.isLoggedIn, function (req, res) {
 
 		let clubName = req.body.clubName;
 		let updatedUsers = req.body.updatedUsers.split(",");
@@ -752,7 +752,7 @@ module.exports = function (app) {
 					console.error("ERROR", err);
 				}
 
-				if (club) {
+				if (club && req.user.canManage(club)) {
 					Event.findOne({ _id: req.params.id }, function (err, event) {
 						if (err) console.error(err);
 
@@ -783,8 +783,12 @@ module.exports = function (app) {
 						}
 					});
 				} else {
-					console.log("ERROR: club not found");
-					res.sendStatus(404);
+					if (!club) {
+						console.log("ERROR: club not found");
+						res.sendStatus(404);
+					} else {
+						res.sendStatus(403);
+					}
 				}
 			});
 		} else {
