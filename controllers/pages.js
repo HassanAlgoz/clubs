@@ -224,7 +224,7 @@ module.exports = function(app) {
 
 
 
-	app.get('/clubs/:clubName/events/:id/attendance', function(req, res) {
+	app.get('/clubs/:clubName/events/:id/attendance', User.isLoggedIn, function(req, res) {
 		
 		var name = req.params.clubName.replace(/\-/g, ' ');
 
@@ -248,12 +248,18 @@ module.exports = function(app) {
 				if (err) console.log('err', err);
 
 				var userRole = '';
-				if (club) {
+				if (club && user.canManage(club)) {
 					if (req.user) {
 						userRole = req.user.getRole(club);
 					}
 				} else {
-					console.log('club not found');
+					if (!club) {
+						console.log('club not found');
+						res.sendStatus(404);
+					} else {
+						res.sendStatus(403);
+					}
+					
 				}
 				res.render('event-attendance', {
 					event,
