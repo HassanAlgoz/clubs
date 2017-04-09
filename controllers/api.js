@@ -759,9 +759,14 @@ module.exports = function (app) {
 						if (event) {
 
 							for (let i = 0; i < event.promisers.length; ++i) {
+								if (updatedUsers.length === 0)
+									break;
 								for (let j = 0; j < updatedUsers.length; ++j) {
 									if (String(event.promisers[i].user) === updatedUsers[j]) {
 										event.promisers[i].attended = updatedAttendance[j];
+										updatedUsers.splice(j, 1);
+										updatedAttendance.splice(j, 1);
+										break;
 									}
 								}
 							}
