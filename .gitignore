@@ -1,3 +1,4 @@
 node_modules
 clubs.txt
 .vscode
+*.log
