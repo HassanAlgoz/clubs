@@ -14,7 +14,7 @@ $(function () {
             console.log(data);
 
             let html = ``;
-            users.forEach(function (user)  {
+            users.forEach(function (user) {
 
                 let role = "unapproved";
                 for (var i = 0; i < user.memberships.length; i++) {
@@ -63,13 +63,7 @@ $(function () {
 
                 if (role !== 'president') {
                     console.log(user);
-                    $('td.last select').children().each(function () {
-                        if ($(this).val().toLowerCase() === role.toLowerCase()) {
-                            $(this).attr('selected', 'selected');
-                        }
-
-                    });
-
+                    $('td.last select').val(role.toLowerCase());
                     $('td.last').removeClass('last');
                 }
 

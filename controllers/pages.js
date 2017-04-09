@@ -221,6 +221,49 @@ module.exports = function(app) {
 			}
 		});
 	});
+
+
+
+	app.get('/clubs/:clubName/events/:id/attendance', function(req, res) {
+		
+		var name = req.params.clubName.replace(/\-/g, ' ');
+
+		Event.findOne({ _id: req.params.id })
+		.populate('promisers.user')
+		.exec(function(err, event) {
+			if (err) console.log(err);
+
+			var counted = false;
+			if (req.user) {
+				for(var i=0; i<event.promisers.length; i++) {
+					if (String(event.promisers[i].user) === String(req.user._id)) {
+						counted = true;
+						break;
+					}
+				}
+			}
+
+			
+			Club.findOne({ name: new RegExp(name, 'i') }, (err, club) => {
+				if (err) console.log('err', err);
+
+				var userRole = '';
+				if (club) {
+					if (req.user) {
+						userRole = req.user.getRole(club);
+					}
+				} else {
+					console.log('club not found');
+				}
+				res.render('event-attendance', {
+					event,
+					userRole,
+					clubName:name
+				});
+			});
+			
+		});
+	});
 	
 
 
