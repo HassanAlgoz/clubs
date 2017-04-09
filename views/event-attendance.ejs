@@ -36,10 +36,10 @@
           <table class="table table-striped table-bordered table-list">
             <thead>
               <tr>
+                <th class="text-center">Attended</th>
                 <th>User Name</th>
                 <th>Major</th>
                 <th>Enrollment</th>
-                <th>Attended</th>
               </tr> 
             </thead>
             <tbody>
@@ -47,14 +47,14 @@
               <% for(var i=0; i<event.promisers.length; ++i) {%>
               <tr>
                 <input type="hidden" class="usersIDs" value="<%=event.promisers[i].user._id%>">
-                <td><%=event.promisers[i].user.name%></td>
-                <td><%=event.promisers[i].user.major%></td>
-                <td><%=event.promisers[i].user.enrollment%></td>
                 <td align="center">
                   <div class="input-group">
                     <input type="checkbox" class="attendance" <% if (event.promisers[i].attended == true) {%> checked <%}%>>
                   </div>
                 </td>
+                <td><%=event.promisers[i].user.name%></td>
+                <td><%=event.promisers[i].user.major%></td>
+                <td><%=event.promisers[i].user.enrollment%></td>
               </tr>
               <%}%>
             </tbody>

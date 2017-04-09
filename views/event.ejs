@@ -60,6 +60,7 @@
 					<%} else {%>
 						<button id="btn-open" class="btn btn-warning">Reopen Event</button>
 					<%}%>
+					<a href="/clubs/<%=clubName.replace(/ /gi, '-')%>/events/<%=event.id%>/attendance" id="btn-attendance" class="btn btn-success">Attendance</a>
 				<%}%>
 			</div>
 		</div>
