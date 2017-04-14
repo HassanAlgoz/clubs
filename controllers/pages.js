@@ -248,7 +248,7 @@ module.exports = function(app) {
 				if (err) console.log('err', err);
 
 				var userRole = '';
-				if (club && user.canManage(club)) {
+				if (club && req.user.canManage(club)) {
 					if (req.user) {
 						userRole = req.user.getRole(club);
 					}
