@@ -1,4 +1,4 @@
-node_modules
-clubs.txt
+/node_modules
+/Docs
 .vscode
 *.log

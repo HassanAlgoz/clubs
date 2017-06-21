@@ -14,5 +14,5 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  require('./bin/www');
+  require('./app.js');
 }

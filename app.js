@@ -1,115 +1,118 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var session = require('express-session');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+const express = require('express');
+const compression = require('compression');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Promise = require("bluebird");
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
+const flash = require('express-flash');
+const errorHandler = require('errorhandler');
+const chalk = require('chalk')
+const dotenv = require('dotenv');
+const expressValidator = require('express-validator');
+// const lusca = require('lusca'); // security middleware
 
+// Setup
+Promise.promisifyAll(require("mongoose"));
 require('./config/passport');
+dotenv.load({ path: '.env' });
 
-var app = express();
+// Create Express Server
+const app = express();
+
+
 
 // Connect to MongoDB
-var db = process.env.DB || 'mongodb://localhost:27027/club';
-mongoose.connect(db, { config: { autoIndex: false } });
+mongoose.connect(process.env.MONGODB_URI, { config: { autoIndex: false }});
+mongoose.Promise = Promise;
 
 // CONNECTION EVENTS
 // When successfully connected
-mongoose.connection.on('connected', function () {  
-  console.log('db connected to ' + db);
-}); 
-
+mongoose.connection.once('connected', () => console.log('%s db connected to ' + process.env.MONGODB_URI, chalk.green('✓')))
 // If the connection throws an error
-mongoose.connection.on('error',function (err) {  
-  console.log('db connection error: ' + err);
-}); 
+mongoose.connection.on('error', (err) => console.log('%s MongoDB connection error: ' + err, chalk.red('✗')))
+// When disconnected
+mongoose.connection.once('disconnected', () => console.log('db disconnected'))
 
-// When the connection is disconnected
-mongoose.connection.on('disconnected', function () {  
-  console.log('db disconnected'); 
-});
+// If the Node process ends, close the Mongoose connection
+process.on('SIGINT', () => mongoose.connection.close(() => {
+    console.log('db disconnected through app termination');
+    process.exit(0);
+}))
 
-// If the Node process ends, close the Mongoose connection 
-process.on('SIGINT', function() {  
-  mongoose.connection.close(function () { 
-    console.log('db disconnected through app termination'); 
-    process.exit(0); 
-  }); 
-});
 
+
+// Port number
+app.set('port', process.env.PORT || 3000);
 // view engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+
+// Middleware
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressValidator());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: 'foo',
-  saveUninitialized: false, // don't create session until something stored 
-  resave: false, //don't save session if unmodified 
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false, // don't create session until something stored 
+    resave: false, //don't save session if unmodified 
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 1 * 24 * 60 * 60 // = 14 days. Default 
+    })
+}));
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: process.env.SESSION_SECRET,
   store: new MongoStore({
-    mongooseConnection: mongoose.connection,
-    ttl: 1 * 24 * 60 * 60 // = 14 days. Default 
+    url: process.env.MONGODB_URI,
+    autoReconnect: true,
+    clear_interval: 3600
   })
 }));
+app.use(flash());
+
 // Passport init
 app.use(passport.initialize());
 app.use(passport.session());
-
+// app.use(lusca.xframe('SAMEORIGIN'));
+// app.use(lusca.xssProtection(true));
 // Global Vars
-app.use(function (req, res, next) {
-  // res.locals.success_msg = req.flash('success_msg');
-  // res.locals.error_msg = req.flash('error_msg');
-  // res.locals.error = req.flash('error');
+app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
-});
-
-// Fire Controllers
-require('./controllers/pages')(app);
-require('./controllers/admin')(app);
-require('./controllers/user')(app);
-require('./controllers/api')(app);
+})
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+// Routes
+app.use('/api', require('./routes/api-events'))
+app.use('/api', require('./routes/api-clubs'))
+// app.use('/api', require('./routes/api-news'))
+// app.use('/api', require('./routes/api-users'))
+// app.use('/admin', require('./routes/admin'))
+// app.use('/user', require('./routes/user'))
+app.use('/', require('./routes/index'))
 
-// error handlers
 
-// development error handler
-// will print stacktrace
+// error handling middleware should be loaded after the loading the routes
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
+    app.use(errorHandler())
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.listen(app.get('port'), () => {
+    console.log('%s App is running on port %d in %s mode...', chalk.green('✓'), app.get('port'), app.get('env'))
 });
-
 
 module.exports = app;

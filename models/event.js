@@ -14,7 +14,11 @@ var schema = new mongoose.Schema({
 			attended: {type: Boolean, default: false}
 		}],
 	condition: {type: String, default: 'open'},
-	membersOnly: { type: Boolean, default: false }
+	membersOnly: { type: Boolean, default: false },
+	organizers: [{
+		user: {type: Schema.Types.ObjectId, ref: 'User'},
+		role: {type: String, default: ''}
+	}]
 });
 
 

@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
+var Schema = mongoose.Schema;
 
 // User Schema
-var schema = new mongoose.Schema({
+var userSchema = new mongoose.Schema({
     name: String,
     password: String,
     email: { type: String, unique: true, lowercase: true },
@@ -17,23 +17,23 @@ var schema = new mongoose.Schema({
         }
     ],
     isAdmin: { type: Boolean, default: false }
-});
+}, { timestamps: true });
 
 
 
-schema.methods.validPassword = function (password) {
+userSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
 
 
-schema.statics.encryptPassword = function (password) {
+userSchema.statics.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 };
 
 
 
-schema.statics.isLoggedIn = function (req, res, next) {
+userSchema.statics.isLoggedIn = function (req, res, next) {
     if (req.isAuthenticated()) {
         next();
     } else {
@@ -42,7 +42,7 @@ schema.statics.isLoggedIn = function (req, res, next) {
 };
 
 
-schema.statics.canAdmin = function (req, res, next) {
+userSchema.statics.canAdmin = function (req, res, next) {
     if (req.user.isAdmin === true) {
         next();
     } else {
@@ -54,7 +54,7 @@ schema.statics.canAdmin = function (req, res, next) {
 
 
 
-schema.methods.getMembership = function (club) {
+userSchema.methods.getMembership = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return null;
@@ -71,7 +71,7 @@ schema.methods.getMembership = function (club) {
 
 
 
-schema.methods.getRole = function (club) {
+userSchema.methods.getRole = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return '';
@@ -88,7 +88,7 @@ schema.methods.getRole = function (club) {
 
 
 
-schema.methods.findMembershipIndex = function (club) {
+userSchema.methods.findMembershipIndex = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return -1;
@@ -110,7 +110,7 @@ schema.methods.findMembershipIndex = function (club) {
 };
 
 
-schema.methods.isMember = function (club) {
+userSchema.methods.isMember = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return false;
@@ -122,7 +122,7 @@ schema.methods.isMember = function (club) {
 };
 
 
-schema.methods.canManage = function (club) {
+userSchema.methods.canManage = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return false;
@@ -133,7 +133,7 @@ schema.methods.canManage = function (club) {
 };
 
 
-schema.methods.isPresident = function (club) {
+userSchema.methods.isPresident = function (club) {
     if (club === undefined) {
         console.error("ERROR: club is undefined!");
         return false;
@@ -143,7 +143,4 @@ schema.methods.isPresident = function (club) {
 };
 
 
-
-
-
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('User', userSchema);

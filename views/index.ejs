@@ -1,4 +1,4 @@
-	<% include head.ejs %>
+	<% include ./partials/head.ejs %>
 	<title>Club</title>
 	<link rel="stylesheet" href="/css/index.css">
 
@@ -40,18 +40,18 @@
 	</nav>
 
 	<div class="container">
-		<% if (isAdmin) {%>
+		<!-- If (isAdmin) { -->
 			<div class="row text-center">
 			<a id="new-club" href="/clubs/create/club" class="btn btn-xs btn-default">Create New Club</a>
-		<%}%>
+		<!-- } -->
 		<h1 id="main" class="text-center">Here are all the clubs</h1>
 		<div class="clubs-list text-center">
 
 		</div>
 	</div>
 
-	<% include footer.ejs %>
-	<% include scripts.ejs %>
+	<% include ./partials/footer.ejs %>
+	<% include ./partials/scripts.ejs %>
 	<script src="/js/index.js"></script>
 </body>
 </html>

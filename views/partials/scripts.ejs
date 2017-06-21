@@ -1,0 +1,47 @@
+<script src="/js/lib/showdown.min.js"></script>
+<script src="/js/lib/moment.js"></script>
+<!--<script src="/js/lib/jquery-2.2.5.min.js"></script>-->
+<script src="/js/lib/jquery-3.2.1.min.js"></script>
+<script src="/js/lib/bootstrap-3.3.7.min.js"></script>
+
+<!-- Helper Functions -->
+<script>
+
+    moment.locale('ar-sa');
+
+    const converter = new showdown.Converter();
+    converter.setFlavor('github');
+
+    function markdownBind($inputElement, $outputElement) {
+        let markdown = $inputElement.val()
+        let html = converter.makeHtml(markdown)
+        $outputElement.html(html)
+        $inputElement.on('keyup', () => {
+            let markdown = $inputElement.val()
+            let html = converter.makeHtml(markdown)
+            $outputElement.html(html)
+        })
+    }
+
+    function textBind($inputElement, $outputElement) {
+        $outputElement.text($inputElement.val())
+        $inputElement.on('keyup', () => {
+            $outputElement.text($inputElement.val())
+        })
+    }
+
+    function populateInputFields(dataObject, fieldsArray) {
+        for(let i = 0; i < fieldsArray.length; ++i) {
+            let fieldName = fieldsArray[i]
+            $('#' + fieldName).val(dataObject[fieldName])
+        }
+    }
+
+    function populateText(dataObject, fieldsArray) {
+        for(let i = 0; i < fieldsArray.length; ++i) {
+            let fieldName = fieldsArray[i]
+            $('#' + fieldName).text(dataObject[fieldName])
+        }
+    }
+
+</script>
