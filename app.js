@@ -71,17 +71,7 @@ app.use(session({
         mongooseConnection: mongoose.connection,
         ttl: 1 * 24 * 60 * 60 // = 14 days. Default 
     })
-}));
-app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  secret: process.env.SESSION_SECRET,
-  store: new MongoStore({
-    url: process.env.MONGODB_URI,
-    autoReconnect: true,
-    clear_interval: 3600
-  })
-}));
+}))
 app.use(flash());
 
 // Passport init
