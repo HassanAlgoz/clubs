@@ -1,20 +1,52 @@
 const router = require('express').Router()
 
+// Models
+const Club = require('../models/club')
+const Event = require('../models/event')
 
-// Homepage
+
+// Homepage ================================================================
 router.get('/', (req, res, next) => res.render('index'))
-// Club 
-router.get('/club/:id', (req, res, next) => res.render('club'))
-router.get('/club-edit/:id', (req, res, next) => res.render('club-edit'))
-router.get('/club-new', (req, res, next) => res.render('club-edit'))
-// Event
-router.get('/event/:id', (req, res, next) => res.render('event'))
-router.get('/event-edit/:id', (req, res, next) => res.render('event-edit'))
-router.get('/event-new', (req, res, next) => res.render('event-edit'))
-// News 
-router.get('/news/:id', (req, res, next) => res.render('news'))
-router.get('/news-edit/:id', (req, res, next) => res.render('news-edit'))
-router.get('/news-new', (req, res, next) => res.render('news-edit'))
+
+
+// Club ====================================================================
+router.get('/club/:clubId', (req, res, next) => {
+    let clubId = req.params.clubId;
+	Club.findById(clubId).then((club) => {
+		res.render('club', {club})
+	}).catch(next)
+})
+router.get('/club-edit/:clubId', (req, res, next) => {
+    let clubId = req.params.clubId;
+	Club.findById(clubId).then((club) => {
+		res.render('club-edit', {club})
+	}).catch(next)
+})
+router.get('/club-new', (req, res, next) => {
+    res.render('club-new')
+})
+
+// Event ===================================================================
+router.get('/club/:clubId/event/:eventId', (req, res, next) => {
+    let eventId = req.params.eventId;
+	Event.findById(eventId).then((event) => {
+		res.render('event', {event})
+	}).catch(next)
+})
+router.get('/club/:clubId/event-edit/:eventId', (req, res, next) => {
+    let eventId = req.params.eventId;
+	Event.findById(eventId).then((event) => {
+		res.render('event-edit', {event})
+	}).catch(next)
+})
+router.get('/club/:clubId/event-new', (req, res, next) => {
+    res.render('event-edit', {event:null})
+})
+
+// Post ====================================================================
+router.get('/posts/:id', (req, res, next) => res.render('posts'))
+router.get('/posts-edit/:id', (req, res, next) => res.render('posts-edit'))
+router.get('/posts-new', (req, res, next) => res.render('posts-edit'))
 
 
 module.exports = router;
@@ -45,7 +77,7 @@ module.exports = router;
 // 		var name = req.params.clubName.replace(/\-/g, ' ');
 
 // 		Club.findOne({ name: new RegExp(name, 'i') })
-// 		.populate('news')
+// 		.populate('posts')
 // 		.populate('events')
 // 		.exec((err, club) => {
 
@@ -98,8 +130,8 @@ module.exports = router;
 
 
 
-// 	// # News
-// 	app.get('/clubs/:clubName/news/:id', function(req, res) {
+// 	// # Post
+// 	app.get('/clubs/:clubName/posts/:id', function(req, res) {
 
 // 		var name = req.params.clubName.replace(/\-/g, ' ');
 
@@ -112,10 +144,10 @@ module.exports = router;
 // 					userRole = req.user.getRole(club);
 // 				}
 
-// 				News.findOne({ _id: req.params.id }).exec(function(err, news) {
+// 				Post.findOne({ _id: req.params.id }).exec(function(err, posts) {
 // 					if (err) console.log(err);
 
-// 					res.render('news', {news, clubName:name, userRole});
+// 					res.render('posts', {posts, clubName:name, userRole});
 // 				});
 
 // 			} else {
@@ -130,7 +162,7 @@ module.exports = router;
 
 
 
-// 	app.get('/clubs/:clubName/news/:id/edit', User.isLoggedIn, function(req, res) {
+// 	app.get('/clubs/:clubName/posts/:id/edit', User.isLoggedIn, function(req, res) {
 
 // 		var name = req.params.clubName.replace(/\-/g, ' ');
 
@@ -146,10 +178,10 @@ module.exports = router;
 // 						userRole = req.user.getRole(club);
 // 					}
 
-// 					News.findOne({ _id: req.params.id }).exec(function(err, news) {
+// 					Post.findOne({ _id: req.params.id }).exec(function(err, posts) {
 // 						if (err) console.log(err);
 
-// 						res.render('news-edit', {news, clubName:name, userRole});
+// 						res.render('posts-edit', {posts, clubName:name, userRole});
 
 // 					});
 
@@ -288,3 +320,4 @@ module.exports = router;
 
 
 // };
+
