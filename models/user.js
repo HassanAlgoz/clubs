@@ -1,146 +1,87 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
+const passportLocalMongoose = require('passport-local-mongoose');
+const Schema = mongoose.Schema;
+
 
 // User Schema
-var userSchema = new mongoose.Schema({
-    name: String,
+const userSchema = new mongoose.Schema({
+    username: String,
     password: String,
     email: { type: String, unique: true, lowercase: true },
     major: { type: String, default: "" },
-    enrollment: { type: String, default: "" },
+    enrollment: { type: Number, default: 2013 },
     memberships: [
-        {
-            club: { type: Schema.Types.ObjectId, ref: 'Club' },
-            role: { type: String, default: "unapproved" },
-            date: { type: Date, default: Date.now }
-        }
+    {
+        club: { type: Schema.Types.ObjectId, ref: 'Club' },
+        role: { type: String, default: "unapproved" },
+        date: { type: Date, default: Date.now }
+    }
     ],
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: Boolean
 }, { timestamps: true });
 
+userSchema.plugin(passportLocalMongoose)
 
 
-userSchema.methods.validPassword = function (password) {
-    return bcrypt.compareSync(password, this.password);
-};
+userSchema.statics.attachRole = function(req, res, next, clubId) {
+    // Attaches 'role' in this club to the 'req.user' object
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+			if (String(req.user.memberships[i].club) === String(clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    next()
+}
 
 
+// Admin
+userSchema.statics.isAdmin = function(req, res, next) {
+    if (req.isAuthenticated() && (typeof req.user.isAdmin !== undefined && req.user.isAdmin === true)) {
+        next()
+    } else {
+        res.sendStatus(403) // Forbidden
+    }
+}
 
-userSchema.statics.encryptPassword = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
-};
+// President
+userSchema.statics.isPresident = function(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'president') {
+        next()
+    } else {
+        res.sendStatus(403) // Forbidden
+    }
+}
+
+// President OR Manager
+userSchema.statics.canManage = function(req, res, next) {
+    if (req.isAuthenticated() && (req.user.role === 'manager' || req.user.role === 'president')) {
+        next()
+    } else {
+        res.sendStatus(403) // Forbidden
+    }
+}
 
 
+// Member
+userSchema.statics.isMember = function(req, res, next) {
+    if (req.isAuthenticated() && (req.user.role === 'member' || req.user.role === 'manager' || req.user.role === 'president')) {
+        next()
+    } else {
+        res.sendStatus(403) // Forbidden
+    }
+}
 
-userSchema.statics.isLoggedIn = function (req, res, next) {
+// Logged in
+userSchema.statics.isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) {
-        next();
+        next()
     } else {
-        res.redirect('/login');
+        res.sendStatus(401) // Unauthorized
     }
-};
-
-
-userSchema.statics.canAdmin = function (req, res, next) {
-    if (req.user.isAdmin === true) {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
-};
-
-
-
-
-
-userSchema.methods.getMembership = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return null;
-    }
-
-    var clubID = club._id;
-    var index = this.findMembershipIndex(club);
-    if (index >= 0) {
-        return this.memberships[index];
-    } else {
-        return null;
-    }
-};
-
-
-
-userSchema.methods.getRole = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return '';
-    }
-
-    var index = this.findMembershipIndex(club);
-    var role = '';
-    if (index >= 0) {
-        role = this.memberships[index].role;
-    }
-    return role;
-
-};
-
-
-
-userSchema.methods.findMembershipIndex = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return -1;
-    }
-    var clubID = club._id;
-    var isFound = false;
-    for (var i = 0; i < this.memberships.length; i++) {
-        if (String(this.memberships[i].club) === String(clubID)) {
-            isFound = true;
-            break;
-        }
-    }
-
-    if (isFound) {
-        return i;
-    } else {
-        return -1;
-    }
-};
-
-
-userSchema.methods.isMember = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return false;
-    }
-    var role = this.getRole(club);
-    return role === 'president' ||
-        role === 'manager' ||
-        role === 'member';
-};
-
-
-userSchema.methods.canManage = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return false;
-    }
-    var role = this.getRole(club);
-    return role === 'president' ||
-        role === 'manager';
-};
-
-
-userSchema.methods.isPresident = function (club) {
-    if (club === undefined) {
-        console.error("ERROR: club is undefined!");
-        return false;
-    }
-    var role = this.getRole(club);
-    return role === 'president';
-};
-
+}
 
 module.exports = mongoose.model('User', userSchema);
