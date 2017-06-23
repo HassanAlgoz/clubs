@@ -93,16 +93,26 @@ app.use((req, res, next) => {
   next();
 })
 // Attach role to req.user
-app.param('clubId', User.attachRole)
+app.use((req, res, next) => {
+    // Attaches 'role' in this club to the 'req.user' object
+    req.clubId = req.params.clubId || req.query.clubId
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+			if (String(req.user.memberships[i].club) === String(req.clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    next()
+})
 
 
 // Routes
-app.use('/api', require('./routes/api-clubs'))
-app.use('/api/clubs/:clubId', require('./routes/api-events'))
-app.use('/api', require('./routes/api-users'))
-// app.use('/api', require('./routes/api-posts'))
-// app.use('/admin', require('./routes/admin'))
-app.use('/', require('./routes/user'))
+app.use('/api/clubs', require('./routes/api-clubs'))
+app.use('/api/events', require('./routes/api-events'))
+app.use('/api/users', require('./routes/api-users'))
+app.use('/auth', require('./routes/auth'))
 app.use('/', require('./routes/index'))
 
 
