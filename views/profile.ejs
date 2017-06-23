@@ -8,11 +8,17 @@
 
 		<h1>Profile</h1>
 		<ul>
-			<li>Name: <%=user.name%></li>
-			<li>Major: <%=user.major%></li>
-			<li>Enrollment date: <%=user.enrollment%></li>
+			<li>Username: <%= profile.username %></li>
+			<li>Major: <%= profile.major %></li>
+			<li>Enrollment date: <%= profile.enrollment %></li>
+			<li>Email: <%= profile.email %></li>
+
+			<% for(let i = 0; i < profile.memberships.length; ++i) { %>
+				<li> <%= memberships[i].role %> in <%= memberships[i].club.name %> Club </li>
+			<% } %>
+			
 		</ul>
-		<a href="/clubs" class="btn btn-default">Index Page</a>
+		<a href="/" class="btn btn-default">Index Page</a>
 
 	</div>
 

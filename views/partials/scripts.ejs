@@ -1,27 +1,34 @@
+<!-- Scripts -->
+<!--<script src="/js/lib/jquery-2.2.5.min.js"></script>-->
+<script src="/js/lib/jquery-3.2.1.min.js"></script>
+<script src="/js/lib/bootstrap-3.3.7.min.js"></script>
 <script src="/js/lib/showdown.min.js"></script>
 <script src="/js/lib/moment.js"></script>
+<script src="/js/navbar.js"></script>
+
 
 <!-- Helper Functions -->
 <script>
 
     console.log('scripts.ejs helper functions loaded')
 
-    // CONSTANTS
-    const PRESIDENT = "president"
-    const MANAGER = "manager"
-    const MEMBER = "member"
-    const UNAPPROVED = "unapproved"
+    // // CONSTANTS
+    // const PRESIDENT = "president"
+    // const MANAGER = "manager"
+    // const MEMBER = "member"
+    // const UNAPPROVED = "unapproved"
+    // const KICKED = "kicked"
 
 
-    const user = $('#user').val()
+    // const user = $('#user').val()
     
-    const userRole = $('#userRole').val()
-    function hasRole() {
-        return userRole === PRESIDENT ||
-        userRole === MANAGER ||
-        userRole === MEMBER ||
-        userRole === UNAPPROVED
-    }
+    // const userRole = $('#userRole').val()
+    // function hasRole() {
+    //     return userRole === PRESIDENT ||
+    //     userRole === MANAGER ||
+    //     userRole === MEMBER ||
+    //     userRole === UNAPPROVED
+    // }
 
 
     moment.locale('ar-sa');
@@ -61,7 +68,12 @@
         }
     }
 
-    // function getParam(name) {
+    function getId(resourceName) {
+        let str = location.pathname.substring(location.pathname.indexOf(resourceName) + `${resourceName}/`.length)
+        return str.substring(0, str.indexOf('/'))
+    }
+
+    // function query(name) {
     //     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     //     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
     //     var results = regex.exec(location.search);

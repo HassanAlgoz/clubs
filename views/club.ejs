@@ -29,7 +29,7 @@
 
 		<div class="row">
 			<div class="col-md-6">
-				<h3 class="text-center">Post</h3>
+				<h3 class="text-center">Posts</h3>
 				<ul class="posts-list">
 					<% for(let i = club.posts.length - 1; i >= 0; i--) { %>
 						<li><a href="<%=club.name.replace(/\s/g, '-')%>/posts/<%= club.posts[i]._id %>"><%= club.posts[i].title %></a></li>
