@@ -1,81 +1,56 @@
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+const router = require('express').Router()
+const passport = require('passport');
 
 // Models
-var Club = require('../models/club');
-var User = require('../models/user');
-
-module.exports = function(app) {
+const Club = require('../models/club');
+const User = require('../models/user');
 
 
-	app.get('/profile/:id', (req, res) => {
+//  Signup ====================================================================
+router.get('/signup', (req, res, next) => res.render('signup'))
+router.post('/signup', (req, res, next) => {
 
-		User.findOne({ _id: req.params.id }).exec((err, user) => {
-			if (err) console.log(err);
+	User.register(new User({
+		username: req.body.username,
+		email: req.body.email,
+		major: req.body.major,
+		enrollment: req.body.enrollment
+	}), req.body.password, function(err, user) {
+        if (err) {
+            return next(err)
+        }
 
-			if (user) {
-				res.render('profile', {user});
-			} else {
-				res.send('error finding user!');
-			}
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
 
-		});
+})
 
-	});
+// Login ====================================================================
+router.get('/login', (req, res, next) => {
+	if (req.user) {
+		res.redirect('/')
+	} else {
+		res.render('login')
+	}
+})
 
-
-	app.get('/signup', (req, res) => {
-		res.render('signup');
-	});
-
-
-	app.post('/signup', (req, res) => {
-
-	  User.findOne({ email: req.body.email }, (err, user) => {
-	  	if (err) console.log(err);
-	  	if (user) {
-	      res.send('Account with that email address already exists!');
-	  	} else {
-	  		new User({
-	      	name: req.body.name,
-	      	email: req.body.email,
-	  			password: User.encryptPassword(req.body.password),
-	  			major: req.body.major,
-	  			enrollment: req.body.enrollment
-      	}).save((err, user) => {
-      		if (err) console.log(err);
-      		if (user) {
-	      		req.logIn(user, (err) => {
-		          if (err) console.log(err);
-		          res.redirect('/');
-		        });
-	      	} else {
-	      		console.log('error while saving user');
-	      	}
-      	});
-	  	}
-	  });
-
-	});
-
-	app.get('/login', function(req, res){
-		if (req.user) return res.redirect('/');
-		res.render('login');
-	});
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
 
 
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
 
-	app.post('/login', passport.authenticate('local.login', {
-		successRedirect: '/clubs',
-		failureRedirect: '/login',
-		failureFlash: false
-	}));
+// Profile ====================================================================
+router.get('/profile/:id', (req, res, next) => {
+	User.findById(req.params.id).then((user) => res.render('profile', {profile}))
+	.catch(next)
+})
 
 
-
-	app.get('/logout', function(req, res){
-		req.logout();
-  	res.redirect('/');
-	});
-
-};
+module.exports = router;
