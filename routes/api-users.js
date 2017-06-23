@@ -17,6 +17,7 @@ router.get('/users/:userId', (req, res, next) => {
 // GET ALL
 router.get('/users', (req, res, next) => {
 
+	// ?clubId
 	if (typeof req.query.clubId !== undefined) {
 		// Get ALL Members of some Club
 		Club.findById(req.query.clubId)
@@ -26,8 +27,7 @@ router.get('/users', (req, res, next) => {
 		}).catch(next)
 	} else {
 		return Promise.all([
-			User.find({})
-				.sort({date: -1}),
+			User.find({}),
 			User.count()
 		]).then(([users, count]) => {
 			res.json({users, count})
@@ -38,17 +38,26 @@ router.get('/users', (req, res, next) => {
 // PUT
 router.put('/users/:userId', User.isPresident, (req, res, next) => {
 
-	let userId = req.params.userId
-	User.findById(userId).then((user) => {
-		user.username = req.body.username;
-		user.email = req.body.email;
-		user.enrollment = req.body.enrollment;
-		user.major = req.body.major;
-		user.setPassword(req.body.password, () => {
-			user.save().then(() => res.sendStatus(204)).catch(next)
+	// ?role
+	if (typeof req.query.role !== undefined && (req.query.role === 'unapproved' || req.query.role === 'member' || req.query.role === 'manager')) {
+		// Set user role in this club
+		User.update({ _id: userId, "memberships.club": clubId }, { $set: {
+			"memberships.$.role": req.query.role
+		}}).then(() => res.sendStatus(204)).catch(next)
+
+	} else {
+		let userId = req.params.userId
+		User.findById(userId).then((user) => {
+			user.username = req.body.username;
+			user.email = req.body.email;
+			user.enrollment = req.body.enrollment;
+			user.major = req.body.major;
+			user.setPassword(req.body.password, () => {
+				user.save().then(() => res.sendStatus(204)).catch(next)
+			})
 		})
-	})
-	.catch(next)
+		.catch(next)
+	}
 });
 
 

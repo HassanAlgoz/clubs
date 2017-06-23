@@ -18,14 +18,24 @@ router.get('/events/:eventId', (req, res, next) => {
 
 // GET ALL
 router.get('/events', (req, res, next) => {
-
-	return Promise.all([
-		Event.find({})
-			.sort({date: -1}),
-		Event.count()
-	]).then(([events, count]) => {
-		res.json({events, count})
-	}).catch(next)
+	
+	// ?clubId
+	if (typeof req.query.clubId !== undefined) {
+		// Get ALL Members of some Club
+		Club.findById(req.query.clubId)
+			.populate('events')
+			.then((club) => {
+			res.json({events: club.events})
+		}).catch(next)
+	} else {
+		return Promise.all([
+			Event.find({})
+				.sort({date: -1}),
+			Event.count()
+		]).then(([events, count]) => {
+			res.json({events, count})
+		}).catch(next)
+	}
 
 });
 

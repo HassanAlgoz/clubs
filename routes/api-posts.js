@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 // Models
-const User = require('../models/user');
+const User = require('../models/user')
 const Club = require('../models/club')
 
 // GET
@@ -17,14 +17,24 @@ router.get('/posts/:postId', (req, res, next) => {
 
 // GET ALL
 router.get('/posts', (req, res, next) => {
-
-	return Promise.all([
-		Post.find({})
-			.sort({date: -1}),
-		Post.count()
-	]).then(([posts, count]) => {
-		res.json({posts, count})
-	}).catch(next)
+	
+	// ?clubId
+	if (typeof req.query.clubId !== undefined) {
+		// Get ALL Members of some Club
+		Club.findById(req.query.clubId)
+			.populate('posts')
+			.then((club) => {
+			res.json({posts: club.posts})
+		}).catch(next)
+	} else {
+		return Promise.all([
+			Post.find({})
+				.sort({date: -1}),
+			Post.count()
+		]).then(([posts, count]) => {
+			res.json({posts, count})
+		}).catch(next)
+	}
 
 });
 
