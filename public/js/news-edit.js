@@ -15,7 +15,7 @@ $(function(){
 
     $.ajax({
       method: method,
-      url: '/api/news/'+id,
+      url: '/api/posts/'+id,
       data: {
         title: $('#input-title').val(),
         body: $('#input-body').val(),
@@ -36,7 +36,7 @@ $(function(){
 
     $.ajax({
       method: 'DELETE',
-      url: '/api/news/'+id,
+      url: '/api/posts/'+id,
       data: {
         clubName: clubName
       },

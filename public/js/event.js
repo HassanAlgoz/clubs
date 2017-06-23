@@ -1,12 +1,10 @@
 /*jslint browser:true*/
 $(function(){
 
-  var id = $('#id').val();
+  var eventId = $('#eventId').val();
 
   // Markdown
-  var converter = new showdown.Converter();
-  let html = converter.makeHtml($('#brief').text());
-  $('#brief').html(html);
+  $('#brief').html(converter.makeHtml($('#brief').text()));
 
   let loggedIn = ($('#user').val().length > 0);
   let userRole = $('#userRole').val();
@@ -28,7 +26,7 @@ $(function(){
     if (loggedIn && (!membersOnly || membersOnly && isMember)) {
       $.ajax({
         method: 'POST',
-        url: '/api/events/'+id+'/promise',
+        url: '/api/events/'+eventId+'/promise',
         data: {
           clubName: clubName
         },
@@ -56,7 +54,7 @@ $(function(){
     if (loggedIn && (isMember && (userRole === 'manager' || userRole === 'president'))) {
       $.ajax({
         method: 'POST',
-        url: '/api/events/'+id+'/close',
+        url: '/api/events/'+eventId+'/close',
         data: {
           clubName: clubName
         },
@@ -78,7 +76,7 @@ $(function(){
     if (loggedIn && (isMember && (userRole === 'manager' || userRole === 'president'))) {
       $.ajax({
         method: 'POST',
-        url: '/api/events/'+id+'/open',
+        url: '/api/events/'+eventId+'/open',
         data: {
           clubName: clubName
         },

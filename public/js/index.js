@@ -4,17 +4,12 @@ $(function(){
         method: 'GET',
         url: '/api/clubs',
         dataType: 'json',
-        success: function(clubs) {
+        success: function(data) {
+            let clubs = data.clubs;
             console.log(clubs);
-            var html = ``;
             for(let i = 0; i < clubs.length; ++i) {
-                html += `
-                    <h3>
-                        <a href="/clubs/${club.name.replace(/\s/g, '-')}">${club.name}</a>
-                    </h3>
-                `;
+                $('#clubs').append(`<div class = "col-md-6"><a href="/club/${clubs[i]._id}">${clubs[i].name}</a></div>`);
             }
-            $('.clubs-list').html(html);
         },
         error: function(error) {
             $('#body').html(`
