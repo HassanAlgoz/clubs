@@ -5,7 +5,7 @@ const User = require('../models/user');
 const Club = require('../models/club')
 
 // GET
-router.get('/users/:userId', (req, res, next) => {
+router.get('/:userId', (req, res, next) => {
 
 	let userId = req.params.userId;
 	User.findById(userId).then((user) => {
@@ -15,12 +15,13 @@ router.get('/users/:userId', (req, res, next) => {
 })
 
 // GET ALL
-router.get('/users', (req, res, next) => {
+router.get('/', (req, res, next) => {
 
-	// ?clubId
-	if (typeof req.query.clubId !== undefined) {
+	console.log('req.clubId', req.clubId)
+
+	if (req.clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.query.clubId)
+		Club.findById(req.clubId)
 			.populate('members')
 			.then((club) => {
 			res.json({users: club.members})
@@ -36,12 +37,12 @@ router.get('/users', (req, res, next) => {
 });
 
 // PUT
-router.put('/users/:userId', User.isPresident, (req, res, next) => {
+router.put('/:userId', User.isPresident, (req, res, next) => {
 
 	// ?role
-	if (typeof req.query.role !== undefined && (req.query.role === 'unapproved' || req.query.role === 'member' || req.query.role === 'manager')) {
+	if (req.query.role && (req.query.role === 'unapproved' || req.query.role === 'member' || req.query.role === 'manager')) {
 		// Set user role in this club
-		User.update({ _id: userId, "memberships.club": clubId }, { $set: {
+		User.update({ _id: userId, "memberships.club": req.clubId }, { $set: {
 			"memberships.$.role": req.query.role
 		}}).then(() => res.sendStatus(204)).catch(next)
 
@@ -62,7 +63,7 @@ router.put('/users/:userId', User.isPresident, (req, res, next) => {
 
 
 // DELETE
-router.delete('/users/:userId', User.isPresident, (req, res, next) => {
+router.delete('/:userId', User.isPresident, (req, res, next) => {
 
 	let userId = req.params.userId
 	User.findByIdAndRemove(userId).then(() => {

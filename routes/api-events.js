@@ -6,7 +6,7 @@ const User = require('../models/user');
 const Club = require('../models/club')
 
 // GET
-router.get('/events/:eventId', (req, res, next) => {
+router.get('/:eventId', (req, res, next) => {
 
 	let eventId = req.params.eventId;
 	Event.findById(eventId).then((event) => {
@@ -17,12 +17,11 @@ router.get('/events/:eventId', (req, res, next) => {
 
 
 // GET ALL
-router.get('/events', (req, res, next) => {
+router.get('/', (req, res, next) => {
 	
-	// ?clubId
-	if (typeof req.query.clubId !== undefined) {
+	if (req.clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.query.clubId)
+		Club.findById(req.clubId)
 			.populate('events')
 			.then((club) => {
 			res.json({events: club.events})
@@ -41,7 +40,7 @@ router.get('/events', (req, res, next) => {
 
 
 // POST
-router.post('/events', User.canManage, (req, res, next) => {
+router.post('/', User.canManage, (req, res, next) => {
 
 	Promise.all[new Event({
 		title: req.body.title,
@@ -54,7 +53,7 @@ router.post('/events', User.canManage, (req, res, next) => {
 		membersOnly: (req.body.membersOnly == 'true') ? true : false,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).save(),
-	Club.findById(clubId)
+	Club.findById(req.clubId)
 	]
 	.then(([event, club]) => {
 		club.events.push(event._id)
@@ -68,7 +67,7 @@ router.post('/events', User.canManage, (req, res, next) => {
 
 
 // PUT
-router.put('/events/:eventId', User.canManage, (req, res, next) => {
+router.put('/:eventId', User.canManage, (req, res, next) => {
 	let eventId = req.params.eventId
 	console.log(req.body)
 	Event.findByIdAndUpdate(eventId, {
@@ -88,7 +87,7 @@ router.put('/events/:eventId', User.canManage, (req, res, next) => {
 
 
 // DELETE
-router.delete('/events/:eventId', User.canManage, (req, res, next) => {
+router.delete('/:eventId', User.canManage, (req, res, next) => {
 
 
 	let eventId = req.params.eventId
@@ -104,7 +103,7 @@ router.delete('/events/:eventId', User.canManage, (req, res, next) => {
 
 
 // Close an event
-router.post('/events/:eventId/close', User.canManage, (req, res, next) => {
+router.post('/:eventId/close', User.canManage, (req, res, next) => {
 	
 	let eventId = req.params.eventId
 	Event.findByIdAndUpdate(eventId, {condition: 'closed'})
@@ -124,7 +123,7 @@ router.post('/events/:eventId/open', User.canManage, (req, res, next) => {
 
 
 // Promise to attend
-router.post('/events/:eventId/promise', (req, res, next) => {
+router.post('/:eventId/promise', (req, res, next) => {
 	let eventId = req.params.eventId
 
 	Event.findById(eventId).then((event) => {
@@ -154,7 +153,7 @@ router.post('/events/:eventId/promise', (req, res, next) => {
 
 
 // Update attendance
-router.put('/events/:eventId/attendance', User.canManage, (req, res, next) => {
+router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
 
 	let updatedUsers = req.body.updatedUsers.split(",");
 	let updatedAttendance = req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false);

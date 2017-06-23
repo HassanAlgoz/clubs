@@ -5,7 +5,7 @@ const User = require('../models/user')
 const Club = require('../models/club')
 
 // GET
-router.get('/posts/:postId', (req, res, next) => {
+router.get('/:postId', (req, res, next) => {
 
 	let postId = req.params.postId;
 	Post.findById(postId).then((post) => {
@@ -16,12 +16,11 @@ router.get('/posts/:postId', (req, res, next) => {
 
 
 // GET ALL
-router.get('/posts', (req, res, next) => {
+router.get('/', (req, res, next) => {
 	
-	// ?clubId
-	if (typeof req.query.clubId !== undefined) {
+	if (req.clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.query.clubId)
+		Club.findById(req.clubId)
 			.populate('posts')
 			.then((club) => {
 			res.json({posts: club.posts})
@@ -40,7 +39,7 @@ router.get('/posts', (req, res, next) => {
 
 
 // POST
-router.post('/posts', User.canManage, (req, res, next) => {
+router.post('/', User.canManage, (req, res, next) => {
 
 	Promise.all[new Post({
 		title: req.body.title,
@@ -48,7 +47,7 @@ router.post('/posts', User.canManage, (req, res, next) => {
 		lastEditBy: req.user._id,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).save(),
-	Club.findById(clubId)
+	Club.findById(req.clubId)
 	]
 	.then(([post, club]) => {
 		club.posts.push(post._id)
@@ -62,7 +61,7 @@ router.post('/posts', User.canManage, (req, res, next) => {
 
 
 // PUT
-router.put('/posts/:postId', User.canManage, (req, res, next) => {
+router.put('/:postId', User.canManage, (req, res, next) => {
 	let postId = req.params.postId
 	console.log(req.body)
 	Post.findByIdAndUpdate(postId, {
@@ -78,7 +77,7 @@ router.put('/posts/:postId', User.canManage, (req, res, next) => {
 
 
 // DELETE
-router.delete('/posts/:postId', User.canManage, (req, res, next) => {
+router.delete('/:postId', User.canManage, (req, res, next) => {
 
 	let postId = req.params.postId
 	Promise.all([

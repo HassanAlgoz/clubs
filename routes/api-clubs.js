@@ -6,7 +6,7 @@ const User = require('../models/user');
 
 
 // GET
-router.get('/clubs/:clubId', (req, res, next) => {
+router.get('/:clubId', (req, res, next) => {
 
 	let clubId = req.params.clubId;
 	Club.findById(clubId).then((club) => {
@@ -17,7 +17,7 @@ router.get('/clubs/:clubId', (req, res, next) => {
 
 
 // GET ALL
-router.get('/clubs', (req, res, next) => {
+router.get('/', (req, res, next) => {
 
 	return Promise.all([
 		Club.find({})
@@ -31,7 +31,7 @@ router.get('/clubs', (req, res, next) => {
 
 
 // POST
-router.post('/clubs', User.canManage, (req, res, next) => {
+router.post('/', User.isAdmin, (req, res, next) => {
 
 	console.log(req.body);
 
@@ -45,7 +45,7 @@ router.post('/clubs', User.canManage, (req, res, next) => {
 	User.findById(req.body.clubPresidentId).then((user) => {
 		club.members.push(user)
 		user.memberships.push({
-			club: club,
+			club: club._id,
 			role: "president"
 		})
 		return Promise.all([user.save(), club.save()])
@@ -59,7 +59,8 @@ router.post('/clubs', User.canManage, (req, res, next) => {
 
 
 // PUT
-router.put('/clubs/:clubId', User.canManage, (req, res, next) => {
+router.put('/:clubId', User.canManage, (req, res, next) => {
+	// NOTE: User.canManage doesn't include Admin
 	let clubId = req.params.clubId
 	console.log(req.body)
 	Club.findByIdAndUpdate(clubId, req.body).then(() => {
@@ -69,7 +70,7 @@ router.put('/clubs/:clubId', User.canManage, (req, res, next) => {
 
 
 // DELETE
-router.delete('/clubs/:clubId', User.canManage, (req, res, next) => {
+router.delete('/:clubId', User.isAdmin, (req, res, next) => {
 	let clubId = req.params.clubId
 	Club.findByIdAndRemove(clubId).then(() => {
 		res.sendStatus(204) // Successful and no content returned.
@@ -79,13 +80,13 @@ router.delete('/clubs/:clubId', User.canManage, (req, res, next) => {
 
 
 // User Joins club ==============================================================
-router.get('/clubs/:clubId/join', User.isLoggedIn, (req, res, next) => {
+router.put('/:clubId/join', User.isLoggedIn, (req, res, next) => {
 	
 	let clubId = req.params.clubId
 	Club.findById(clubId).then((club) => {
 		// Check if user has no membership in this club
 		// We do that by checking if no role was attached to req.user
-		if (typeof req.user.role === undefined) {
+		if (!req.user.role) {
 			club.members.push(req.user)
 			req.user.memberships.push({club})
 			Promise.all([req.user.save(), club.save()]).then(() => res.sendStatus(201))
@@ -99,16 +100,18 @@ router.get('/clubs/:clubId/join', User.isLoggedIn, (req, res, next) => {
 })
 
 // Kick User from Club ==============================================================
-// app.get('/clubs/:clubId/kick/:userId', User.isPresident, (req, res, next) => {
+router.put('/:clubId/kick/:userId', User.isPresident, (req, res, next) => {
 	
-// 	let clubId = req.params.clubId
-// 	let userId = req.params.userId
-// 	Promise.all[Club.findById(clubId), User.findById(userId)].then(([club, user]) => {
-// 		// Check if user is already a member of this club
-// 	})
-// 	.catch(next)
+	let clubId = req.params.clubId
+	let userId = req.params.userId
+	User.findOneAndUpdate({ _id: userId, "memberships.club": clubId }, { $set: {
+		"memberships.$.role": 'kicked'
+	}}).then((user) => {
+		res.sendStatus(204) // Success but no content returned
+	})
+	.catch(next)
 
-// })
+})
 
 
 
