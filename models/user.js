@@ -24,23 +24,10 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(passportLocalMongoose)
 
 
-userSchema.statics.attachRole = function(req, res, next, clubId) {
-    // Attaches 'role' in this club to the 'req.user' object
-	if (req.user) {
-		for (let i = 0; i < req.user.memberships.length; i++) {
-			if (String(req.user.memberships[i].club) === String(clubId)) {
-				req.user.role = req.user.memberships[i].role
-				break;
-			}
-		}
-	}
-    next()
-}
-
 
 // Admin
 userSchema.statics.isAdmin = function(req, res, next) {
-    if (req.isAuthenticated() && (typeof req.user.isAdmin !== undefined && req.user.isAdmin === true)) {
+    if (req.isAuthenticated() && (req.user.isAdmin && req.user.isAdmin === true)) {
         next()
     } else {
         res.sendStatus(403) // Forbidden
