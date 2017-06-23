@@ -19,7 +19,6 @@ const expressValidator = require('express-validator');
 
 // Setup
 Promise.promisifyAll(require("mongoose"));
-require('./config/passport');
 dotenv.load({ path: '.env' });
 
 // Create Express Server
@@ -77,6 +76,13 @@ app.use(flash());
 // Passport init
 app.use(passport.initialize());
 app.use(passport.session());
+// Passport Config
+let User = require('./models/user')
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 // app.use(lusca.xframe('SAMEORIGIN'));
 // app.use(lusca.xssProtection(true));
 // Global Vars
@@ -84,15 +90,28 @@ app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 })
+// Attach role to req.user
+app.param('clubId', (req, res, next, clubId) => {
+    // Attaches 'role' in this club to the 'req.user' object
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+			if (String(req.user.memberships[i].club) === String(clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    next()
+})
 
 
 // Routes
-app.use('/api', require('./routes/api-events'))
 app.use('/api', require('./routes/api-clubs'))
-// app.use('/api', require('./routes/api-news'))
-// app.use('/api', require('./routes/api-users'))
+app.use('/api/clubs/:clubId', require('./routes/api-events'))
+app.use('/api', require('./routes/api-users'))
+// app.use('/api', require('./routes/api-posts'))
 // app.use('/admin', require('./routes/admin'))
-// app.use('/user', require('./routes/user'))
+app.use('/', require('./routes/user'))
 app.use('/', require('./routes/index'))
 
 
