@@ -22,13 +22,13 @@
 					<li><a id="username"><%=user.name%></a></li>
 
 
-					<% if (userRole === 'president' || userRole == 'manager') {%>
+					<% if (user.role === 'president' || user.role == 'manager') {%>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> Manage <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 								<li><a href="#" id="nav-events">Events</a></li>
-								<li><a href="#" id="nav-news"">News</a></li>
-							<% if (userRole === 'president') {%>
+								<li><a href="#" id="nav-posts"">Post</a></li>
+							<% if (user.role === 'president') {%>
 									<li><a href="#" id="nav-users">Users</a></li>
 									<li><a href="#" id="nav-club">Club</a></li>
 							<% } %>
@@ -36,12 +36,12 @@
 					</li>
 					<%}%>
 
-					<% if (userRole === 'manager' || userRole === 'president') {%>
+					<% if (user.role === 'manager' || user.role === 'president') {%>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> New <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#" id="nav-post-event">Post Event</a></li>
-							<li><a href="#" id="nav-post-news">Post News</a></li>
+							<li><a href="#" id="nav-post-posts">Post Post</a></li>
 							<li><a href="#" id="nav-email">Send Email</a></li>
 						</ul>
 					</li>

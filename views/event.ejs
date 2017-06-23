@@ -7,16 +7,16 @@
 	<% include ./partials/navbar.ejs %>
 	
 	<div class="container">
-		<input type="hidden" id="user" <%if (user) {%> value="x" <%}%>>
+		<input type="hidden" id="user" <%if (user) {%> value="user" <%}%>>
 		<input type="hidden" id="userRole" value="<%=userRole%>">
-		<input type="hidden" id="id" value="<%=event.id%>">
+		<input type="hidden" id="eventId" value="<%=event._id%>">
 		<input type="hidden" id="clubName" value="<%=clubName%>">
 		<input type="hidden" id="membersOnly" value="<%=event.membersOnly%>">
-		<h1 id="title"><%=event.title%></h1>
-		<h6>posted <span id="posted"><%=event.publish_date%></span></h6>
+		<h1 id="title"><%= event.title %></h1>
+		<h6>posted <span id="posted"><%= event.publish_date %></span></h6>
 		<ul>
-			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"><%=event.date%></span></li>
-			<li><i class="glyphicon glyphicon-time"></i> <%=event.time%></li>
+			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"><%= event.date %></span></li>
+			<li><i class="glyphicon glyphicon-time"></i> <%= event.time %></li>
 			<li><i class="glyphicon glyphicon-map-marker"></i> <%=event.location%></li>
 			<% if (event.membersOnly) { %>
 			<li><i class="text-danger">This event is for members only</i></li>

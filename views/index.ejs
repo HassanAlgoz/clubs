@@ -1,5 +1,5 @@
 	<% include ./partials/head.ejs %>
-	<title>Club</title>
+	<title>Homepage</title>
 	<link rel="stylesheet" href="/css/index.css">
 
 </head>
@@ -40,12 +40,12 @@
 	</nav>
 
 	<div class="container">
-		<!-- If (isAdmin) { -->
+		<% if (user && user.isAdmin) { %>
 			<div class="row text-center">
-			<a id="new-club" href="/clubs/create/club" class="btn btn-xs btn-default">Create New Club</a>
-		<!-- } -->
+			<a id="new-club" href="/club-new" class="btn btn-xs btn-default">Create New Club</a>
+		<% } %>
 		<h1 id="main" class="text-center">Here are all the clubs</h1>
-		<div class="clubs-list text-center">
+		<div id="clubs" class="row">
 
 		</div>
 	</div>

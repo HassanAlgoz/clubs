@@ -1,0 +1,7 @@
+<% if (user) { %>
+    <input id="user" value="<%= user %>" type="hidden">
+    <input id="userRole" value="<%= user.role %>" type="hidden">
+<% } else { %>
+    <input id="user" value="" type="hidden">
+    <input id="userRole" value="" type="hidden">
+<% } %>

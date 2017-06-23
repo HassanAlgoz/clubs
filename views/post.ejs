@@ -1,0 +1,18 @@
+	<% include ./partials/head.ejs %>
+	<title>Post</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+
+</head>
+<body>
+	<% include ./partials/navbar.ejs %>
+	<div class="container">
+		<h1 id="title"><%= posts.title %></h1>
+		<h6>Posted <span id="posted"><%=posts.publish_date%></span></h6>
+		<div id="description"><%= posts.body %></div>
+	</div>
+
+	<% include ./partials/footer.ejs %>
+	<% include ./partials/scripts.ejs %>
+	<script src="/js/posts.js"></script>
+</body>
+</html>

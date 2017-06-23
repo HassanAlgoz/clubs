@@ -1,11 +1,11 @@
 
-	<% include head.ejs %>
+	<% include ./partials/head.ejs %>
 	<title>Create New Club</title>
 	<!-- <link rel="stylesheet" href="/css/index.css"> -->
 	
 </head>
 <body>
-	<% include navbar.ejs %>
+	
 	<div class="container">
 		<h1>Create New Club</h1>
 		<div class="form-group">
@@ -18,8 +18,8 @@
         <a href="/admin/club/delete">Or delete a club</a>
 	</div>
 
-	<% include footer.ejs %>
-	<% include scripts.ejs %>
+	<% include ./partials/footer.ejs %>
+	<% include ./partials/scripts.ejs %>
 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
 	<script src="/js/club-create.js"></script>
 </body>

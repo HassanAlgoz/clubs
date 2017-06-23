@@ -1,0 +1,31 @@
+	<% include ./partials/head.ejs %>
+	<title>Post</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+
+</head>
+<body>
+	<% include ./partials/navbar.ejs %>
+	<div class="container">
+		<input type="hidden" id="clubName" value="<%=clubName%>">
+		<input type="hidden" id="id" <% if (posts) {%> value="<%=posts._id%>" <%}%>>
+		<h1>Post</h1>
+		<h2 id="title"></h2>
+		<div id="body"></div>
+
+		<div class="form-group">
+			<input id="input-title" class="form-control" type="text" placeholder="Event Title.." <%if (posts){%> value="<%= posts.title %>"<%}%> required>
+		</div>
+		<div class="form-group">
+			<textarea id="input-body" class="form-control" placeholder="Briefing.." required><%if (posts){%><%= posts.body %><%}%></textarea>
+		</div>
+		<button id="btn-submit" class="btn btn-success">Submit</button>
+		<button id="btn-delete" class="btn btn-danger">Delete</button>
+
+	</div>
+
+	<% include ./partials/footer.ejs %>
+	<% include ./partials/scripts.ejs %>
+	<script src="/js/moment.js"></script>
+	<script src="/js/posts-edit.js"></script>
+</body>
+</html>

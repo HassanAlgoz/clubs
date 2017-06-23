@@ -1,0 +1,42 @@
+	<% include ./partials/head.ejs %>
+	<title>Profile Edit</title>
+	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+	
+</head>
+<body>
+	<% include ./partials/navbar.ejs %>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4">
+				<h1>Edit Profile Information</h1>
+				<form method="PUT" action="/api/users/<%=user._id%>">
+					<div class="form-group">
+						<input type="text" name='username' value="<%= user.username %>" placeholder='Username' class="form-control" maxlength="25" required autofocus>
+					</div>
+					<div class="form-group">
+						<input type="email" name='email' value="<%= user.email %>" placeholder='Email' class="form-control" required>
+					</div>
+					<div class="form-group">
+						<input type="password" name='password' value="" placeholder='Password' class="form-control" required>
+					</div>
+					<div class="form-group">
+						<input type="text" name='major' value="<%= user.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required autofocus>
+					</div>
+					<div class="form-group">
+						<label for="enrollment">Date of enrollment</label>
+						<select name="enrollment" id="enrollment">
+							<% for(var i=0; i<8; i++) { %>
+							<option value="<%= new Date(user.enrollment).getFullYear() - i %>"><%= new Date(user.enrollment).getFullYear() - i %></option>
+							<%}%>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-success">Submit Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<% include ./partials/footer.ejs %>
+	<% include ./partials/scripts.ejs %>
+</body>
+</html>
