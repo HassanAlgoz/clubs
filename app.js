@@ -17,6 +17,9 @@ const dotenv = require('dotenv');
 const expressValidator = require('express-validator');
 // const lusca = require('lusca'); // security middleware
 
+// Models
+const User = require('./models/user')
+
 // Setup
 Promise.promisifyAll(require("mongoose"));
 dotenv.load({ path: '.env' });
@@ -77,7 +80,6 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 // Passport Config
-let User = require('./models/user')
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -91,18 +93,7 @@ app.use((req, res, next) => {
   next();
 })
 // Attach role to req.user
-app.param('clubId', (req, res, next, clubId) => {
-    // Attaches 'role' in this club to the 'req.user' object
-	if (req.user) {
-		for (let i = 0; i < req.user.memberships.length; i++) {
-			if (String(req.user.memberships[i].club) === String(clubId)) {
-				req.user.role = req.user.memberships[i].role
-				break;
-			}
-		}
-	}
-    next()
-})
+app.param('clubId', User.attachRole)
 
 
 // Routes
