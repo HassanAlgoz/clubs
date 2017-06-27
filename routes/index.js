@@ -6,6 +6,25 @@ const Event = require('../models/event')
 const Post = require('../models/post')
 const User = require('../models/user')
 
+// Attach 'role' in this club to the 'req.user' object
+router.param('clubId', (req, res, next, clubId) => {
+    clubId = req.params.clubId
+    // console.log('clubId is', clubId)
+    // console.log('req.params.clubId is', req.params.clubId)
+    // console.log('req.query.clubId is', req.query.clubId)
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+            console.log(String(req.user.memberships[i].club), String(clubId))
+			if (String(req.user.memberships[i].club) === String(clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    console.log('user.role =', req.user.role)
+    next()
+})
+
 
 // Homepage ================================================================
 router.get('/', (req, res, next) => res.render('index'))
@@ -70,11 +89,11 @@ router.get('/profile', (req, res, next) => {
 		.populate('memberships.club')
 		.then((user) => res.render('profile', {
 		profile: {
-			username: req.user.username,
-			email: req.user.email,
-			major: req.user.major,
-			enrollment: req.user.enrollment,
-			memberships: req.user.memberships
+			username: user.username,
+			email: user.email,
+			major: user.major,
+			enrollment: user.enrollment,
+			memberships: user.memberships
 		}
 	})).catch(next)
 })
