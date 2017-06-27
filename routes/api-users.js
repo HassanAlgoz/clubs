@@ -17,11 +17,11 @@ router.get('/:userId', (req, res, next) => {
 // GET ALL
 router.get('/', (req, res, next) => {
 
-	console.log('req.clubId', req.clubId)
+	console.log('req.query.clubId = ', req.query.clubId)
 
-	if (req.clubId) {
+	if (req.query.clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.clubId)
+		Club.findById(req.query.clubId)
 			.populate('members')
 			.then((club) => {
 			res.json({users: club.members})
@@ -42,7 +42,7 @@ router.put('/:userId', User.isPresident, (req, res, next) => {
 	// ?role
 	if (req.query.role && (req.query.role === 'unapproved' || req.query.role === 'member' || req.query.role === 'manager')) {
 		// Set user role in this club
-		User.update({ _id: userId, "memberships.club": req.clubId }, { $set: {
+		User.update({ _id: userId, "memberships.club": req.query.clubId }, { $set: {
 			"memberships.$.role": req.query.role
 		}}).then(() => res.sendStatus(204)).catch(next)
 

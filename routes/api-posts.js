@@ -3,6 +3,7 @@ const router = require('express').Router();
 // Models
 const User = require('../models/user')
 const Club = require('../models/club')
+const Post = require('../models/post')
 
 // GET
 router.get('/:postId', (req, res, next) => {

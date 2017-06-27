@@ -19,9 +19,9 @@ router.get('/:eventId', (req, res, next) => {
 // GET ALL
 router.get('/', (req, res, next) => {
 	
-	if (req.clubId) {
+	if (req.query.clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.clubId)
+		Club.findById(req.query.clubId)
 			.populate('events')
 			.then((club) => {
 			res.json({events: club.events})
@@ -53,7 +53,7 @@ router.post('/', User.canManage, (req, res, next) => {
 		membersOnly: (req.body.membersOnly == 'true') ? true : false,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).save(),
-	Club.findById(req.clubId)
+	Club.findById(req.query.clubId)
 	]
 	.then(([event, club]) => {
 		club.events.push(event._id)
