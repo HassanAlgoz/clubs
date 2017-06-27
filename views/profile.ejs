@@ -1,6 +1,6 @@
 	<% include ./partials/head.ejs %>
 	<title>Profile</title>
-	<!-- <link rel="stylesheet" href="/css/index.css"> -->
+	<!-- <link rel="stylesheet" href="/css/profile.css"> -->
 	
 </head>
 <body>
@@ -14,7 +14,7 @@
 			<li>Email: <%= profile.email %></li>
 
 			<% for(let i = 0; i < profile.memberships.length; ++i) { %>
-				<li> <%= memberships[i].role %> in <%= memberships[i].club.name %> Club </li>
+				<li> <%= profile.memberships[i].role %> in <%= profile.memberships[i].club.name %> Club </li>
 			<% } %>
 			
 		</ul>
