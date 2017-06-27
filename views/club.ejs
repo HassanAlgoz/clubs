@@ -5,7 +5,7 @@
 </head>
 <body>
 	<% include ./partials/data.ejs %>
-	<%- include('partials/navbar'); %>
+	<% include ./partials/navbar.ejs %>
 	<div class="container-fluid" id="title">
 		<div class="container">
 			<div class="row">
@@ -17,13 +17,14 @@
 	</div>
 
 	<div class="container">
-		<input type="hidden" id="user" <%if (user) {%> value="user" <%}%>>
-
 		<img id="logo" src="<%=club.logo%>" class="img-responsive center-block" alt="Club Logo">
 		<h2>Description</h2>
 		<div id="description"><%= club.description %></div>
 
-		<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i> Join Club</button>
+		<% if (!user || !user.role) { %>
+			<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i>Join Club</button>
+		<% } %>
+		
 		
 		<hr>
 
