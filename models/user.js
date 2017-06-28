@@ -24,6 +24,31 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(passportLocalMongoose)
 
 
+userSchema.statics.getRoleFromParam = function(req, res, next, clubId) {
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+			if (String(req.user.memberships[i].club) === String(clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    next()
+}
+
+userSchema.statics.getRoleFromQuery = function(req, res, next) {
+    let clubId = req.query.clubId
+	if (req.user) {
+		for (let i = 0; i < req.user.memberships.length; i++) {
+			if (String(req.user.memberships[i].club) === String(clubId)) {
+				req.user.role = req.user.memberships[i].role
+				break;
+			}
+		}
+	}
+    next()
+}
+    
 
 // Admin
 userSchema.statics.isAdmin = function(req, res, next) {
