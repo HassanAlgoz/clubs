@@ -4,7 +4,6 @@
   
 </head>
 <body>
-  <input type="hidden" id="clubName" value="<%=clubName%>">
   <% include ./partials/navbar.ejs %>
   <div class="container">
    <div class="row">
@@ -41,18 +40,7 @@
             </thead>
             <tbody>
               
-              <% for(var i=0; i<events.length; i++) {%>
-              <tr>
-                <td align="center">
-                  <a href="/clubs/<%=clubName.replace(/\s/g, '-')%>/events/<%=events[i]._id%>/edit" class="btn btn-default btn-edit"><em class="fa fa-pencil"></em></a>
-                </td>
-                <td class="hidden-xs"><%=events[i]._id%></td>
-                <td><%=events[i].title%></td>
-                <td><%=events[i].publish_date%></td>
-                <td align="center"><%=events[i].promisers.length%></td>
-                <td align="center"><%=events[i].condition%></td>
-              </tr>
-              <%}%>
+              
             </tbody>
           </table>
           
@@ -63,5 +51,6 @@
 </div>
 <% include ./partials/scripts.ejs %>
 <% include ./partials/footer.ejs %>
+<script src="/js/manage-events.js"></script>
 </body>
 </html>

@@ -4,45 +4,41 @@
 
 </head>
 <body>
-	<% include ./partials/data.ejs %>
+	<script>
+		const club = <%- JSON.stringify(club) %>
+		const user = <%- JSON.stringify(user) %>
+	</script>
 	<% include ./partials/navbar.ejs %>
 	<div class="container-fluid" id="title">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-12">
-					<h1><%= club.name %> <span id="members"><%=club.members.length%> members</span></h1>
+					<h1 id="name"></h1>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="container">
+	<div class="container" id="section1">
 		<img id="logo" src="<%=club.logo%>" class="img-responsive center-block" alt="Club Logo">
 		<h2>Description</h2>
-		<div id="description"><%= club.description %></div>
+		<div id="description"></div>
 
-		<% if (!user || !user.role) { %>
-			<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i>Join Club</button>
-		<% } %>
-		
+		<div id="join"></div>
 		
 		<hr>
 
 		<div class="row">
 			<div class="col-md-6">
 				<h3 class="text-center">Posts</h3>
-				<ul class="posts-list">
-					<% for(let i = club.posts.length - 1; i >= 0; i--) { %>
-						<li><a href="<%=club.name.replace(/\s/g, '-')%>/posts/<%= club.posts[i]._id %>"><%= club.posts[i].title %></a></li>
-					<% } %>
+				<ul id="posts-list">
+					
 				</ul>
 			</div>
 			<div class="col-md-6">
 				<h3 class="text-center">Events</h3>
-				<ul class="events-list">
-					<% for(let i = club.events.length - 1; i >= 0; i--) {%>
-						<li><a href="<%=club.name.replace(/\s/g, '-')%>/events/<%= club.events[i]._id %>"><%= club.events[i].title %></a></li>
-					<%}%>
+				<ul id="events-list">
+					
 				</ul>
 			</div>
 		</div>

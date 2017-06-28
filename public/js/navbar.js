@@ -1,13 +1,15 @@
 /* jshint browser:true */
 $(function(){
 
-	let clubId = getId('clubs')
+	console.log('navbar.js loaded')
 
-	$('#nav-users').attr('href', `/clubs/${clubId}/manage/users`);
-	$('#nav-posts').attr('href', `/clubs/${clubId}/manage/posts`);
-	$('#nav-events').attr('href', `/clubs/${clubId}/manage/events`);
-	$('#nav-club').attr('href', `/clubs/${clubId}/edit`);
-	$('#nav-post-posts').attr('href', `/clubs/${clubId}/post-new`);
-	$('#nav-post-event').attr('href', `/clubs/${clubId}/event-new`);
+	let clubId = getId('club')
+
+	$('#nav-manage-users').attr('href', `/club/${clubId}/manage/users`);
+	$('#nav-manage-posts').attr('href', `/club/${clubId}/manage/posts`);
+	$('#nav-manage-events').attr('href', `/club/${clubId}/manage/events`);
+	$('#nav-club').attr('href', `/club/${clubId}/edit`);
+	$('#nav-new-post').attr('href', `/club/${clubId}/post-new`);
+	$('#nav-new-event').attr('href', `/club/${clubId}/event-new`);
 
 });

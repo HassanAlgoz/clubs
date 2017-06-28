@@ -1,78 +1,81 @@
 $(function(){
+    
+    var converter = new showdown.Converter();
+    
+    const eventId = $('#eventId').val()
+    const clubId = getId('club')
 
-  var id = $('#id').val();
-  var clubName = $('#clubName').val();
-  var converter = new showdown.Converter();
+    console.log('eventId', eventId)
+    console.log('clubId', clubId)
 
-  let method = 'PUT';
-  if (id === '') {
-    method = 'POST';
-    $('#btn-delete').remove();
-  }
+    // Bind input to output preview
+    markdownBind($('#brief'), $('#preview-brief'))
+    textBind($('#title'), $('#preview-title'))
+    
 
-  $("#btn-submit").on('click', function(e) {
-    e.preventDefault();
+    if (eventId == "") {
+            $("#btn-create-event").on('click', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                method: 'POST',
+                url: `/api/events?clubId=${clubId}`,
+                data: {
+                    title: $('#title').val(),
+                    brief: $('#brief').val(),
+                    date: $('#date').val(),
+                    time: $('#time').val(),
+                    location: $('#location').val(),
+                    membersOnly: document.getElementById('membersOnly').checked,
+                    sentAsEmail: document.getElementById('sentAsEmail').checked
+                },
+                success: function(data) {
+                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+        })
 
-    $.ajax({
-      method: method,
-      url: '/api/events/'+id,
-      data: {
-        title: $('#input-title').val(),
-        brief: $('#input-brief').val(),
-        date: $('#input-date').val(),
-        time: $('#input-time').val(),
-        location: $('#input-location').val(),
-        membersOnly: document.getElementById('input-membersOnly').checked,
-        clubName: clubName
-      },
-      success: function(data) {
-        location.href = '/clubs/'+clubName.replace(/\s/g, '-');
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
+    } else {
+        $("#btn-submit-edit").on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                method: 'PUT',
+                url: `/api/events/${eventId}?clubId=${clubId}`,
+                data: {
+                    title: $('#title').val(),
+                    brief: $('#brief').val(),
+                    date: $('#date').val(),
+                    time: $('#time').val(),
+                    location: $('#location').val(),
+                    membersOnly: document.getElementById('membersOnly').checked,
+                    sentAsEmail: document.getElementById('sentAsEmail').checked
+                },
+                success: function(data) {
+                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+        })
 
-  });
-
-
-  $("#btn-delete").on('click', function(e) {
-    e.preventDefault();
-
-    $.ajax({
-      method: 'DELETE',
-      url: '/api/events/'+id,
-      data: {
-        clubName: clubName
-      },
-      success: function(data) {
-        location.href = '/clubs/'+clubName.replace(/\s/g, '-');;
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
-  });
-
-  
-  // Markdown
-  let html;
-
-  html = converter.makeHtml($('#input-brief').val());
-  $('#brief').html(html);
-
-  html = converter.makeHtml($('#input-title').val());
-  $('#title').html(html);
-
-  $('#input-brief').on('keyup', function() {
-    let html = converter.makeHtml($('#input-brief').val());
-    $('#brief').html(html);
-  });
-
-  $('#input-title').on('keyup', function() {
-    let html = converter.makeHtml($('#input-title').val());
-    $('#title').html(html);
-  });
-
+        $("#btn-delete").on('click', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                method: 'DELETE',
+                url: `/api/events/${eventId}?clubId=${clubId}`,
+                success: function(data) {
+                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');;
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+        })
+    }
 });
 

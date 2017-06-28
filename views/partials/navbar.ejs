@@ -7,20 +7,24 @@
             <li><a id="user-profile" href="/profile">Profile</a></li>
             <li><a id="user-logout" href="/auth/logout">Logout</a></li>
             <% if (user.role === 'president') { %>
-                <li><a id="manage-users" href="#">Manage Users</a></li>
-            <% } else if (user.role && (user.role === 'manager' || user.role === 'president')) { %>
-                <li><a id="new-post" href="#">New Post</a></li>
-                <li><a id="new-event" href="#">New Event</a></li>
-                <li><a id="manage-events" href="#">Manage Events</a></li>
-                <li><a id="manage-posts" href="#">Manage Posts</a></li>
-            <% } else if (user.role && user.role === 'member') { %>
+                <li><a id="nav-manage-users" href="#">Manage Users</a></li>
+            <% } %>
+            <% if (user.role && (user.role === 'manager' || user.role === 'president')) { %>
+                <li><a id="nav-new-post" href="#">New Post</a></li>
+                <li><a id="nav-new-event" href="#">New Event</a></li>
+                <li><a id="nav-manage-events" href="#">Manage Events</a></li>
+                <li><a id="nav-manage-posts" href="#">Manage Posts</a></li>
+            <% } %> 
+            <% if (user.role && user.role === 'member') { %>
                 <!-- Nothing different for member -->
-            <% } else if (user.isAdmin) { %>
-                <li><a id="manage-clubs" href="/admin/clubs">Manage Clubs</a></li>
-                <li><a id="new-club" href="/admin/club-new">Create New Club</a></li>
+            <% } %>
+            <% if (user.isAdmin) { %>
+                <li><a id="nav-manage-clubs" href="/admin/clubs">Manage Clubs</a></li>
+                <li><a id="nav-new-club" href="/admin/club-new">Create New Club</a></li>
             <% } %>
         <% } else { %>
             <li><a id="user-login" href="/auth/login">Login</a></li>
+            <li><a href="/auth/signup">Signup</a></li>
         <% } %>
 
     </ul>

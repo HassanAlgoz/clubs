@@ -31,7 +31,7 @@
     // }
 
 
-    moment.locale('ar-sa');
+    moment.locale('en-us');
 
     const converter = new showdown.Converter();
     converter.setFlavor('github');
@@ -57,7 +57,10 @@
     function populateInputFields(dataObject, fieldsArray) {
         for(let i = 0; i < fieldsArray.length; ++i) {
             let fieldName = fieldsArray[i]
-            $('#' + fieldName).val(dataObject[fieldName])
+            try {
+                $('#' + fieldName)
+                $('#' + fieldName).val(dataObject[fieldName])
+            } catch(e) { console.log(e) }
         }
     }
 
@@ -70,7 +73,12 @@
 
     function getId(resourceName) {
         let str = location.pathname.substring(location.pathname.indexOf(resourceName) + `${resourceName}/`.length)
-        return str.substring(0, str.indexOf('/'))
+        if (str.indexOf('/') !== -1) {
+            return str.substring(0, str.indexOf('/'))
+        } else {
+            return str.replace(/#/gi, '')
+        }
+        
     }
 
     // function query(name) {
