@@ -15,10 +15,10 @@
 	
 }
 
-.posts-list li a {
+#posts-list li a {
 	font-size: 24px;
 }
 
-.events-list li a {
+#events-list li a {
 	font-size: 24px;
 }

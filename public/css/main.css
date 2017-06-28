@@ -120,3 +120,8 @@ a#logout:hover {
     float: none;
     margin: 0 auto;
 }
+
+input[type="checkbox"],
+input[type="button"] {
+	cursor: pointer;
+}
