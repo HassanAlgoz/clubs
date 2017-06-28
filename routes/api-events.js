@@ -160,6 +160,8 @@ router.put('/:eventId/promise', (req, res, next) => {
 // Update attendance
 router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
 
+	let eventId = req.params.eventId
+	let clubId = req.query.clubId
 	let updatedUsers = req.body.updatedUsers.split(",");
 	let updatedAttendance = req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false);
 	console.log(updatedUsers)
@@ -169,11 +171,13 @@ router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
 		
 		Event.findById(eventId).then((event) => {
 			let updatePromises = []
-			for(let i = 0; i < updatePromises.length; ++i) {
+			for(let i = 0; i < updatedUsers.length; ++i) {
 				// According to [https://stackoverflow.com/questions/15691224/mongoose-update-values-in-array-of-objects]
-				updatePromises.push(event.update({'promisers.user': updatedUsers[i]}, {'$set': {
-					'promisers.$.attended': updatedAttendance[i]
-				}}))
+				updatePromises.push(
+					Event.findOneAndUpdate({_id: eventId, 'promisers.user': updatedUsers[i]}, {'$set': {
+						'promisers.$.attended': updatedAttendance[i]
+					}})
+				)
 			}
 			return Promise.all(updatePromises)
 		})
