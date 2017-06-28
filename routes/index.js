@@ -51,6 +51,14 @@ router.get('/club/:clubId/event/:eventId/edit', (req, res, next) => {
 router.get('/club/:clubId/event-new', (req, res, next) => {
     res.render('event-edit', {event:null})
 })
+router.get('/club/:clubId/event/:eventId/attendance', (req, res, next) => {
+    let eventId = req.params.eventId;
+	Event.findById(eventId)
+		.populate('promisers.user', '_id username enrollment major')
+		.then((event) => {
+		res.render('event-attendance', {event})
+	}).catch(next)
+})
 
 
 // Post ====================================================================
