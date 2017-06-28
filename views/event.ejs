@@ -8,17 +8,19 @@
 	<script>
 		const event = <%- JSON.stringify(event) %>
 		const user = <%- JSON.stringify(user) %>
-		user.role = <%- JSON.stringify(user.role) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+		console.log(event)
 	</script>
 	
 	<div class="container">
 		<h1 id="title"></h1>
 		<h6>Published <span id="published"></span></h6>
-		<ul>
+		<ul id="info">
 			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"></span></li>
-			<li><i class="glyphicon glyphicon-time"></i></li>
-			<li><i class="glyphicon glyphicon-map-marker"></i></li>
-			<li id="membersOnly"></li>
+			<li><i class="glyphicon glyphicon-time"></i> <span id="time"></span></li>
+			<li><i class="glyphicon glyphicon-map-marker"></i> <span id="location"></span></li>
 		</ul>
 		<h3>Event Briefing</h3>
 		<div id="brief"></div>

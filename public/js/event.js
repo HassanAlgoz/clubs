@@ -1,5 +1,7 @@
 $(function(){
-    
+
+    console.log('event.js loaded')
+
     const eventId = event._id
     const clubId = getId('club')
     
@@ -19,18 +21,21 @@ $(function(){
     // $('#location').text(event.location)
     
     if (event.membersOnly) {
-        $('#membersOnly').html(`<i class="text-danger">This event is for members only</i>`)
+        $('#info').append(`<li id="membersOnly"><i class="text-danger">This event is for members only</i></li>`)
     }
     
 
     // Check if the user already promised to attend this event
     let promised = false;
-    for(let i = 0; i < event.promisers.length; ++i) {
-        if (event.promisers[i].user === user._id) {
-            promised = true
-            break;
+    if (user) {
+        for(let i = 0; i < event.promisers.length; ++i) {
+            if (event.promisers[i].user === user._id) {
+                promised = true
+                break;
+            }
         }
     }
+    
     
 
     if (!promised) {
@@ -38,15 +43,17 @@ $(function(){
         $('#section1').append(`<h4 class="promises text-success text-center">${event.promisers.length} people attending</h4>`)
 
         // Show "count me in" Button
-        if (event.condition === 'open') {
-            if (!event.membersOnly || (event.membersOnly && (user.role === 'president' || user.role === 'manager' || user.role === 'member'))) {
-                $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
-            
-                $('#btn-promise').on('click', () => $.ajax({
-                    url: `/api/events/${eventId}/promise?clubId=${clubId}`,
-                    method: 'PUT',
-                    success: () => { $('#btn-promise').replaceWith('<span>You promised to attend the events</span>') }
-                }))
+        if (user) {
+            if (event.condition === 'open') {
+                if (!event.membersOnly || (event.membersOnly && (user.role === 'president' || user.role === 'manager' || user.role === 'member'))) {
+                    $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
+                
+                    $('#btn-promise').on('click', () => $.ajax({
+                        url: `/api/events/${eventId}/promise?clubId=${clubId}`,
+                        method: 'PUT',
+                        success: () => { $('#btn-promise').replaceWith('<span>You promised to attend the events</span>') }
+                    }))
+                }
             }
         }
     } else {
@@ -56,7 +63,7 @@ $(function(){
     
     
     // Managerial Buttons
-    if (user.role === 'president' || user.role === 'manager') {
+    if (user && (user.role === 'president' || user.role === 'manager')) {
         if (event.condition === 'open') {
             // "Close Event" Button
             $('#section2').append(`<button id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Close Event</button>`)

@@ -10,11 +10,11 @@ $(function(){
     $('#name').html(`${club.name} <span id="members">${club.members.length} members</span>`)
     
     for(let i = club.events.length - 1; i >= 0; i--) {
-        $('#events-list').append(`<li><a href="/events/${club.events[i]._id}">${club.events[i].title}</a></li>`)
+        $('#events-list').append(`<li><a href="/club/${clubId}/event/${club.events[i]._id}">${club.events[i].title}</a></li>`)
     }
 
     for(let i = club.posts.length - 1; i >= 0; i--) {
-		$('#posts-list').append(`<li><a href="${clubId}/posts/${club.posts[i]._id}">${club.posts[i].title}</a></li>`)
+		$('#posts-list').append(`<li><a href="/club/${clubId}/post/${club.posts[i]._id}">${club.posts[i].title}</a></li>`)
     }
 
     // Join Button
