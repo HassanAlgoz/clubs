@@ -4,12 +4,16 @@ const router = require('express').Router();
 const Club = require('../models/club');
 const User = require('../models/user');
 
+// Attach 'role' in this club to the 'req.user' object
+router.param('clubId', User.getRoleFromParam)
 
 // GET
 router.get('/:clubId', (req, res, next) => {
 
 	let clubId = req.params.clubId;
-	Club.findById(clubId).then((club) => {
+	Club.findById(clubId)
+		.populate('events posts')
+		.then((club) => {
 		res.json({club})
 	}).catch(next)
 

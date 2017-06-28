@@ -5,6 +5,9 @@ const User = require('../models/user')
 const Club = require('../models/club')
 const Post = require('../models/post')
 
+// Attach 'role' in this club to the 'req.user' object
+router.use(User.getRoleFromQuery)
+
 // GET
 router.get('/:postId', (req, res, next) => {
 
@@ -68,7 +71,7 @@ router.put('/:postId', User.canManage, (req, res, next) => {
 	Post.findByIdAndUpdate(postId, {
 		title: req.body.title,
 		content: req.body.content,
-		lastEditDate: Date.now,
+		lastEditDate: Date.now(),
 		lastEditBy: req.user._id,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).then(() => {

@@ -7,24 +7,8 @@ const Post = require('../models/post')
 const User = require('../models/user')
 
 // Attach 'role' in this club to the 'req.user' object
-router.param('clubId', (req, res, next, clubId) => {
-    clubId = req.params.clubId
-    // console.log('clubId is', clubId)
-    // console.log('req.params.clubId is', req.params.clubId)
-    // console.log('req.query.clubId is', req.query.clubId)
-	if (req.user) {
-		for (let i = 0; i < req.user.memberships.length; i++) {
-            console.log(String(req.user.memberships[i].club), String(clubId))
-			if (String(req.user.memberships[i].club) === String(clubId)) {
-				req.user.role = req.user.memberships[i].role
-				break;
-			}
-		}
-	}
-    console.log('user.role =', req.user.role)
-    next()
-})
-
+router.param('clubId', User.getRoleFromParam)
+router.use(User.getRoleFromQuery)
 
 // Homepage ================================================================
 router.get('/', (req, res, next) => res.render('index'))
@@ -33,7 +17,10 @@ router.get('/', (req, res, next) => res.render('index'))
 // Club ====================================================================
 router.get('/club/:clubId', (req, res, next) => {
     let clubId = req.params.clubId;
-	Club.findById(clubId).then((club) => {
+	Club.findById(clubId)
+		.populate('events', 'title date time location condition membersOnly')
+		.populate('posts', 'title publishDate')
+		.then((club) => {
 		res.render('club', {club})
 	}).catch(next)
 })
@@ -113,20 +100,20 @@ router.get('/profile/:id', (req, res, next) => {
 
 // Management Panels =========================================================
 // President
-router.get('/clubs/:clubId/manage/users', User.isPresident, (req, res, next) => {
+router.get('/club/:clubId/manage/users', User.isPresident, (req, res, next) => {
 	res.render('manage-users')
 })
 
-router.get('/clubs/:clubId/edit', User.isPresident, (req, res, next) => {
+router.get('/club/:clubId/edit', User.isPresident, (req, res, next) => {
 	res.render('club-edit')
 })
 
 // Manager
-router.get('/clubs/:clubId/manage/events', User.canManage, (req, res, next) => {
+router.get('/club/:clubId/manage/events', User.canManage, (req, res, next) => {
 	res.render('manage-events')
 })
 
-router.get('/clubs/:clubId/manage/posts', User.canManage, (req, res, next) => {
+router.get('/club/:clubId/manage/posts', User.canManage, (req, res, next) => {
 	res.render('manage-posts')
 })
 

@@ -5,6 +5,9 @@ const Event = require('../models/event');
 const User = require('../models/user');
 const Club = require('../models/club')
 
+// Attach 'role' in this club to the 'req.user' object
+router.use(User.getRoleFromQuery)
+
 // GET
 router.get('/:eventId', (req, res, next) => {
 
@@ -42,10 +45,10 @@ router.get('/', (req, res, next) => {
 // POST
 router.post('/', User.canManage, (req, res, next) => {
 
-	Promise.all[new Event({
+	Promise.all([new Event({
 		title: req.body.title,
 		brief: req.body.brief,
-		lastEditDate: Date.now,
+		lastEditDate: Date.now(),
 		lastEditBy: req.user._id,
 		time: req.body.time,
 		location: req.body.location,
@@ -54,7 +57,7 @@ router.post('/', User.canManage, (req, res, next) => {
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).save(),
 	Club.findById(req.query.clubId)
-	]
+	])
 	.then(([event, club]) => {
 		club.events.push(event._id)
 		return club.save()
@@ -73,7 +76,7 @@ router.put('/:eventId', User.canManage, (req, res, next) => {
 	Event.findByIdAndUpdate(eventId, {
 		title: req.body.title,
 		brief: req.body.brief,
-		lastEditDate: Date.now,
+		lastEditDate: Date.now(),
 		lastEditBy: req.user._id,
 		time: req.body.time,
 		location: req.body.location,
@@ -103,7 +106,7 @@ router.delete('/:eventId', User.canManage, (req, res, next) => {
 
 
 // Close an event
-router.post('/:eventId/close', User.canManage, (req, res, next) => {
+router.put('/:eventId/close', User.canManage, (req, res, next) => {
 	
 	let eventId = req.params.eventId
 	Event.findByIdAndUpdate(eventId, {condition: 'closed'})
@@ -113,7 +116,7 @@ router.post('/:eventId/close', User.canManage, (req, res, next) => {
 
 
 // Open an event
-router.post('/events/:eventId/open', User.canManage, (req, res, next) => {
+router.put('/:eventId/open', User.canManage, (req, res, next) => {
 	
 	let eventId = req.params.eventId
 	Event.findByIdAndUpdate(eventId, {condition: 'open'})
@@ -123,23 +126,25 @@ router.post('/events/:eventId/open', User.canManage, (req, res, next) => {
 
 
 // Promise to attend
-router.post('/:eventId/promise', (req, res, next) => {
+router.put('/:eventId/promise', (req, res, next) => {
 	let eventId = req.params.eventId
 
 	Event.findById(eventId).then((event) => {
 		if (event.condition === 'open') {
 			if (event.membersOnly === true) {
 				if (req.user.role === 'member' || req.user.role === 'manager' || req.user.role === 'president') {
-					event.update({$addToSet: { "event.promisers": {user: req.user._id, attended: false} } }).then(() => {
+					
+					Event.update({_id: eventId}, { $addToSet: { "promisers": {user: req.user._id, attended: false} } }).then(() => {
 						console.log('Promised to attend membersOnly event')
 						res.sendStatus(204)
-					})				
+					})
+
 				} else {
 					console.log('Event is membersOnly')
 					res.sendStatus(403)
 				}
 			} else {
-				event.update({$addToSet: { promisers: {user: req.user._id, attended: false} } }).then(() => {
+				Event.update(event, {$addToSet: { promisers: {user: req.user._id, attended: false} } }).then(() => {
 					console.log('Promised to attend event')
 					res.sendStatus(204)
 				})	

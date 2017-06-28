@@ -4,6 +4,9 @@ const router = require('express').Router();
 const User = require('../models/user');
 const Club = require('../models/club')
 
+// Attach 'role' in this club to the 'req.user' object
+router.use(User.getRoleFromQuery)
+
 // GET
 router.get('/:userId', (req, res, next) => {
 
@@ -38,16 +41,22 @@ router.get('/', (req, res, next) => {
 
 // PUT
 router.put('/:userId', User.isPresident, (req, res, next) => {
-
-	// ?role
-	if (req.query.role && (req.query.role === 'unapproved' || req.query.role === 'member' || req.query.role === 'manager')) {
+	
+	let userId = req.params.userId
+	
+	let role = req.body.role
+	let clubId = req.query.clubId
+	console.log('role =', role)
+	console.log('req.query.clubId =', req.query.clubId)
+	if (req.body.role) {
 		// Set user role in this club
-		User.update({ _id: userId, "memberships.club": req.query.clubId }, { $set: {
-			"memberships.$.role": req.query.role
-		}}).then(() => res.sendStatus(204)).catch(next)
+		User.update({ _id: userId, "memberships.club": clubId },
+			{ $set: { "memberships.$.role": role } }
+		)
+		.then(() => res.sendStatus(204))
+		.catch(next)
 
 	} else {
-		let userId = req.params.userId
 		User.findById(userId).then((user) => {
 			user.username = req.body.username;
 			user.email = req.body.email;
