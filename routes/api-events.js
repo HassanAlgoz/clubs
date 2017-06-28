@@ -134,7 +134,7 @@ router.put('/:eventId/promise', (req, res, next) => {
 			if (event.membersOnly === true) {
 				if (req.user.role === 'member' || req.user.role === 'manager' || req.user.role === 'president') {
 					
-					Event.update({_id: eventId}, { $addToSet: { "promisers": {user: req.user._id, attended: false} } }).then(() => {
+					Event.findByIdAndUpdate(eventId, { $addToSet: { promisers: {user: req.user._id, attended: false} } }).then(() => {
 						console.log('Promised to attend membersOnly event')
 						res.sendStatus(204)
 					})
@@ -144,7 +144,7 @@ router.put('/:eventId/promise', (req, res, next) => {
 					res.sendStatus(403)
 				}
 			} else {
-				Event.update(event, {$addToSet: { promisers: {user: req.user._id, attended: false} } }).then(() => {
+				Event.findByIdAndUpdate(eventId, {$addToSet: { promisers: {user: req.user._id, attended: false} } }).then(() => {
 					console.log('Promised to attend event')
 					res.sendStatus(204)
 				})	
