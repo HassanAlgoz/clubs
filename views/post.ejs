@@ -6,13 +6,13 @@
 <body>
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
-		<h1 id="title"><%= posts.title %></h1>
-		<h6>Posted <span id="posted"><%=posts.publish_date%></span></h6>
-		<div id="description"><%= posts.body %></div>
+		<h1 id="title"><%= post.title %></h1>
+		<h6>Posted <span id="posted"><%=post.publishDate%></span></h6>
+		<div id="content"><%= post.content %></div>
 	</div>
 
 	<% include ./partials/footer.ejs %>
-	<% include ./partials/scripts.ejs %>
-	<script src="/js/posts.js"></script>
+	<!--  include ./partials/scripts.ejs  -->
+	<!-- <script src="/js/post.js"></script> -->
 </body>
 </html>
