@@ -129,7 +129,7 @@ router.get('/club/:clubId/manage/posts', User.canManage, (req, res, next) => {
 
 // Admin Panels
 router.get('/admin/clubs', User.isAdmin, (req, res, next) => {
-	res.render('admin-clubs')
+	res.render('manage-clubs')
 })
 
 router.get('/admin/club-new', User.isAdmin, (req, res, next) => {

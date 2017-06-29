@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     {
         club: { type: Schema.Types.ObjectId, ref: 'Club' },
         role: { type: String, default: "unapproved" },
-        date: { type: Date, default: Date.now }
+        date: { type: Date, default: Date.now },
+        _id: false
     }
     ],
     isAdmin: Boolean

@@ -7,6 +7,9 @@
 	<script>
 		const club = <%- JSON.stringify(club) %>
 		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			<%- user.role = JSON.stringify(user.role) %>
+		<% } %>
 	</script>
 	<% include ./partials/navbar.ejs %>
 	<div class="container-fluid" id="title">
@@ -42,8 +45,8 @@
 				</ul>
 			</div>
 		</div>
-
 	</div>
+
 
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>

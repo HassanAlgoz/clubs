@@ -37,20 +37,20 @@
     converter.setFlavor('github');
 
     function markdownBind($inputElement, $outputElement) {
-        let markdown = $inputElement.val()
+        let markdown = $inputElement.val() || $inputElement.text()
         let html = converter.makeHtml(markdown)
         $outputElement.html(html)
         $inputElement.on('keyup', () => {
-            let markdown = $inputElement.val()
+            let markdown = $inputElement.val() || $inputElement.text()
             let html = converter.makeHtml(markdown)
             $outputElement.html(html)
         })
     }
 
     function textBind($inputElement, $outputElement) {
-        $outputElement.text($inputElement.val())
+        $outputElement.text($inputElement.val() || $inputElement.text())
         $inputElement.on('keyup', () => {
-            $outputElement.text($inputElement.val())
+            $outputElement.text($inputElement.val() || $inputElement.text())
         })
     }
 

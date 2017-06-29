@@ -4,8 +4,14 @@
 	
 </head>
 <body>
+	<script>
+		const event = <%- JSON.stringify(event) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+	</script>
 	<% include ./partials/navbar.ejs %>
-	<input type="hidden" id="eventId" <% if (event) {%> value="<%=event._id%>" <%}%>>
 	<div class="container">
 		<h1>Event</h1>
 		<h2 id="preview-title">
@@ -42,7 +48,7 @@
 			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
 			<button id="btn-delete" class="btn btn-danger">Delete</button>
 		<% } else { %>
-			<button id="btn-create-event" class="btn btn-success">Create Event</button>
+			<button id="btn-create" class="btn btn-success">Create Event</button>
 		<% } %>
 	</div>
 

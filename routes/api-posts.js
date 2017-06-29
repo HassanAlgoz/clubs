@@ -22,9 +22,10 @@ router.get('/:postId', (req, res, next) => {
 // GET ALL
 router.get('/', (req, res, next) => {
 	
-	if (req.clubId) {
+	let clubId = req.query.clubId
+	if (clubId) {
 		// Get ALL Members of some Club
-		Club.findById(req.clubId)
+		Club.findById(clubId)
 			.populate('posts')
 			.then((club) => {
 			res.json({posts: club.posts})
@@ -45,14 +46,15 @@ router.get('/', (req, res, next) => {
 // POST
 router.post('/', User.canManage, (req, res, next) => {
 
-	Promise.all[new Post({
+	let clubId = req.query.clubId
+	Promise.all([new Post({
 		title: req.body.title,
 		content: req.body.content,
 		lastEditBy: req.user._id,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).save(),
-	Club.findById(req.clubId)
-	]
+	Club.findById(clubId)
+	])
 	.then(([post, club]) => {
 		club.posts.push(post._id)
 		return club.save()
@@ -71,7 +73,6 @@ router.put('/:postId', User.canManage, (req, res, next) => {
 	Post.findByIdAndUpdate(postId, {
 		title: req.body.title,
 		content: req.body.content,
-		lastEditDate: Date.now(),
 		lastEditBy: req.user._id,
 		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
 	}).then(() => {

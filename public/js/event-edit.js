@@ -1,8 +1,6 @@
 $(function(){
-    
-    var converter = new showdown.Converter();
-    
-    const eventId = $('#eventId').val()
+       
+    const eventId = (event) ? event._id : null
     const clubId = getId('club')
 
     console.log('eventId', eventId)
@@ -13,8 +11,8 @@ $(function(){
     textBind($('#title'), $('#preview-title'))
     
 
-    if (eventId == "") {
-            $("#btn-create-event").on('click', function(e) {
+    if (!eventId) {
+        $("#btn-create").on('click', function(e) {
             e.preventDefault();
             
             $.ajax({

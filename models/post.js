@@ -14,10 +14,4 @@ var postSchema = new mongoose.Schema({
 	sentAsEmail: {type: Boolean, default: false}
 });
 
-// postSchema.pre('remove', (next) => {
-// 	Club.findOneAndUpdate({ posts: postId }, {$pull: { posts: postId }})
-// 		.then(next)
-// 		.catch(next)
-// })
-
 module.exports = mongoose.model('Post', postSchema);

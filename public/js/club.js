@@ -1,7 +1,7 @@
 $(function(){
     
     console.log('club.js loaded')
-    const clubId = club._id
+    const clubId = (club) ? club._id : null
 
     console.log(club)
     
