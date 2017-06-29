@@ -3,6 +3,8 @@ const router = require('express').Router();
 // Models
 const Club = require('../models/club');
 const User = require('../models/user');
+const Event = require('../models/event');
+const Post = require('../models/post');
 
 // Attach 'role' in this club to the 'req.user' object
 router.param('clubId', User.getRoleFromParam)
@@ -76,9 +78,18 @@ router.put('/:clubId', User.canManage, (req, res, next) => {
 // DELETE
 router.delete('/:clubId', User.isAdmin, (req, res, next) => {
 	let clubId = req.params.clubId
-	Club.findByIdAndRemove(clubId).then(() => {
+	
+	Club.findById(clubId).then((club) => {
+		return Promise.all([
+			Event.remove({ _id: {$in: club.events} }),
+			Post.remove({ _id: {$in: club.posts} }),
+			User.update({ _id: {$in: club.members} }, { $pull: {"memberships": {"club": clubId}} }),
+			Club.findByIdAndRemove(clubId)
+		])
+	}).then(() => {
 		res.sendStatus(204) // Successful and no content returned.
-	}).catch(next)
+	})
+	.catch(next)
 });
 
 
