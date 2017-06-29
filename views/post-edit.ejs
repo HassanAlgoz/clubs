@@ -4,28 +4,41 @@
 
 </head>
 <body>
+	<script>
+		const post = <%- JSON.stringify(post) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+	</script>
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
-		<input type="hidden" id="clubName" value="<%=clubName%>">
-		<input type="hidden" id="id" <% if (posts) {%> value="<%=posts._id%>" <%}%>>
 		<h1>Post</h1>
-		<h2 id="title"></h2>
-		<div id="body"></div>
+		<h2 id="preview-title"></h2>
+		<div id="preview-content"></div>
 
 		<div class="form-group">
-			<input id="input-title" class="form-control" type="text" placeholder="Event Title.." <%if (posts){%> value="<%= posts.title %>"<%}%> required>
+			<input id="title" class="form-control" type="text" placeholder="Post Title.." required>
 		</div>
 		<div class="form-group">
-			<textarea id="input-body" class="form-control" placeholder="Briefing.." required><%if (posts){%><%= posts.body %><%}%></textarea>
+			<textarea id="content" class="form-control" placeholder="Content.." required></textarea>
 		</div>
-		<button id="btn-submit" class="btn btn-success">Submit</button>
-		<button id="btn-delete" class="btn btn-danger">Delete</button>
+		<div class="form-group">
+			<input type="checkbox" id="sentAsEmail">
+			<span>Also Send as Email</span>
+		</div>
+		<% if (post) { %>
+			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
+			<button id="btn-delete" class="btn btn-danger">Delete</button>
+		<% } else { %>
+			<button id="btn-create" class="btn btn-success">Create Post</button>
+		<% } %>
 
 	</div>
 
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>
-	<script src="/js/moment.js"></script>
-	<script src="/js/posts-edit.js"></script>
+	<script src="/js/lib/moment.js"></script>
+	<script src="/js/post-edit.js"></script>
 </body>
 </html>
