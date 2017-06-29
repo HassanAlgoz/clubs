@@ -18,13 +18,15 @@ const eventSchema = new mongoose.Schema({
 	location: {type: String, default: ''},
 	promisers: [{
 		user: {type: Schema.Types.ObjectId, ref: 'User'},
-		attended: {type: Boolean, default: false}
+		attended: {type: Boolean, default: false},
+		_id: false
 	}],
 	condition: {type: String, default: 'open'},
 	membersOnly: { type: Boolean, default: false },
 	organizers: [{
 		user: {type: Schema.Types.ObjectId, ref: 'User'},
-		role: {type: String, default: ''}
+		role: {type: String, default: ''},
+		_id: false
 	}]
 });
 
