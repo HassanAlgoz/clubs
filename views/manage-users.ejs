@@ -4,9 +4,6 @@
   
 </head>
 <body>
-    <script>
-        const user = <%- JSON.stringify(user) %>
-    </script>
     <% include ./partials/navbar.ejs %>
     <div class="container">
         <div class="row">
@@ -51,8 +48,13 @@
             </div>
         </div>
     </div>
-  <% include ./partials/scripts.ejs %>
-  <% include ./partials/footer.ejs %>
+
+    <% include ./partials/footer.ejs %>
+
+    <script>
+        const user = <%- JSON.stringify(user) %>
+    </script>
+    <% include ./partials/scripts.ejs %>
   <script src="/js/manage-users.js"></script>
 </body>
 </html>

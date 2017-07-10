@@ -5,14 +5,6 @@
 </head>
 <body>
 	<% include ./partials/navbar.ejs %>
-	<script>
-		const event = <%- JSON.stringify(event) %>
-		const user = <%- JSON.stringify(user) %>
-		<% if (user) { %>
-			user.role = <%- JSON.stringify(user.role) %>
-		<% } %>
-		console.log(event)
-	</script>
 	
 	<div class="container">
 		<h1 id="title"></h1>
@@ -33,6 +25,15 @@
 	</div>
 
 	<% include ./partials/footer.ejs %>
+
+	<script>
+		const event = <%- JSON.stringify(event) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+		console.log(event)
+	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="/js/event.js"></script>
 </body>

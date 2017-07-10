@@ -4,13 +4,6 @@
 
 </head>
 <body>
-	<script>
-		const post = <%- JSON.stringify(post) %>
-		const user = <%- JSON.stringify(user) %>
-		<% if (user) { %>
-			user.role = <%- JSON.stringify(user.role) %>
-		<% } %>
-	</script>
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
 		<h1>Post</h1>
@@ -37,6 +30,14 @@
 	</div>
 
 	<% include ./partials/footer.ejs %>
+
+	<script>
+		const post = <%- JSON.stringify(post) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="/js/lib/moment.js"></script>
 	<script src="/js/post-edit.js"></script>

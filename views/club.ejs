@@ -7,14 +7,6 @@
 
 	<% include ./partials/navbar.ejs %>
 
-	<script>
-		const club = <%- JSON.stringify(club) %>
-		const user = <%- JSON.stringify(user) %>
-		<% if (user) { %>
-			<%- user.role = JSON.stringify(user.role) %>
-		<% } %>
-	</script>
-
 	<div class="container-fluid" id="title">
 		<div class="container">
 			<div class="row">
@@ -51,7 +43,16 @@
 	</div>
 
 
+	
 	<% include ./partials/footer.ejs %>
+	
+	<script>
+		const club = <%- JSON.stringify(club) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			<%- user.role = JSON.stringify(user.role) %>
+		<% } %>
+	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
 	<script src="/js/club.js"></script>
