@@ -14,7 +14,7 @@
 			<li>Email: <%= profile.email %></li>
 
 			<% for(let i = 0; i < profile.memberships.length; ++i) { %>
-				<li> <%= profile.memberships[i].role %> in <%= profile.memberships[i].club.name %> Club </li>
+				<li> <%= profile.memberships[i].role %> in <a href="/clubs/<%= profile.memberships[i].club._id %>"><%= profile.memberships[i].club.name %> Club </a></li>
 			<% } %>
 			
 		</ul>
