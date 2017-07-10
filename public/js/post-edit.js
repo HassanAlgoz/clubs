@@ -1,7 +1,7 @@
 $(function(){
     
     const postId = (post) ? post._id : null
-    const clubId = getId('club')
+    const clubId = getId('clubs')
 
     console.log('postId', postId)
     console.log('clubId', clubId)

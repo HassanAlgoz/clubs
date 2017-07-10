@@ -2,7 +2,7 @@
 $(function () {
 
     const eventId = event._id
-    const clubId = getId('club')
+    const clubId = getId('clubs')
 
     // Format Dates
     let publishDate = new Date(event.publishDate);

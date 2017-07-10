@@ -3,7 +3,7 @@ $(function(){
     console.log('event.js loaded')
 
     const eventId = event._id
-    const clubId = getId('club')
+    const clubId = getId('clubs')
     
     // Markdown
     $('#brief').html(converter.makeHtml(event.brief));
@@ -87,7 +87,7 @@ $(function(){
         }
         // Link to Attendance Page
         $('#section2').append(`<a href="#" id="btn-attendance" class="btn btn-success">Attendance</a>`)
-        $('#btn-attendance').attr('href', `/club/${clubId}/event/${eventId}/attendance`)
+        $('#btn-attendance').attr('href', `/clubs/${clubId}/events/${eventId}/attendance`)
     }
     
 })

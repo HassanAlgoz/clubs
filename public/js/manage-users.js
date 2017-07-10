@@ -1,7 +1,7 @@
 $(function () {
 
 
-    const clubId = getId('club')
+    const clubId = getId('clubs')
 
     $.ajax({
         method: 'GET',

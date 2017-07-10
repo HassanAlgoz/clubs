@@ -1,7 +1,7 @@
 $(function() {
 
     console.log('manage-events.js loaded')
-    let clubId = getId('club')
+    let clubId = getId('clubs')
 
     $.ajax({
         method: 'GET',

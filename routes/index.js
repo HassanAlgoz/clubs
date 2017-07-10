@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => res.render('index'))
 
 
 // Club ====================================================================
-router.get('/club/:clubId', (req, res, next) => {
+router.get('/clubs/:clubId', (req, res, next) => {
     let clubId = req.params.clubId;
 	Club.findById(clubId)
 		.populate('events', 'title date time location condition membersOnly')
@@ -24,7 +24,7 @@ router.get('/club/:clubId', (req, res, next) => {
 		res.render('club', {club})
 	}).catch(next)
 })
-router.get('/club/:clubId/edit', (req, res, next) => {
+router.get('/clubs/:clubId/edit', (req, res, next) => {
     let clubId = req.params.clubId;
 	Club.findById(clubId).then((club) => {
 		res.render('club-edit', {club})
@@ -36,22 +36,22 @@ router.get('/club-new', (req, res, next) => {
 
 
 // Event ===================================================================
-router.get('/club/:clubId/event/:eventId', (req, res, next) => {
+router.get('/clubs/:clubId/events/:eventId', (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId).then((event) => {
 		res.render('event', {event})
 	}).catch(next)
 })
-router.get('/club/:clubId/event/:eventId/edit', (req, res, next) => {
+router.get('/clubs/:clubId/events/:eventId/edit', (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId).then((event) => {
 		res.render('event-edit', {event})
 	}).catch(next)
 })
-router.get('/club/:clubId/event-new', (req, res, next) => {
+router.get('/clubs/:clubId/event-new', (req, res, next) => {
     res.render('event-edit', {event:null})
 })
-router.get('/club/:clubId/event/:eventId/attendance', (req, res, next) => {
+router.get('/clubs/:clubId/events/:eventId/attendance', (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId)
 		.populate('promisers.user', '_id username enrollment major')
@@ -62,19 +62,19 @@ router.get('/club/:clubId/event/:eventId/attendance', (req, res, next) => {
 
 
 // Post ====================================================================
-router.get('/club/:clubId/post/:postId', (req, res, next) => {
+router.get('/clubs/:clubId/posts/:postId', (req, res, next) => {
     let postId = req.params.postId;
 	Post.findById(postId).then((post) => {
 		res.render('post', {post})
 	}).catch(next)
 })
-router.get('/club/:clubId/post/:postId/edit', (req, res, next) => {
+router.get('/clubs/:clubId/posts/:postId/edit', (req, res, next) => {
     let postId = req.params.postId;
 	Post.findById(postId).then((post) => {
 		res.render('post-edit', {post})
 	}).catch(next)
 })
-router.get('/club/:clubId/post-new', (req, res, next) => {
+router.get('/clubs/:clubId/post-new', (req, res, next) => {
     res.render('post-edit', {post:null})
 })
 
@@ -108,20 +108,20 @@ router.get('/profile/:id', (req, res, next) => {
 
 // Management Panels =========================================================
 // President
-router.get('/club/:clubId/manage/users', User.isPresident, (req, res, next) => {
+router.get('/clubs/:clubId/manage/users', User.isPresident, (req, res, next) => {
 	res.render('manage-users')
 })
 
-router.get('/club/:clubId/edit', User.isPresident, (req, res, next) => {
+router.get('/clubs/:clubId/edit', User.isPresident, (req, res, next) => {
 	res.render('club-edit')
 })
 
 // Manager
-router.get('/club/:clubId/manage/events', User.canManage, (req, res, next) => {
+router.get('/clubs/:clubId/manage/events', User.canManage, (req, res, next) => {
 	res.render('manage-events')
 })
 
-router.get('/club/:clubId/manage/posts', User.canManage, (req, res, next) => {
+router.get('/clubs/:clubId/manage/posts', User.canManage, (req, res, next) => {
 	res.render('manage-posts')
 })
 
