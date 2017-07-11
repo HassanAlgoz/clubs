@@ -53,8 +53,8 @@ router.post('/', User.canManage, (req, res, next) => {
 		time: req.body.time,
 		location: req.body.location,
 		date: req.body.date,
-		membersOnly: (req.body.membersOnly == 'true') ? true : false,
-		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
+		membersOnly: (req.body.membersOnly === 'true') ? true : false,
+		sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false
 	}).save(),
 	Club.findById(req.query.clubId)
 	])
@@ -72,33 +72,51 @@ router.post('/', User.canManage, (req, res, next) => {
 // PUT
 router.put('/:eventId', User.canManage, (req, res, next) => {
 	let eventId = req.params.eventId
+	let clubId = req.query.clubId
 	console.log(req.body)
-	Event.findByIdAndUpdate(eventId, {
-		title: req.body.title,
-		brief: req.body.brief,
-		lastEditDate: Date.now(),
-		lastEditBy: req.user._id,
-		time: req.body.time,
-		location: req.body.location,
-		date: req.body.date,
-		membersOnly: (req.body.membersOnly == 'true') ? true : false,
-		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
-	}).then(() => {
+
+	// Check if event belongs to this club
+	Club.findOne({ "events": eventId }).then((club) => {
+		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+		
+		// Update Event
+		return Event.findByIdAndUpdate(eventId, {
+			title: req.body.title,
+			brief: req.body.brief,
+			lastEditDate: Date.now(),
+			lastEditBy: req.user._id,
+			time: req.body.time,
+			location: req.body.location,
+			date: req.body.date,
+			membersOnly: (req.body.membersOnly === 'true') ? true : false,
+			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false
+		})
+	})
+	.then(() => {
 		res.sendStatus(204) // Successful and no content returned.
 	}).catch(next)
+
 });
 
 
 // DELETE
 router.delete('/:eventId', User.canManage, (req, res, next) => {
 
-
 	let eventId = req.params.eventId
-	Promise.all([
-		Event.findByIdAndRemove(eventId),
-		Club.findOneAndUpdate({ events: eventId }, {$pull: { events: eventId }})
-		// Using Pull [https://docs.mongodb.com/manual/reference/operator/update/pull/]
-	]).then(([event, club]) => {
+	let clubId = req.query.clubId
+
+	// Check if event belongs to this club
+	Club.findOne({ "events": eventId }).then((club) => {
+		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+		
+		// Remove Club from events and club.events
+		return Promise.all([
+			Event.findByIdAndRemove(eventId),
+			Club.findOneAndUpdate({ events: eventId }, {$pull: { events: eventId }})
+			// Using Pull [https://docs.mongodb.com/manual/reference/operator/update/pull/]
+		])
+	})
+	.then(([event, club]) => {
 		res.sendStatus(204) // Successful and no content returned.
 	}).catch(next)
 
@@ -109,8 +127,17 @@ router.delete('/:eventId', User.canManage, (req, res, next) => {
 router.put('/:eventId/close', User.canManage, (req, res, next) => {
 	
 	let eventId = req.params.eventId
-	Event.findByIdAndUpdate(eventId, {condition: 'closed'})
-	.then(() => res.sendStatus(204)).catch(next)
+	let clubId = req.query.clubId
+
+	// Check if event belongs to this club
+	Club.findOne({ "events": eventId }).then((club) => {
+		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+		
+		return Event.findByIdAndUpdate(eventId, {condition: 'closed'})
+
+	})
+	.then(() => res.sendStatus(204))
+	.catch(next)
 
 })
 
@@ -119,8 +146,16 @@ router.put('/:eventId/close', User.canManage, (req, res, next) => {
 router.put('/:eventId/open', User.canManage, (req, res, next) => {
 	
 	let eventId = req.params.eventId
-	Event.findByIdAndUpdate(eventId, {condition: 'open'})
-	.then(() => res.sendStatus(204)).catch(next)
+	let clubId = req.query.clubId
+
+	// Check if event belongs to this club
+	Club.findOne({ "events": eventId }).then((club) => {
+		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+
+		return Event.findByIdAndUpdate(eventId, {condition: 'open'})
+	})
+	.then(() => res.sendStatus(204))
+	.catch(next)
 
 })
 
@@ -128,8 +163,16 @@ router.put('/:eventId/open', User.canManage, (req, res, next) => {
 // Promise to attend
 router.put('/:eventId/promise', (req, res, next) => {
 	let eventId = req.params.eventId
+	let clubId = req.query.clubId
 
-	Event.findById(eventId).then((event) => {
+	// Check if event belongs to this club
+	Club.findOne({ "events": eventId }).then((club) => {
+		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+
+		return Event.findById(eventId)
+
+	})
+	.then((event) => {
 		if (event.condition === 'open') {
 			if (event.membersOnly === true) {
 				if (req.user.role === 'member' || req.user.role === 'manager' || req.user.role === 'president') {
@@ -162,14 +205,21 @@ router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
 
 	let eventId = req.params.eventId
 	let clubId = req.query.clubId
+
 	let updatedUsers = req.body.updatedUsers.split(",");
 	let updatedAttendance = req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false);
 	console.log(updatedUsers)
 	console.log(updatedAttendance)
 
 	if (updatedUsers && updatedAttendance) {
-		
-		Event.findById(eventId).then((event) => {
+
+		// Check if event belongs to this club
+		Club.findOne({ "events": eventId }).then((club) => {
+			if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
+			
+			return Event.findById(eventId)
+		})
+		.then((event) => {
 			let updatePromises = []
 			for(let i = 0; i < updatedUsers.length; ++i) {
 				// According to [https://stackoverflow.com/questions/15691224/mongoose-update-values-in-array-of-objects]
