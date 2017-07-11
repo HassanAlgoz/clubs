@@ -93,6 +93,20 @@ router.get('/profile', (req, res, next) => {
 	})).catch(next)
 })
 
+router.get('/profile-edit', (req, res, next) => {
+	User.findById(req.user._id)
+		.populate('memberships.club')
+		.then((user) => res.render('profile-edit', {
+		profile: {
+			_id: user._id,
+			username: user.username,
+			email: user.email,
+			major: user.major,
+			enrollment: user.enrollment
+		}
+	})).catch(next)
+})
+
 router.get('/profile/:id', (req, res, next) => {
 	User.findById(req.params.id)
 		.populate('memberships.club')

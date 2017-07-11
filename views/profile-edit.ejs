@@ -9,26 +9,35 @@
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4">
 				<h1>Edit Profile Information</h1>
-				<form method="PUT" action="/api/users/<%=user._id%>">
+
+				<form method="PUT" action="/api/users/profile/<%=profile._id%>">
 					<div class="form-group">
-						<input type="text" name='username' value="<%= user.username %>" placeholder='Username' class="form-control" maxlength="25" required autofocus>
+						<input type="text" name='username' value="<%= profile.username %>" placeholder='Username' class="form-control" maxlength="25" required autofocus>
 					</div>
 					<div class="form-group">
-						<input type="email" name='email' value="<%= user.email %>" placeholder='Email' class="form-control" required>
+						<input type="email" name='email' value="<%= profile.email %>" placeholder='Email' class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="password" name='password' value="" placeholder='Password' class="form-control" required>
-					</div>
-					<div class="form-group">
-						<input type="text" name='major' value="<%= user.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required autofocus>
+						<input type="text" name='major' value="<%= profile.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required autofocus>
 					</div>
 					<div class="form-group">
 						<label for="enrollment">Date of enrollment</label>
 						<select name="enrollment" id="enrollment">
 							<% for(var i=0; i<8; i++) { %>
-							<option value="<%= new Date(user.enrollment).getFullYear() - i %>"><%= new Date(user.enrollment).getFullYear() - i %></option>
+							<option value="<%= new Date().getFullYear() - i %>"><%= new Date().getFullYear() - i %></option>
 							<%}%>
 						</select>
+					</div>
+
+					
+					<!-- Password -->
+					<div class="form-group">
+						<button class="btn btn-default" id="btn-show-password">Password</button>
+					</div>
+					<div class="form-group hidden" id="password-change">
+						<label for="enrollment">Password Change</label>
+						<input type="password" name='currentPassword' value="" placeholder='Current Password' class="form-control">
+						<input type="password" name='newPassword' value="" placeholder='New Password' class="form-control">
 					</div>
 					<button type="submit" class="btn btn-success">Submit Edit</button>
 				</form>
@@ -36,7 +45,11 @@
 		</div>
 	</div>
 
+	<script>
+		const user = <%- JSON.stringify(user) %>
+	</script>
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>
+	<script src="/js/profile-edit.js"></script>
 </body>
 </html>
