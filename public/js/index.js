@@ -10,7 +10,7 @@ $(function(){
             let clubs = data.clubs;
             console.log("clubs = ", clubs);
             for(let i = 0; i < clubs.length; ++i) {
-                $('#clubs').append(`<div class = "col-md-6"><a href="/club/${clubs[i]._id}">${clubs[i].name}</a></div>`);
+                $('#clubs').append(`<div class = "col-md-6"><a href="/clubs/${clubs[i]._id}">${clubs[i].name}</a></div>`);
             }
         },
         error: function(error) {
