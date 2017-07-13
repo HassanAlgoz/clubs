@@ -6,13 +6,31 @@
 <body>
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
-		<h1 id="title"><%= post.title %></h1>
-		<h6>Posted <span id="posted"><%=post.publishDate%></span></h6>
-		<div id="content"><%= post.content %></div>
+		<h1 id="title"></h1>
+		<h6>Posted <span id="posted"></span></h6>
+		
+		<div class="row">
+			<div id="content"></div>
+		</div>
+
+		<div class="row">
+			<section id="section1"></section>
+		</div>
 	</div>
 
+
+
 	<% include ./partials/footer.ejs %>
-	<!--  include ./partials/scripts.ejs  -->
-	<!-- <script src="/js/post.js"></script> -->
+
+	<script>
+		const post = <%- JSON.stringify(post) %>
+		const user = <%- JSON.stringify(user) %>
+		<% if (user) { %>
+			user.role = <%- JSON.stringify(user.role) %>
+		<% } %>
+		console.log(post)
+	</script>
+	<% include ./partials/scripts.ejs %>
+	<script src="/js/post.js"></script>
 </body>
 </html>
