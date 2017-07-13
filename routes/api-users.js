@@ -75,32 +75,28 @@ router.put('/:userId', User.isPresident, (req, res, next) => {
 router.put('/profile/:userId', (req, res, next) => {
 	
 	let userId = req.params.userId
-	let password = ""
-	// @TODO: hashed password
-	let hashedPassword = "NOT IMPLEMENTED"
 	console.log(req.body)
 	
 	User.findById(userId).then((user) => {
 		
-		if (req.body.currentPassword === hashedPassword) {
-			password = req.body.newPassword
-		}
-		user.username = req.body.username;
-		user.email = req.body.email;
-		user.enrollment = req.body.enrollment;
-		user.major = req.body.major;
-		if (password && password.trim().length > 0) {
-			user.setPassword(password, () => {
-				user.save()
-					.then(() => res.sendStatus(204))
-					.catch(next)
-			})
+		// Password check
+		let currentPassword = req.body.currentPassword.trim()
+		if (currentPassword && user.validPassword(currentPassword)) {
+			user.password = user.generateHash(req.body.newPassword)	
+			console.log('password changed successfully!')
 		} else {
-			user.save()
-				.then(() => res.sendStatus(204))
-				.catch(next)
 			console.log('password remains unchanged')
 		}
+		
+		user.email = req.body.email;
+		user.username = req.body.username;
+		user.enrollment = req.body.enrollment;
+		user.major = req.body.major;
+		user.KFUPMID = Number(req.body.KFUPMID)
+						
+		user.save()
+			.then(() => res.sendStatus(204))
+			.catch(next)
 	})
 	
 });
