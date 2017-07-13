@@ -1,21 +1,20 @@
 $(function() {
 
-  var originalName = $('#input-name').val(); // Original name when the page loads
-  var converter = new showdown.Converter();
+  const clubId = getId('clubs')
 
   $("#btn-submit").on('click', function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.
 
     $.ajax({
       method: 'PUT',
-      url: '/api/clubs/'+originalName,
+      url: `/api/clubs/${clubId}`,
       data: {
-        name: $('#input-name').val(),
-        description: $('#input-description').val(),
-        logo: $('#input-logo').val()
+        name: $('#name').val(),
+        description: $('#description').val(),
+        logo: $('#logo').val()
       },
       success: function(data) {
-        location.href = '/clubs/'+$('#input-name').val().replace(/\s/g, '-');
+        location.href = `/clubs/${clubId}`
       },
       error: function(error) {
         console.log(error);
@@ -24,40 +23,21 @@ $(function() {
 
   });
 
-  // $("#btn-delete").on('click', function(e) {
-  //   e.preventDefault(); // avoid to execute the actual submit of the form.
+  // Bind input to output preview
+  textBind($('#name'), $('#preview-name'))
+  markdownBind($('#description'), $('#preview-description'))
 
-  //   $.ajax({
-  //     method: 'DELETE',
-  //     url: '/api/clubs/'+originalName,
-  //     success: function(data) {
-  //       location.href = '/clubs';
-  //     },
-  //     error: function(error) {
-  //       console.log(error);
-  //     }
-  //   });
-  // });
+  let logoElement = document.querySelector('#logo-image')
+  $('#logo').on('keypress', previewLogo)
+  $('#logo').on('paste', previewLogo)
+
+  function previewLogo(event) {
+    setTimeout(()=>{
+      logoElement.src = $('#logo').val()
+    }, 0)
+    
+  }
   
-  
-  // Markdown
-  let html;
-
-  html = converter.makeHtml($('#input-description').val());
-  $('#description').html(html);
-
-  html = converter.makeHtml($('#input-name').val());
-  $('#name').html(html);
-
-  $('#input-description').on('keyup', function() {
-    let html = converter.makeHtml($('#input-description').val());
-    $('#description').html(html);
-  });
-
-  $('#input-name').on('keyup', function() {
-    let html = converter.makeHtml($('#input-name').val());
-    $('#name').html(html);
-  });
 
 });
 
