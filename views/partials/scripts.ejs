@@ -82,6 +82,13 @@
         
     }
 
+    function commaSeparatedStringToArray(str) {
+        // trim and filter blanks
+        return str.split(",")
+            .map(val => val.trim())
+            .filter(val => (val.length > 0))
+    }
+
     // function query(name) {
     //     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     //     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
