@@ -45,16 +45,18 @@ router.get('/', (req, res, next) => {
 // POST
 router.post('/', User.canManage, (req, res, next) => {
 
+	// Create event
 	Promise.all([new Event({
 		title: req.body.title,
 		brief: req.body.brief,
-		lastEditDate: Date.now(),
+		lastEditDate: Date(),
 		lastEditBy: req.user._id,
 		time: req.body.time,
 		location: req.body.location,
-		date: req.body.date,
+		date: new Date(req.body.date) || Date(),
 		membersOnly: (req.body.membersOnly === 'true') ? true : false,
-		sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false
+		sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
+		organizers: req.body.organizers
 	}).save(),
 	Club.findById(req.query.clubId)
 	])
@@ -83,13 +85,14 @@ router.put('/:eventId', User.canManage, (req, res, next) => {
 		return Event.findByIdAndUpdate(eventId, {
 			title: req.body.title,
 			brief: req.body.brief,
-			lastEditDate: Date.now(),
+			lastEditDate: Date(),
 			lastEditBy: req.user._id,
 			time: req.body.time,
 			location: req.body.location,
-			date: req.body.date,
+			date: new Date(req.body.date) || Date(),
 			membersOnly: (req.body.membersOnly === 'true') ? true : false,
-			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false
+			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
+			organizers: req.body.organizers
 		})
 	})
 	.then(() => {
