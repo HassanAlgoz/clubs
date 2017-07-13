@@ -76,14 +76,12 @@ app.use(session({
 }))
 app.use(flash());
 
+
+// Passport Config
+require('./config/passport')(passport); // pass passport for configuration
 // Passport init
 app.use(passport.initialize());
-app.use(passport.session());
-// Passport Config
-passport.use(new LocalStrategy(User.authenticate()))
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
+app.use(passport.session()); // persistent login sessions
 
 // app.use(lusca.xframe('SAMEORIGIN'));
 // app.use(lusca.xssProtection(true));

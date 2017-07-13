@@ -8,7 +8,7 @@
     "watch": "nodemon -e js --watch ./routes app.js"
   },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
+    "bcrypt-nodejs" : "latest",
     "body-parser": "~1.15.1",
     "chalk": "^1.1.3",
     "compression": "^1.6.2",

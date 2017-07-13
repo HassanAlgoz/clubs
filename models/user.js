@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
-const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
 
 
@@ -10,7 +9,8 @@ const userSchema = new mongoose.Schema({
     password: String,
     email: { type: String, unique: true, lowercase: true },
     major: { type: String, default: "" },
-    enrollment: { type: Number, default: 2013 },
+    enrollment: Number,
+    KFUPMID: Number,
     memberships: [
     {
         club: { type: Schema.Types.ObjectId, ref: 'Club' },
@@ -22,7 +22,17 @@ const userSchema = new mongoose.Schema({
     isAdmin: Boolean
 }, { timestamps: true });
 
-userSchema.plugin(passportLocalMongoose)
+
+// methods ======================
+// generating a hash
+userSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+// checking if password is valid
+userSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+};
 
 
 userSchema.statics.getRoleFromParam = function(req, res, next, clubId) {
