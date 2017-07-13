@@ -13,7 +13,7 @@ $(function() {
             for(let i = 0; i < events.length; ++i) {
                 $('tbody').append(`
                     <tr>
-                        <td align="center"><a href="/club/${clubId}/event/${events[i]._id}/edit" class="btn btn-default btn-edit"><em class="fa fa-pencil"></em></td>
+                        <td align="center"><a href="/clubs/${clubId}/events/${events[i]._id}/edit" class="btn btn-default btn-edit"><em class="fa fa-pencil"></em></td>
                         <td class="hidden-xs">${events[i]._id}</td>
                         <td>${events[i].title}</td>
                         <td>${events[i].publishDate}</td>

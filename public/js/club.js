@@ -21,6 +21,8 @@ $(function(){
 
     // Join Button
     if (!user || !user.role) {
+        console.log('user', user)
+        console.log('user.role', user.role)
         $('#section1').append(`<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i>Join Club</button>`)
     }
     

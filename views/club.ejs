@@ -18,14 +18,8 @@
 	</div>
 
 	<div class="container" id="section1">
-		<img id="logo" src="/img/<%=club.logo%>" class="img-responsive center-block" alt="Club Logo">
-		<h2>Description</h2>
-		<div id="description"></div>
-
-		<div id="join"></div>
+		<img id="logo" src="/img/<%if (club) {%><%=club.logo%><%}%>" class="img-responsive center-block" alt="Club Logo">
 		
-		<hr>
-
 		<div class="row">
 			<div class="col-md-6">
 				<h3 class="text-center">Posts</h3>
@@ -40,6 +34,17 @@
 				</ul>
 			</div>
 		</div>
+		
+		<hr>
+
+		<h2>Description</h2>
+		<div id="description"></div>
+
+		<div id="join"></div>
+		
+		
+
+		
 	</div>
 
 
@@ -50,7 +55,7 @@
 		const club = <%- JSON.stringify(club) %>
 		const user = <%- JSON.stringify(user) %>
 		<% if (user) { %>
-			<%- user.role = JSON.stringify(user.role) %>
+			 user.role = <%- JSON.stringify(user.role) %>
 		<% } %>
 	</script>
 	<% include ./partials/scripts.ejs %>

@@ -1,4 +1,3 @@
-/*jslint browser:true*/
 $(function() {
 
   var originalName = $('#input-name').val(); // Original name when the page loads

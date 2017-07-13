@@ -129,3 +129,8 @@ input[type="button"] {
 textarea {
 	min-height: 180px;
 }
+
+nav.navbar {
+	margin-bottom: 0;
+	border-radius: 0;
+}

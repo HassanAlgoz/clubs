@@ -21,13 +21,16 @@
 						<input type="text" name='major' value="<%= profile.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required autofocus>
 					</div>
 					<div class="form-group">
+						<input type="text" name='KFUPMID' value="<%= profile.KFUPMID %>" placeholder='KFUPM ID' class="form-control" maxlength="10" required>
+					</div>
+					<!-- <div class="form-group">
 						<label for="enrollment">Date of enrollment</label>
 						<select name="enrollment" id="enrollment">
-							<% for(var i=0; i<8; i++) { %>
-							<option value="<%= new Date().getFullYear() - i %>"><%= new Date().getFullYear() - i %></option>
-							<%}%>
+							< for(var i=0; i<8; i++) { >
+							<option value=" new Date().getFullYear() - i "> new Date().getFullYear() - i </option>
+							 } 
 						</select>
-					</div>
+					</div> -->
 
 					
 					<!-- Password -->
@@ -38,6 +41,7 @@
 						<label for="enrollment">Password Change</label>
 						<input type="password" name='currentPassword' value="" placeholder='Current Password' class="form-control">
 						<input type="password" name='newPassword' value="" placeholder='New Password' class="form-control">
+						<span class="help-block">Simply ignore password fields if you do not wish to change your password</span>
 					</div>
 					<button type="submit" class="btn btn-success">Submit Edit</button>
 				</form>

@@ -15,6 +15,7 @@
       <ul class="nav navbar-nav">
         <!-- <li class="active"><a href="#">Home</a></li> -->
         <% if (user) {%>
+         <% if (user.role && (user.role === 'manager' || user.role === 'president') || user.isAdmin) { %>
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Create <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -31,7 +32,8 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <% if (user.role === 'president') { %>
-            <li><a href="#">Manage Users</a></li>
+            <li><a id="nav-edit-club" href="#">Edit Club</a></li>
+            <li><a id="nav-manage-users" href="#">Manage Users</a></li>
             <% } %>
             <% if (user.role && (user.role === 'manager' || user.role === 'president')) { %>
             <li><a id="nav-manage-posts" href="#">Manage Posts</a></li>
@@ -42,6 +44,7 @@
             <% } %>
           </ul>
         </li>
+        <% } %>
         <!-- <li><a href="#">Page 2</a></li> -->
         <!-- <li><a href="#">Page 3</a></li> -->
         <% } %>

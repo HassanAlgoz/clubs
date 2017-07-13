@@ -88,7 +88,8 @@ router.get('/profile', (req, res, next) => {
 			email: user.email,
 			major: user.major,
 			enrollment: user.enrollment,
-			memberships: user.memberships
+			memberships: user.memberships,
+			KFUPMID: user.KFUPMID
 		}
 	})).catch(next)
 })
@@ -102,7 +103,8 @@ router.get('/profile-edit', (req, res, next) => {
 			username: user.username,
 			email: user.email,
 			major: user.major,
-			enrollment: user.enrollment
+			enrollment: user.enrollment,
+			KFUPMID: user.KFUPMID
 		}
 	})).catch(next)
 })

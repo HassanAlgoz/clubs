@@ -74,6 +74,8 @@ $(function(){
                 success: () => { $('#btn-close').replaceWith('<span>Event Closed</span>') }
             }))
 
+            $('#section3').append(`<a href="/clubs/${clubId}/events/${eventId}/edit" id="btn-edit" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i> Edit Event</a>`)
+
         } else {
             // "Open Event" Button
             $('#section2').append(`<button id="btn-open" class="btn btn-warning">Reopen Event</button>`)
