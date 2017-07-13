@@ -15,27 +15,31 @@
 		<div id="preview-brief"></div>
 		
 		<div class="form-group">
-			<input id="title" class="form-control" type="text" placeholder="Event Title.." <%if (event){%> value="<%= event.title %>"<%}%> required>
+			<input id="title" name="title" class="form-control" type="text" placeholder="Event Title.." <%if (event){%> value="<%= event.title %>"<%}%> required>
 		</div>
 		<div class="form-group">
-			<input id="date" class="form-control" type="date" placeholder="Date.." <%if (event){%> value="<%= event.date %>"<%}%> required>
+			<input id="date" name="date" class="form-control" type="date" placeholder="Date.." required>
 		</div>
 		<div class="form-group">
-			<input id="time" class="form-control" type="text" placeholder="Time.." <%if (event){%> value="<%= event.time %>"<%}%> required>
+			<input id="time" name="time" class="form-control" type="text" placeholder="Time.." <%if (event){%> value="<%= event.time %>"<%}%> required>
 		</div>
 		<div class="form-group">
-			<input id="location" class="form-control" type="text" placeholder="Location.." <%if (event){%> value="<%= event.location %>"<%}%> required>
+			<input id="location" name="location" class="form-control" type="text" placeholder="Location.." <%if (event){%> value="<%= event.location %>"<%}%> required>
 		</div>
 		<div class="form-group">
-			<textarea id="brief" class="form-control" placeholder="Briefing.." required><%if(event){%><%=event.brief%><%}%></textarea>
+			<textarea id="brief" name="brief" class="form-control" placeholder="Briefing.." required><%if(event){%><%=event.brief%><%}%></textarea>
 		</div>
 		<div class="form-group">
-			<input type="checkbox" id="membersOnly">
+			<input type="checkbox" name="membersOnly" id="membersOnly">
 			<span>Members Only</span>
 		</div>
 		<div class="form-group">
-			<input type="checkbox" id="sentAsEmail">
+			<input type="checkbox" name="sentAsEmail" id="sentAsEmail">
 			<span>Also Send as Email</span>
+		</div>
+		<div class="form-group">
+			<label for="organizers"> Organizers:</label>
+			<input type="text" name="organizers" class="form-control" id="organizers" placeholder="Comma separated values e.g.: 5963b21e26993718b81fe969, 5963b21f26993718b81fe96a, 5963b26d26993718b81fe96d" required />
 		</div>
 		<% if (event) { %>
 			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
