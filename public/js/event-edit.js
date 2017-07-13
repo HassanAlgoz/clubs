@@ -9,12 +9,23 @@ $(function(){
     // Bind input to output preview
     markdownBind($('#brief'), $('#preview-brief'))
     textBind($('#title'), $('#preview-title'))
-    
 
+    // Fill in event organizers (they are ids)
+    if (event) {
+        $('#organizers').val(event.organizers)
+    }
+
+    // Format Date
+    let date = new Date(event.date);
+    $('#date').val(moment(date).format('YYYY-MM-DD'));
+    
+    
     if (!eventId) {
         $("#btn-create").on('click', function(e) {
             e.preventDefault();
             
+            console.log("organizers", commaSeparatedStringToArray($('#organizers').val()))
+
             $.ajax({
                 method: 'POST',
                 url: `/api/events?clubId=${clubId}`,
@@ -25,7 +36,8 @@ $(function(){
                     time: $('#time').val(),
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
-                    sentAsEmail: document.getElementById('sentAsEmail').checked
+                    sentAsEmail: document.getElementById('sentAsEmail').checked,
+                    organizers: commaSeparatedStringToArray($('#organizers').val())
                 },
                 success: function(data) {
                     // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
@@ -49,7 +61,8 @@ $(function(){
                     time: $('#time').val(),
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
-                    sentAsEmail: document.getElementById('sentAsEmail').checked
+                    sentAsEmail: document.getElementById('sentAsEmail').checked,
+                    organizers: commaSeparatedStringToArray($('#organizers').val())
                 },
                 success: function(data) {
                     // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
@@ -76,4 +89,3 @@ $(function(){
         })
     }
 });
-
