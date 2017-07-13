@@ -23,11 +23,7 @@ const eventSchema = new mongoose.Schema({
 	}],
 	condition: {type: String, default: 'open'},
 	membersOnly: { type: Boolean, default: false },
-	organizers: [{
-		user: {type: Schema.Types.ObjectId, ref: 'User'},
-		role: {type: String, default: ''},
-		_id: false
-	}]
+	organizers: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 
