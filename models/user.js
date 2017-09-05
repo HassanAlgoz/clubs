@@ -39,7 +39,7 @@ userSchema.statics.getRoleFromParam = function(req, res, next, clubId) {
 	if (req.user) {
 		for (let i = 0; i < req.user.memberships.length; i++) {
 			if (String(req.user.memberships[i].club) === String(clubId)) {
-				req.user.role = req.user.memberships[i].role
+                req.user.role = req.user.memberships[i].role
 				break;
 			}
 		}
@@ -52,7 +52,7 @@ userSchema.statics.getRoleFromQuery = function(req, res, next) {
 	if (req.user) {
 		for (let i = 0; i < req.user.memberships.length; i++) {
 			if (String(req.user.memberships[i].club) === String(clubId)) {
-				req.user.role = req.user.memberships[i].role
+                req.user.role = req.user.memberships[i].role
 				break;
 			}
 		}

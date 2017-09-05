@@ -1,9 +1,7 @@
-$(function(){
+(function(){
     
     console.log('club.js loaded')
-    const clubId = (club) ? club._id : null
-
-    console.log(club)
+    const clubId = club._id
     
     // Markdown
     $('#description').html(converter.makeHtml(club.description));
@@ -40,8 +38,8 @@ $(function(){
                 }
             });
         } else {
-            location.href = '/login'
+            location.href = `/auth/login`
         }
     })
 
-})
+})()
