@@ -43,46 +43,13 @@ router.get('/', (req, res, next) => {
 
 
 // POST
-router.post('/', User.canManage, (req, res, next) => {
+router.post('/', User.canManage, async (req, res, next) => {
+	let {clubId} = req.query
 
-	// Create event
-	Promise.all([new Event({
-		title: req.body.title,
-		brief: req.body.brief,
-		lastEditDate: Date(),
-		lastEditBy: req.user._id,
-		time: req.body.time,
-		location: req.body.location,
-		date: new Date(req.body.date) || Date(),
-		membersOnly: (req.body.membersOnly === 'true') ? true : false,
-		sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
-		organizers: req.body.organizers
-	}).save(),
-	Club.findById(req.query.clubId)
-	])
-	.then(([event, club]) => {
-		club.events.push(event._id)
-		return club.save()
-	}).then(() => {
-		res.sendStatus(201) // Created new resource
-	})
-	.catch(next)
-
-});
-
-
-// PUT
-router.put('/:eventId', User.canManage, (req, res, next) => {
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
-	console.log(req.body)
-
-	// Check if event belongs to this club
-	Club.findOne({ "events": eventId }).then((club) => {
-		if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
-		
-		// Update Event
-		return Event.findByIdAndUpdate(eventId, {
+	try {
+		// Create event
+		let event = await new Event({
+			image: req.body.image,
 			title: req.body.title,
 			brief: req.body.brief,
 			lastEditDate: Date(),
@@ -93,12 +60,47 @@ router.put('/:eventId', User.canManage, (req, res, next) => {
 			membersOnly: (req.body.membersOnly === 'true') ? true : false,
 			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
 			organizers: req.body.organizers
-		})
-	})
-	.then(() => {
-		res.sendStatus(204) // Successful and no content returned.
-	}).catch(next)
+		}).save()
+		let club = await Club.findById(clubId).exec()
+		club.events.push(event._id)
+		await club.save()
+		res.json(event)
+		return;
+	}
+	catch(err){next(err)}
+});
 
+
+// PUT
+router.put('/:eventId', User.canManage, async (req, res, next) => {
+	let {eventId} = req.params
+	let {clubId} = req.query
+
+	try {
+		// Check if event belongs to this club
+		let club = await Club.findOne({ "events": eventId }).exec()
+		
+		if (!club) throw new Error("404: No such club")
+		if (String(club._id) !== clubId) throw new Error("Event doesn't belong to this club!")
+		
+		// Update Event
+		let event = await Event.findByIdAndUpdate(eventId, {
+			image: req.body.image,
+			title: req.body.title,
+			brief: req.body.brief,
+			lastEditDate: Date(),
+			lastEditBy: req.user._id,
+			time: req.body.time,
+			location: req.body.location,
+			date: new Date(req.body.date) || Date(),
+			membersOnly: (req.body.membersOnly === 'true') ? true : false,
+			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
+			organizers: req.body.organizers
+		}).exec()
+		res.json(event)
+		return;
+	}
+	catch(err){next(err)}
 });
 
 
