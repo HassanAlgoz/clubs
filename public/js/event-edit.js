@@ -12,13 +12,11 @@ $(function(){
 
     // Fill in event organizers (they are ids)
     if (event) {
-        $('#organizers').val(event.organizers)
+        $('#organizers').val(event.organizers)   
+        // Format Date
+        let date = new Date(event.date);
+        $('#date').val(moment(date).format('YYYY-MM-DD'));
     }
-
-    // Format Date
-    let date = new Date(event.date);
-    $('#date').val(moment(date).format('YYYY-MM-DD'));
-    
     
     if (!eventId) {
         $("#btn-create").on('click', function(e) {
@@ -31,6 +29,7 @@ $(function(){
                 url: `/api/events?clubId=${clubId}`,
                 data: {
                     title: $('#title').val(),
+                    image: $('#image').val(),
                     brief: $('#brief').val(),
                     date: $('#date').val(),
                     time: $('#time').val(),
@@ -40,7 +39,7 @@ $(function(){
                     organizers: commaSeparatedStringToArray($('#organizers').val())
                 },
                 success: function(data) {
-                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                    location.href = `/clubs/${clubId}/events/${data._id}`
                 },
                 error: function(error) {
                     console.log(error);
@@ -56,6 +55,7 @@ $(function(){
                 url: `/api/events/${eventId}?clubId=${clubId}`,
                 data: {
                     title: $('#title').val(),
+                    image: $('#image').val(),
                     brief: $('#brief').val(),
                     date: $('#date').val(),
                     time: $('#time').val(),
@@ -65,7 +65,7 @@ $(function(){
                     organizers: commaSeparatedStringToArray($('#organizers').val())
                 },
                 success: function(data) {
-                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                    location.href = `/clubs/${clubId}/events/${data._id}`
                 },
                 error: function(error) {
                     console.log(error);

@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 
 // Event Schema
 const eventSchema = new mongoose.Schema({
+	image: {type: String, default: ''},
 	title: {type: String, default: ''},
 	brief: {type: String, default: ''},
 	publishDate: {type: Date, default: Date.now},
