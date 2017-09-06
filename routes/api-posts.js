@@ -1,5 +1,6 @@
 const router = require('express').Router();
-
+// util
+const utils = require('../utils.js')
 // Models
 const User = require('../models/user')
 const Club = require('../models/club')
@@ -44,26 +45,53 @@ router.get('/', (req, res, next) => {
 
 
 // POST
-router.post('/', User.canManage, (req, res, next) => {
+router.post('/', User.canManage, async (req, res, next) => {
+	let {clubId} = req.query
 
-	let clubId = req.query.clubId
-	Promise.all([new Post({
-		title: req.body.title,
-		content: req.body.content,
-		lastEditBy: req.user._id,
-		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
-	}).save(),
-	Club.findById(clubId)
-	])
-	.then(([post, club]) => {
+	let sentAsEmail = (req.body.sentAsEmail == 'true') ? true : false
+	try{
+		let post = new Post({
+			title: req.body.title,
+			content: req.body.content,
+			lastEditBy: req.user._id,
+			sentAsEmail: sentAsEmail
+		})
+		await post.save()
+		
+		let club = await Club.findById(clubId).populate('members', 'email').exec()
 		club.posts.push(post._id)
-		return club.save()
-	}).then(() => {
-		res.sendStatus(201) // Created new resource
-	})
-	.catch(next)
+		await club.save()
+		if (sentAsEmail) {
+			await sendEmailsToMembers(club, post)
+		}
+		res.json(post)
+		return;
+	}
+	catch(err){next(err)}
 
 });
+
+async function sendEmailsToMembers(club, post) {
+	let recepients = club.members.map(member => member.email)
+	let fromName = club.name.replace(/\sclub\s/i, "").trim() + " Club"
+	let html = utils.markdownToHTML(post.content)
+	console.log("recepients:", recepients)
+	let body = {
+		"apikey": process.env.EMAIL_API_KEY,
+		"from": process.env.EMAIL_FROM,
+		"fromName": fromName,
+		"to": recepients.join(';'),
+		"subject": post.title,
+		"bodyHtml": `
+			${html}
+			<h4><a href="${process.env.DOMAIN}/clubs/${club._id}/posts/${post._id}">Click to read more...</a></h4>
+		`,
+		"isTransactional": false // True, if email is transactional (non-bulk, non-marketing, non-commercial). Otherwise, false
+	}
+	if (!utils.sendEmail(body)) {
+		throw new Error("Couldn't Send Email")
+	}
+}
 
 
 // PUT

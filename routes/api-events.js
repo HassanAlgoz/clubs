@@ -1,9 +1,11 @@
 const router = require('express').Router();
-
+// util
+const utils = require('../utils.js')
 // Models
 const Event = require('../models/event');
 const User = require('../models/user');
 const Club = require('../models/club')
+
 
 // Attach 'role' in this club to the 'req.user' object
 router.use(User.getRoleFromQuery)
@@ -46,29 +48,58 @@ router.get('/', (req, res, next) => {
 router.post('/', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
+	let sentAsEmail = (req.body.sentAsEmail === 'true') ? true : false
+	let membersOnly = (req.body.membersOnly === 'true') ? true : false
+
 	try {
 		// Create event
 		let event = await new Event({
 			image: req.body.image,
 			title: req.body.title,
 			brief: req.body.brief,
-			lastEditDate: Date(),
+			lastEditDate: new Date(),
 			lastEditBy: req.user._id,
 			time: req.body.time,
 			location: req.body.location,
-			date: new Date(req.body.date) || Date(),
-			membersOnly: (req.body.membersOnly === 'true') ? true : false,
-			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
+			date: new Date(req.body.date) || new Date(),
+			membersOnly: membersOnly,
+			sentAsEmail: sentAsEmail,
 			organizers: req.body.organizers
 		}).save()
-		let club = await Club.findById(clubId).exec()
+		let club = await Club.findById(clubId).populate('members', 'email').exec()
 		club.events.push(event._id)
 		await club.save()
+		if (sentAsEmail) {
+			await sendEmailsToMembers(club, event)
+		}
 		res.json(event)
 		return;
 	}
 	catch(err){next(err)}
 });
+
+async function sendEmailsToMembers(club, event) {
+	let recepients = club.members.map(member => member.email)
+	let fromName = club.name.replace(/\sclub\s/i, "").trim() + " Club"
+	console.log("recepients:", recepients)
+	let body = {
+		"apikey": process.env.EMAIL_API_KEY,
+		"from": process.env.EMAIL_FROM,
+		"fromName": fromName,
+		"to": recepients.join(';'),
+		"subject": event.title,
+		"bodyHtml": `
+			<h1>${event.title}</h1>
+			<a href="${process.env.DOMAIN}/clubs/${club._id}/events/${event._id}">
+				<img src="${event.image}" alt="You should be seeing an image about the event instead of this text...">
+			</a>
+		`,
+		"isTransactional": false // True, if email is transactional (non-bulk, non-marketing, non-commercial). Otherwise, false
+	}
+	if (!utils.sendEmail(body)) {
+		throw new Error("Couldn't Send Email")
+	}
+}
 
 
 // PUT
@@ -88,11 +119,11 @@ router.put('/:eventId', User.canManage, async (req, res, next) => {
 			image: req.body.image,
 			title: req.body.title,
 			brief: req.body.brief,
-			lastEditDate: Date(),
+			lastEditDate: new Date(),
 			lastEditBy: req.user._id,
 			time: req.body.time,
 			location: req.body.location,
-			date: new Date(req.body.date) || Date(),
+			date: new Date(req.body.date) || new Date(),
 			membersOnly: (req.body.membersOnly === 'true') ? true : false,
 			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
 			organizers: req.body.organizers
