@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => res.render('index'))
 router.get('/clubs/:clubId', (req, res, next) => {
     let clubId = req.params.clubId;
 	Club.findById(clubId)
-		.populate('events', 'title date time location condition membersOnly')
+		.populate('events', 'title date time location condition membersOnly image')
 		.populate('posts', 'title publishDate')
 		.then((club) => {
 		res.render('club', {club})

@@ -1,8 +1,11 @@
+:root {
+	--green: #007d40;
+}
+  
+
 html {
 	height: 100%;
 }
-
-
 
 body {
 	margin: 0;
@@ -26,14 +29,14 @@ img {
 
 
 a {
-  color: #337ab7;
+  color: var(--green);
   text-decoration: none;
 }
 
 
 a:hover,
 a:focus {
-	color: #23527c;
+	color: #333;
 	text-decoration: underline;
 }
 
@@ -54,7 +57,7 @@ footer {
 }
 
 #navbar {
-	background-color: #007d40;
+	background-color: var(--green);
 	color: #fff;
 	font-weight: bold;
 	margin-bottom: 0;
@@ -96,8 +99,8 @@ a#logout:hover {
 }
 
 .btn-success {
-	border-color: #007d40;
-	background-color: #007d40;
+	border-color: var(--green);
+	background-color: var(--green);
 }
 
 .btn-success:hover {
@@ -106,7 +109,7 @@ a#logout:hover {
 }
 
 .text-success {
-	color: #007d40;
+	color: var(--green);
 }
 
 .vertical-center {
@@ -133,4 +136,15 @@ textarea {
 nav.navbar {
 	margin-bottom: 0;
 	border-radius: 0;
+}
+
+a.no-underline:hover {
+    text-decoration: none;
+}
+
+.green {
+    background-color: var(--green);
+    color: white;
+    font-weight: bold;
+    padding-left: 7px;
 }
