@@ -1,0 +1,19 @@
+{
+  "short_name": "KFUPM Clubs",
+  "name": "KFUPM Clubs",
+  "background_color": "#fff",
+  "theme_color" : "#262729",
+  "display": "standalone",
+  "description": "Be notified of KFUPM clubs' events through push notifications and email.",
+  "dir": "ltr",
+  "lang": "en-US",
+  "start_url": "/",
+  "Scope": "/",
+  "icons": [
+    {
+      "src": "/img/kfupm-clubs.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]  
+}
