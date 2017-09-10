@@ -24,7 +24,7 @@ $(function(){
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
-                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                    location.href = `/clubs/${clubId}/posts/${data._id}`
                 },
                 error: function(error) {
                     console.log(error);
@@ -47,7 +47,7 @@ $(function(){
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
-                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');
+                    location.href = `/clubs/${clubId}/posts/${data._id}`
                 },
                 error: function(error) {
                     console.log(error);
