@@ -24,7 +24,7 @@ router.get('/clubs/:clubId', (req, res, next) => {
 		res.render('club', {club})
 	}).catch(next)
 })
-router.get('/clubs/:clubId/edit', (req, res, next) => {
+router.get('/clubs/:clubId/edit', User.isPresident, (req, res, next) => {
     let clubId = req.params.clubId;
 	Club.findById(clubId).then((club) => {
 		res.render('club-edit', {club})
@@ -36,22 +36,29 @@ router.get('/club-new', (req, res, next) => {
 
 
 // Event ===================================================================
-router.get('/clubs/:clubId/events/:eventId', (req, res, next) => {
-    let eventId = req.params.eventId;
-	Event.findById(eventId).then((event) => {
+router.get('/clubs/:clubId/events/:eventId', async (req, res, next) => {
+	try {
+		let eventId = req.params;
+		let event = await Event.findById(eventId).exec()
 		res.render('event', {event})
-	}).catch(next)
+	}
+	catch(err){next(err)}
 })
-router.get('/clubs/:clubId/events/:eventId/edit', (req, res, next) => {
-    let eventId = req.params.eventId;
-	Event.findById(eventId).then((event) => {
-		res.render('event-edit', {event})
-	}).catch(next)
+router.get('/clubs/:clubId/events/:eventId/edit', User.canManage, async (req, res, next) => {
+    try {
+		let {clubId, eventId} = req.params;
+		let [club, event] = await Promise.all([
+			Club.findById(clubId).populate('members', 'username').exec(),
+			Event.findById(eventId).exec()
+		])
+		res.render('event-edit', {event: event, members: club.members})
+	}
+	catch(err){next(err)}
 })
-router.get('/clubs/:clubId/event-new', (req, res, next) => {
+router.get('/clubs/:clubId/event-new', User.canManage, (req, res, next) => {
     res.render('event-edit', {event:null})
 })
-router.get('/clubs/:clubId/events/:eventId/attendance', (req, res, next) => {
+router.get('/clubs/:clubId/events/:eventId/attendance', User.canManage, (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId)
 		.populate('promisers.user', '_id username enrollment major')
@@ -68,18 +75,18 @@ router.get('/clubs/:clubId/posts/:postId', (req, res, next) => {
 		res.render('post', {post})
 	}).catch(next)
 })
-router.get('/clubs/:clubId/posts/:postId/edit', (req, res, next) => {
+router.get('/clubs/:clubId/posts/:postId/edit', User.canManage, (req, res, next) => {
     let postId = req.params.postId;
 	Post.findById(postId).then((post) => {
 		res.render('post-edit', {post})
 	}).catch(next)
 })
-router.get('/clubs/:clubId/post-new', (req, res, next) => {
+router.get('/clubs/:clubId/post-new', User.canManage, (req, res, next) => {
     res.render('post-edit', {post:null})
 })
 
 // Profile ====================================================================
-router.get('/profile', (req, res, next) => {
+router.get('/profile', User.isLoggedIn, (req, res, next) => {
 	User.findById(req.user._id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile', {
@@ -94,7 +101,7 @@ router.get('/profile', (req, res, next) => {
 	})).catch(next)
 })
 
-router.get('/profile-edit', (req, res, next) => {
+router.get('/profile-edit', User.isLoggedIn, (req, res, next) => {
 	User.findById(req.user._id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile-edit', {
@@ -109,7 +116,7 @@ router.get('/profile-edit', (req, res, next) => {
 	})).catch(next)
 })
 
-router.get('/profile/:id', (req, res, next) => {
+router.get('/profile/:id', User.isLoggedIn, (req, res, next) => {
 	User.findById(req.params.id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile', {
