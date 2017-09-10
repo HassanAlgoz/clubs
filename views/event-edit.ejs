@@ -1,5 +1,8 @@
 	<% include ./partials/head.ejs %>
 	<title>Event</title>
+	<link href="/css/lib/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/lib/tokenfield-typeahead.min.css" rel="stylesheet">
+	<link href="/css/lib/bootstrap-tokenfield.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/event-edit.css">
 	
 </head>
@@ -42,7 +45,7 @@
 		</div>
 		<div class="form-group">
 			<label for="organizers"> Organizers:</label>
-			<input type="text" name="organizers" class="form-control" id="organizers" placeholder="Comma separated values e.g.: 5963b21e26993718b81fe969, 5963b21f26993718b81fe96a, 5963b26d26993718b81fe96d" required />
+			<input type="text" name="organizers" class="form-control" id="organizers" <%if (event){%> value="<%=event.organizers%>" <%}%> required />
 		</div>
 		<% if (event) { %>
 			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
@@ -57,10 +60,15 @@
 	<script>
 		const event = <%- JSON.stringify(event) %>
 		const user = <%- JSON.stringify(user) %>
-		if (user) {user.role = "<%=user.role%>"}
+		const members = <%- JSON.stringify(members) %>
+		<%if (user){%>
+			user.role = "<%=user.role%>"
+		<%}%>
 	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
+	<script src="/js/lib/bootstrap-tokenfield.min.js"></script>
+	<script src="/js/lib/jquery-ui.min.js"></script>
 	<script src="/js/event-edit.js"></script>
 </body>
 </html>
