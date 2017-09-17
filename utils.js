@@ -23,6 +23,14 @@ module.exports = {
         return converter.makeHtml(markdown);
     },
 
+    getValidationErrors: async function(req) {
+        let errors = await req.getValidationResult()
+        if (!errors.isEmpty()) {
+            return errors.array().map(err => `Field ${err.param}: ${err.msg}`)
+        }
+        return [];
+    },
+
     // Note: You can send messages to up to 1,000 devices in a single request.
     // If you provide an array with over 1,000 registration tokens, the request will fail with a messaging/invalid-recipient error.
     pushNotification: function(registrationTokens, notification) {
