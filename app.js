@@ -15,7 +15,7 @@ const errorHandler = require('errorhandler');
 const chalk = require('chalk')
 const dotenv = require('dotenv');
 const expressValidator = require('express-validator');
-// const lusca = require('lusca'); // security middleware
+const lusca = require('lusca'); // security middleware
 
 // Models
 const User = require('./models/user')
@@ -62,14 +62,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
 app.use(express.static(path.join(__dirname, 'public')));
+
+let cookie = {}
+if (app.get('env') === 'production') {
+    app.set('trust proxy', 1); // trust first proxy
+    // serve secure cookies
+    cookie.secure = true
+    cookie.httpOnly = true
+    cookie.expires = new Date(Date.now() + 60 * 60 * 1000) // 1 hour;
+}
 app.use(session({
+    name: 'sessionId',
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: false, // don't create session until something stored 
-    resave: false, //don't save session if unmodified 
+    saveUninitialized: false, // don't create sessions for not logged in users
+    resave: false, //don't save session if unmodified
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
         ttl: 1 * 24 * 60 * 60 // = 14 days. Default 
-    })
+    }),
+    cookie: cookie
 }))
 app.use(flash());
 
@@ -80,8 +91,16 @@ require('./config/passport')(passport); // pass passport for configuration
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
+app.disable('x-powered-by')
+app.use(lusca({
+    // csp: { /* ... */},
+    xframe: 'SAMEORIGIN',
+    p3p: 'ABCDEF',
+    hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
+    xssProtection: true,
+    nosniff: true,
+    referrerPolicy: 'same-origin'
+}));
 
 // Pass 'req.user' as 'user' to ejs templates
 app.use((req, res, next) => {
@@ -101,7 +120,7 @@ app.use('/auth', require('./routes/auth'))
 app.use('/', require('./routes/index'))
 
 
-// error handling middleware should be loaded after the loading the routes
+// error handling middleware should be loaded after loading the routes
 if (app.get('env') === 'development') {
     app.use(errorHandler())
 }
