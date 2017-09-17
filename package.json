@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "watch": "nodemon -e js --watch ./routes app.js",
-    "sw": "sw-precache --config=./config/precache.js --verbose"
+    "watch": "nodemon -e js --watch ./routes app.js"
   },
   "dependencies": {
     "bcrypt-nodejs" : "latest",
