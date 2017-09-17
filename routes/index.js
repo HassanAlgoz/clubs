@@ -1,5 +1,4 @@
 const router = require('express').Router()
-
 // Models
 const Club = require('../models/club')
 const Event = require('../models/event')
@@ -38,7 +37,7 @@ router.get('/club-new', (req, res, next) => {
 // Event ===================================================================
 router.get('/clubs/:clubId/events/:eventId', async (req, res, next) => {
 	try {
-		let eventId = req.params;
+		let {eventId} = req.params;
 		let event = await Event.findById(eventId).exec()
 		res.render('event', {event})
 	}
@@ -61,7 +60,7 @@ router.get('/clubs/:clubId/event-new', User.canManage, (req, res, next) => {
 router.get('/clubs/:clubId/events/:eventId/attendance', User.canManage, (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId)
-		.populate('promisers.user', '_id username enrollment major')
+		.populate('promisers.user', '_id username major KFUPMID enrollment')
 		.then((event) => {
 		res.render('event-attendance', {event})
 	}).catch(next)
