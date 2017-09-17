@@ -45,7 +45,7 @@
 		</div>
 		<div class="form-group">
 			<label for="organizers"> Organizers:</label>
-			<input type="text" name="organizers" class="form-control" id="organizers" <%if (event){%> value="<%=event.organizers%>" <%}%> required />
+			<input type="text" name="organizers" class="form-control" id="organizers" <%if (event){%> value="<%=members.map(m => `${m.username} (${m._id})`)%>" <%}%> required />
 		</div>
 		<% if (event) { %>
 			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
