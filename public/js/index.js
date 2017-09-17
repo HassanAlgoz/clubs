@@ -43,5 +43,20 @@ $(function(){
             `); 
         }
     });
+
     
+    // how launched...
+    const howLaunched = window.location.search.substring(1).split('=')[0];
+    if (howLaunched === 'homescreen') {
+        console.log('homescreen')
+        // const welcome = document.getElementById('welcome-back');
+        // welcome.style.display = 'block';
+        // welcome.classList.remove('isPaused');
+    }
+
+    // Service Worker
+    navigator.serviceWorker.register('./sw.js', {scope: './'})
+    .then(reg => console.log('SW registered!', reg))
+    .catch(err => console.log('Boo!', err));
+  
 });
