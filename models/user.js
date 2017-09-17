@@ -12,20 +12,21 @@ const userSchema = new mongoose.Schema({
     enrollment: Number,
     KFUPMID: Number,
     memberships: [
-    {
-        club: { type: Schema.Types.ObjectId, ref: 'Club' },
-        role: { type: String, default: "unapproved" },
-        date: { type: Date, default: Date.now },
-        _id: false
-    }
+        {
+            club: { type: Schema.Types.ObjectId, ref: 'Club' },
+            role: { type: String, default: "unapproved" },
+            date: { type: Date, default: Date.now },
+            _id: false
+        }
     ],
+    // notificationToken: String,
     isAdmin: Boolean
 }, { timestamps: true });
 
 
 // methods ======================
 // generating a hash
-userSchema.methods.generateHash = function(password) {
+userSchema.statics.generateHash = function(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 

@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
+const utils = require('../utils')
 
 // Models
 const User = require('../models/user');
@@ -7,7 +8,79 @@ const ObjectId = require('mongoose').Schema.Types.ObjectId
 
 
 // =========================================================================
-module.exports = function(passport) {
+module.exports = function(passport) {   
+    // =========================================================================
+    // LOCAL LOGIN =============================================================
+    // =========================================================================
+    passport.use('local-login', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'email',
+        passwordField : 'password',
+        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+    }, async function(req, email, password, done) {
+        try {
+            let user = await User.findOne({email: email}).exec();
+            
+            if (!user)
+                return done(null, false, req.flash('loginMessage', 'No user found.'));
+            
+            if (!user.validPassword(password))
+                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+
+            return done(null, user)
+
+        }catch(err){done(err)}
+    }));
+
+    // =========================================================================
+    // LOCAL SIGNUP ============================================================
+    // =========================================================================
+    passport.use('local-signup', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'email',
+        passwordField : 'password',
+        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+    }, async function(req, email, password, done) {
+
+        req.checkBody('email',    'must be a valid email.').isEmail()
+        req.checkBody('password', 'a minimum length of 6 characters.').len({min: 6})
+        // req.checkBody('KFUPMID', 'must be like s201314740.').matches(/s?[0-9]{9}/i)
+        // req.sanitizeBody('KFUPMID').trim()
+        let errors = await utils.getValidationErrors(req)
+        if (errors.length > 0) {
+            return done(null, false, req.flash('errors', errors));
+        }
+        
+        // let id = req.body.KFUPMID || ""
+        // // Drop the s if its there
+        // if (id.charAt(0).toLowerCase() === 's') {
+        //     id = id.slice(1)
+        // }
+
+        // if the user is already logged in:
+        if (req.user)
+            return done(null, req.user);
+        process.nextTick(async function() {
+            try {
+                let user = await User.findOne({email : email}).exec()
+                if (user)
+                    return done(null, false, req.flash('errors', 'That email is already taken.'));
+                // create the user
+                let newUser = new User({
+                    email: email,
+                    password: User.generateHash(password),
+                    username: req.body.username,
+                    major: req.body.major,
+                    KFUPMID: (id)? Number(id) : 0
+                    // notificationToken: req.body.notificationToken
+                })
+                newUser = await newUser.save()
+                return done(null, newUser);
+            }
+            catch(err){done(err)};
+        })
+    }));
+
     // passport session setup ==================================================
     // =========================================================================
     // required for persistent login sessions
@@ -24,98 +97,5 @@ module.exports = function(passport) {
             done(err, user);
         });
     });
-
-    // =========================================================================
-    // LOCAL LOGIN =============================================================
-    // =========================================================================
-    passport.use('local-login', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-    },
-    function(req, email, password, done) {
-        // asynchronous
-        process.nextTick(function() {
-            User.findOne({email : email}, function(err, user) {
-                // if there are any errors, return the error
-                if (err)
-                    return done(err);
-
-                // if no user is found, return the message
-                if (!user)
-                    return done(null, false, req.flash('loginMessage', 'No user found.'));
-
-                if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-
-                // all is well, return user
-                else
-                    return done(null, user);
-            });
-        });
-    }));
-
-    // =========================================================================
-    // LOCAL SIGNUP ============================================================
-    // =========================================================================
-    passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-    },
-    function(req, email, password, done) {
-        // Sanitize KFUPMID
-        let id = String(req.body.KFUPMID)
-        // Trim
-        id = id.trim()
-        // Drop the s if its there
-        if (id.charAt(0).toLowerCase() === 's') {
-            id = id.slice(1)
-        }
-        // Pass if the id is a number
-        if (isNaN(Number(id))) {
-            return done(new Error("KFUPMID passed is not valid"))
-        }
-        req.body.KFUPMID = id
-
-        // asynchronous
-        process.nextTick(function() {
-            // if the user is already logged in:
-            if (req.user) {
-                // user is logged in and already has a local account. Ignore signup. (You should log out before trying to create a new account, user!)
-                return done(null, req.user);
-            } else {
-                User.findOne({email : email}, function(err, user) {
-                    // if there are any errors, return the error
-                    if (err)
-                        return done(err);
-
-                    // check to see if theres already a user with that email
-                    if (user) {
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-                    } else {
-
-                        // create the user
-                        var newUser = new User()                          
-                        
-                        newUser.email = email
-                        newUser.password = newUser.generateHash(password)
-                        newUser.username = req.body.username
-                        newUser.major = req.body.major
-                        newUser.KFUPMID = Number(req.body.KFUPMID)
-
-                        newUser.save(function(err) {
-                            if (err)
-                                return done(err);
-                            return done(null, newUser);
-                        });
-                    }
-                });
-            }
-        });
-
-    }));
 };
 
