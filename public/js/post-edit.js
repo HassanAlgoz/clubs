@@ -26,8 +26,13 @@ $(function(){
                 success: function(data) {
                     location.href = `/clubs/${clubId}/posts/${data._id}`
                 },
-                error: function(error) {
-                    console.log(error);
+                error: function(response) {
+                    let {errors} = response.responseJSON
+                    console.error("Errors:", errors)
+                    $('#errors').html(``)
+                    errors.forEach(err => {
+                      $('#errors').append(`<div class="alert alert-danger">${err}</div>`)
+                    })
                 }
             })
         })
