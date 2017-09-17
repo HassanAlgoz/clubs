@@ -22,31 +22,41 @@ router.get('/:eventId', (req, res, next) => {
 
 
 // GET ALL
-router.get('/', (req, res, next) => {
-	
-	if (req.query.clubId) {
-		// Get ALL Members of some Club
-		Club.findById(req.query.clubId)
-			.populate('events')
-			.then((club) => {
-			res.json({events: club.events})
-		}).catch(next)
-	} else {
-		return Promise.all([
-			Event.find({})
-				.sort({date: -1}),
-			Event.count()
-		]).then(([events, count]) => {
-			res.json({events, count})
-		}).catch(next)
-	}
+router.get('/', async (req, res, next) => {
 
+	try {
+		if (req.query.clubId) {
+			// Get ALL Members of some Club
+			let club = await Club.findById(req.query.clubId).populate('events').exec()
+			let events = await Event.populate(club.events, {path: "organizers", select: "username"});
+			let count = events.length;
+			res.json({events, count})
+		} else {
+			let [events, count] = await Promise.all([
+				Event.find({}).sort({date: -1}).exec(),
+				Event.count().exec()
+			])
+			res.json({events, count})
+		}
+	}
+	catch(err){next(err)}
 });
 
 
 // POST
 router.post('/', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
+
+	req.checkBody('title',   "can't be empty").notEmpty()
+	req.checkBody('image', "can't be empty").notEmpty()
+	req.checkBody('time', "can't be empty").notEmpty()
+	req.checkBody('location', "can't be empty").notEmpty()
+
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
 
 	let sentAsEmail = (req.body.sentAsEmail === 'true') ? true : false
 	let membersOnly = (req.body.membersOnly === 'true') ? true : false
@@ -106,6 +116,17 @@ async function sendEmailsToMembers(club, event) {
 router.put('/:eventId', User.canManage, async (req, res, next) => {
 	let {eventId} = req.params
 	let {clubId} = req.query
+
+	req.checkBody('title',   "can't be empty").notEmpty()
+	req.checkBody('image', "can't be empty").notEmpty()
+	req.checkBody('time', "can't be empty").notEmpty()
+	req.checkBody('location', "can't be empty").notEmpty()
+
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
 
 	try {
 		// Check if event belongs to this club
@@ -237,25 +258,23 @@ router.put('/:eventId/promise', (req, res, next) => {
 
 
 // Update attendance
-router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
+router.put('/:eventId/attendance', User.canManage, async (req, res, next) => {
 
 	let eventId = req.params.eventId
 	let clubId = req.query.clubId
 
-	let updatedUsers = req.body.updatedUsers.split(",");
-	let updatedAttendance = req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false);
+	let updatedUsers = (req.body.updatedUsers)? req.body.updatedUsers.split(",") : null;
+	let updatedAttendance = (req.body.updatedAttendance)? req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false) : null;
 	console.log(updatedUsers)
 	console.log(updatedAttendance)
 
-	if (updatedUsers && updatedAttendance) {
-
-		// Check if event belongs to this club
-		Club.findOne({ "events": eventId }).then((club) => {
+	try {
+		if (updatedUsers && updatedAttendance) {
+			// Check if event belongs to this club
+			let club = await Club.findOne({ "events": eventId })
 			if (!(club && String(club._id) === clubId)) return next(new Error("Event doesn't belong to this club!"))
 			
-			return Event.findById(eventId)
-		})
-		.then((event) => {
+			let event = await Event.findById(eventId)
 			let updatePromises = []
 			for(let i = 0; i < updatedUsers.length; ++i) {
 				// According to [https://stackoverflow.com/questions/15691224/mongoose-update-values-in-array-of-objects]
@@ -265,16 +284,13 @@ router.put('/:eventId/attendance', User.canManage, (req, res, next) => {
 					}})
 				)
 			}
-			return Promise.all(updatePromises)
-		})
-		.then(() => {
-			console.log('updated attendance')
-			res.sendStatus(204)
-		})
-	} else {
-		console.log('invalid attendance update!')
-		res.sendStatus(304)
+			await Promise.all(updatePromises)
+			res.sendStatus(200)
+		} else {
+			res.status(400).json({errors: ['Invalid attendance update!']})
+		}	
 	}
+	catch(err){next(err)}
 })
 
 

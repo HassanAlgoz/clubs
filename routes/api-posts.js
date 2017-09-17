@@ -48,6 +48,15 @@ router.get('/', (req, res, next) => {
 router.post('/', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
+	req.checkBody('title',   "can't be empty").notEmpty()
+	req.checkBody('content', "can't be empty").notEmpty()
+
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
+
 	let sentAsEmail = (req.body.sentAsEmail == 'true') ? true : false
 	try{
 		let post = new Post({
@@ -95,7 +104,17 @@ async function sendEmailsToMembers(club, post) {
 
 
 // PUT
-router.put('/:postId', User.canManage, (req, res, next) => {
+router.put('/:postId', User.canManage, async (req, res, next) => {
+	
+	req.checkBody('title',   "can't be empty").notEmpty()
+	req.checkBody('content', "can't be empty").notEmpty()
+
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
+
 	let postId = req.params.postId
 	console.log(req.body)
 	Post.findByIdAndUpdate(postId, {
