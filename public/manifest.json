@@ -10,7 +10,7 @@
   "start_url": "/",
   "Scope": "/",
   "icons": [
-    {"src": "/img/logo192x192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "/img/logo512x512.png", "sizes": "512x512", "type": "image/png"}
+    {"src": "/img/icon192x192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/img/icon512x512.png", "sizes": "512x512", "type": "image/png"}
   ]
 }
