@@ -34,7 +34,7 @@ $(function () {
                 </td>
                 <td>${event.promisers[i].user.username}</td>
                 <td>${event.promisers[i].user.major}</td>
-                <td>${event.promisers[i].user.enrollment}</td>
+                <td>${event.promisers[i].user.KFUPMID}</td>
             </tr>
         `)
 
@@ -67,16 +67,15 @@ $(function () {
                 updatedUsers: updatedUsers.join(','),
                 updatedAttendance: updatedAttendance.join(',')
             },
-            success: function (data) {
-                // location.href= `/club/${clubId}/event/${eventId}`;
+            success: () => {
+                let message = "Successfully updated attendance"
+                $('#btn-submit').replaceWith(`<span class="text-success">${message}</span>`);
                 // location.reload();
-                $('#btn-submit').replaceWith(`<span class="text-success">Successfully Updated Attendance!</span>`);
-                console.log("sucessfully updated attendance!");
             },
-            error: function (error) {
-                $('#btn-submit').replaceWith(`<span class="text-danger">Error: ${error.message}</span>`);
-                console.log("something went wrong");
-                console.log(error);
+            error: (response) => {
+                let {errors} = response.responseJSON;
+                $('#btn-submit').replaceWith(`<span class="text-danger">Errors: ${errors}</span>`);
+                console.log("Errors:", errors);
             }
         });
 

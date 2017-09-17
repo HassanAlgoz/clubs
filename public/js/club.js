@@ -14,7 +14,7 @@
         let date = new Date(club.events[i].date);
         let formattedDate = moment(date).fromNow()
         $('#events').append(`
-            <div class="col-md-6">
+            <div class="col-sm-6 col-md-4">
                 <a href="/clubs/${clubId}/events/${club.events[i]._id}" class="no-underline">
                     <div class="thumbnail">
                         <img src="${club.events[i].image}" alt="Image" class="center-block img-responsive">

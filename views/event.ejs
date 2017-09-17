@@ -34,10 +34,9 @@
 	<script>
 		const event = <%- JSON.stringify(event) %>
 		const user = <%- JSON.stringify(user) %>
-		<% if (user) { %>
-			user.role = <%- JSON.stringify(user.role) %>
-		<% } %>
-		console.log(event)
+		<%if (user){%>
+			user.role = "<%=user.role%>"
+		<%}%>
 	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="/js/event.js"></script>
