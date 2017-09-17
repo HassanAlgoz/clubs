@@ -1,14 +1,18 @@
 const router = require('express').Router()
 const passport = require('passport');
-
+const lusca = require('lusca')
 // Models
 const Club = require('../models/club');
 const User = require('../models/user');
 
+router.use(lusca.csrf())
 
 //  Signup ====================================================================
 router.get('/signup', function(req, res) {
-	res.render('signup', { message: req.flash('signupMessage') });
+	res.render('signup', {
+		errors: req.flash('errors'),
+		_csrf: req.csrfToken()
+	});
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
@@ -22,7 +26,10 @@ router.get('/login', (req, res, next) => {
 	if (req.user) {
 		res.redirect('/')
 	} else {
-		res.render('login', { message: req.flash('loginMessage') })
+		res.render('login', {
+			message: req.flash('loginMessage'),
+			_csrf: req.csrfToken()
+		})
 	}
 })
 

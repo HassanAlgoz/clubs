@@ -7,12 +7,12 @@
 	<% include ./partials/navbar.ejs %>
 	<div class="container">	
 		<div class="row">
+			<% errors.forEach(msg => {%>
+				<div class="alert alert-danger"><%=msg%></div>
+			<%})%>
 			<div class="col-md-4 col-md-offset-4">
 				<h1>Signup</h1>
 				<form method="POST">
-					<div class="form-group">
-						<input type="email" name='email' placeholder='Email' class="form-control" required>
-					</div>
 					<div class="form-group">
 						<input type="text" name='username' placeholder='Username' class="form-control" maxlength="25" required autofocus>
 					</div>
@@ -23,11 +23,16 @@
 						<input type="password" name='password' placeholder='Password' class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="text" name='major' placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required>
+						<input type="email" name='email' placeholder='Email' class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="text" name='KFUPMID' placeholder='KFUPM ID' class="form-control" maxlength="10" required>
+						<input type="text" name='major' placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required>
 					</div>
+					<!-- <div class="form-group">
+						<input type="text" name='KFUPMID' placeholder='KFUPM ID' class="form-control" maxlength="10" required>
+					</div> -->
+					<!-- <input type="hidden" id="notificationToken" name="notificationToken" value=""> -->
+
 					<!-- <div class="form-group">
 						<label for="enrollment">Date of enrollment</label>
 						<select name="enrollment" id="enrollment">
@@ -36,6 +41,7 @@
 							}
 						</select>
 					</div> -->
+					<input type="hidden" name="_csrf" value="<%=_csrf%>">
 					<button type="submit" class="btn btn-success">Signup</button>
 				</form>
 				<h5>Or <a href="/login">Login</a></h5>
@@ -45,5 +51,7 @@
 
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>
+	<!-- <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script> -->
+	<!-- <script src="/js/signup.js"></script> -->
 </body>
 </html>
