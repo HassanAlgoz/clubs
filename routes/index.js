@@ -54,13 +54,15 @@ router.get('/clubs/:clubId/events/:eventId/edit', User.canManage, async (req, re
 	}
 	catch(err){next(err)}
 })
-router.get('/clubs/:clubId/event-new', User.canManage, (req, res, next) => {
-    res.render('event-edit', {event:null})
+router.get('/clubs/:clubId/event-new', User.canManage, async (req, res, next) => {
+	let {clubId} = req.params;
+	let club = await Club.findById(clubId).populate('members', 'username').exec()
+    res.render('event-edit', {event:null, members: club.members})
 })
 router.get('/clubs/:clubId/events/:eventId/attendance', User.canManage, (req, res, next) => {
     let eventId = req.params.eventId;
 	Event.findById(eventId)
-		.populate('promisers.user', '_id username major KFUPMID enrollment')
+		.populate('promisers.user', '_id username major enrollment')
 		.then((event) => {
 		res.render('event-attendance', {event})
 	}).catch(next)
@@ -85,7 +87,7 @@ router.get('/clubs/:clubId/post-new', User.canManage, (req, res, next) => {
 })
 
 // Profile ====================================================================
-router.get('/profile', User.isLoggedIn, (req, res, next) => {
+router.get('/profile', [User.isLoggedIn, User.isConfirmed], (req, res, next) => {
 	User.findById(req.user._id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile', {
@@ -100,7 +102,7 @@ router.get('/profile', User.isLoggedIn, (req, res, next) => {
 	})).catch(next)
 })
 
-router.get('/profile-edit', User.isLoggedIn, (req, res, next) => {
+router.get('/profile-edit', [User.isLoggedIn, User.isConfirmed], (req, res, next) => {
 	User.findById(req.user._id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile-edit', {
@@ -115,7 +117,7 @@ router.get('/profile-edit', User.isLoggedIn, (req, res, next) => {
 	})).catch(next)
 })
 
-router.get('/profile/:id', User.isLoggedIn, (req, res, next) => {
+router.get('/profile/:id', [User.isLoggedIn, User.isConfirmed], (req, res, next) => {
 	User.findById(req.params.id)
 		.populate('memberships.club')
 		.then((user) => res.render('profile', {
