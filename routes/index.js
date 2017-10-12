@@ -14,15 +14,8 @@ router.get('/', (req, res, next) => res.render('index'))
 
 
 // Club ====================================================================
-router.get('/clubs/:clubId', (req, res, next) => {
-    let clubId = req.params.clubId;
-	Club.findById(clubId)
-		.populate('events', 'title date time location condition membersOnly image')
-		.populate('posts', 'title publishDate')
-		.then((club) => {
-		res.render('club', {club})
-	}).catch(next)
-})
+router.get('/clubs/:clubId', (req, res, next) => res.render('club'));
+
 router.get('/clubs/:clubId/edit', User.isPresident, (req, res, next) => {
     let clubId = req.params.clubId;
 	Club.findById(clubId).then((club) => {

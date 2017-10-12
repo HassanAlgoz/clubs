@@ -1,7 +1,12 @@
 :root {
+	/* User Defined Values */
 	--green: #007d40;
 	--red: rgb(255, 145, 0);
 }
+
+/* Notes on CSS
+	We are currently using bootstrap, but feel free to use whatever you can be creative with.
+*/
   
 
 html {

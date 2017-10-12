@@ -1,47 +1,51 @@
 	<% include partials/head.ejs %>
 	<title>Club</title>
 	<link rel="stylesheet" href="/css/club.css">
-
 </head>
 <body>
 
 	<% include ./partials/navbar.ejs %>
 
-	<div class="container" id="section1">
-		<img id="logo" src="<%if (club) {%><%=club.logo%><%}%>" class="img-responsive center-block" alt="<%=club.name%>">
+	<!-- We are using Bootstrap 3 -->
+	<div class="container" id="content">
+		<img id="logo" src="" class="img-responsive center-block" alt="Club Logo">
+		<h3 id="name"></h3>
+		<h5><span id="members-count"></span> Members</h5>
 		
 		<hr/>
 		<div class="row">
 			<div class="col-sm-6 col-md-8">
 				<h3 class="text-center">Events</h3>
-				<div id="events"></div>
+				<div id="events">
+					<!-- Events -->
+				</div>
 			</div>
 			<div class="col-sm-6 col-md-4">
 				<h3 class="text-center">Posts</h3>
-				<div id="posts"></div>
+				<div id="posts">
+					<!-- Posts -->
+				</div>
 			</div>
 		</div>
 		
-		<hr>
+		<hr/>
 
-		<div id="description"></div>
+		<div id="description">
+			<!-- Description -->
+		</div>
 
-		<div id="join"></div>
-
+		<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i> Join Club</button>
+		
 	</div>
 
-
-	
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>
-	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
 	<script>
-		const club = <%- JSON.stringify(club) %>
+		// This is essential to recognize user role
 		const user = <%- JSON.stringify(user) %>
 		<%if (user) {%>
 			if (user) {user.role = "<%=user.role%>"}
 		<%}%>
-		
 	</script>
 	<script src="/js/club.js"></script>
 </body>

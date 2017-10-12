@@ -10,15 +10,19 @@ const Post = require('../models/post');
 router.param('clubId', User.getRoleFromParam)
 
 // GET
-router.get('/:clubId', (req, res, next) => {
-
-	let clubId = req.params.clubId;
-	Club.findById(clubId)
-		.populate('events posts')
-		.then((club) => {
+router.get('/:clubId', async (req, res, next) => {
+	let {clubId} = req.params;
+	try {
+		let club = await Club.findById(clubId)
+		.populate('events', 'title date time location condition membersOnly image')
+		.populate('posts', 'title publishDate')
+		.exec()
+		if (!club) {
+			// return res.status(404).send(`Error finding club with id: ${clubId}`);
+			return res.sendStatus(404);
+		}
 		res.json({club})
-	}).catch(next)
-
+	}catch(err){next(err)}
 });
 
 
