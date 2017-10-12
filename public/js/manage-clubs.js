@@ -43,7 +43,7 @@ $(function () {
                 $('td.last select').on('change', {i: i}, (e) => {
                     let clubId = clubs[e.data.i]._id
                     $.ajax({
-                        url: `/api/clubs/${clubId}`,
+                        url: `/api/clubs/${clubId}/condition`,
                         method: 'PUT',
                         data: {
                             condition: e.target.value

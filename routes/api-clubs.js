@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const utils = require('../utils')
 // Models
 const Club = require('../models/club');
 const User = require('../models/user');
@@ -37,9 +37,15 @@ router.get('/', (req, res, next) => {
 
 
 // POST
-router.post('/', User.isAdmin, (req, res, next) => {
+router.post('/', User.isAdmin, async (req, res, next) => {
 
-	console.log(req.body);
+	req.checkBody('name', "can't be empty").notEmpty()
+
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
 
 	let club = new Club({
 		name: req.body.name,
@@ -65,13 +71,26 @@ router.post('/', User.isAdmin, (req, res, next) => {
 
 
 // PUT
-router.put('/:clubId', User.canManage, (req, res, next) => {
+router.put('/:clubId', User.canManage, async (req, res, next) => {
 	// NOTE: User.canManage doesn't include Admin
-	let clubId = req.params.clubId
-	console.log(req.body)
-	Club.findByIdAndUpdate(clubId, req.body).then(() => {
+	req.checkBody('name', "can't be empty").notEmpty()
+	req.checkBody('logo')
+		.notEmpty().withMessage("can't be empty")
+		.isURL().withMessage("must be a url")
+	req.checkBody('description', "can't be empty").notEmpty()
+	
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		res.status(400).json({errors: errors})
+		return;
+	}
+	
+	try {
+		let {clubId} = req.params
+		await Club.findByIdAndUpdate(clubId, req.body).exec()
 		res.sendStatus(204) // Successful and no content returned.
-	}).catch(next)
+	}
+	catch(err){next(err)}
 });
 
 
@@ -92,10 +111,18 @@ router.delete('/:clubId', User.isAdmin, (req, res, next) => {
 	.catch(next)
 });
 
-
+// Condition approved/unapproved
+router.put('/:clubId/condition', User.isAdmin, async (req, res, next) => {
+	try {
+		let {clubId} = req.params
+		await Club.findByIdAndUpdate(clubId, {condition: req.body.condition}).exec()
+		res.sendStatus(204) // Successful and no content returned.
+	}
+	catch(err){next(err)}
+});
 
 // User Joins club ==============================================================
-router.put('/:clubId/join', User.isLoggedIn, (req, res, next) => {
+router.put('/:clubId/join', [User.isLoggedIn, User.isConfirmed], (req, res, next) => {
 	
 	let clubId = req.params.clubId
 	Club.findById(clubId).then((club) => {
@@ -128,6 +155,25 @@ router.put('/:clubId/kick/:userId', User.isPresident, (req, res, next) => {
 
 })
 
+// Send Notifications
+// router.get('/:clubId/send', async (req, res, next) => {
+// 	let {clubId} = req.params
+// 	try {
+// 		let club = await Club.findById(clubId).populate('members', 'notificationToken').exec()
+// 		let registrationTokens = club.members
+// 			.map(member => member.notificationToken)
+// 			.filter(notification => typeof notification !== undefined)
+// 		if (registrationTokens.length > 0) {
+// 			utils.pushNotification(registrationTokens,  {
+// 				title: "$GOOG up 1.43% on the day",
+// 				body: "$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day."
+// 			})
+// 			return res.send("Notifications Sent");
+// 		}
+// 		res.send("No Registered Tokens...");
+// 	}
+// 	catch(err){next(err)}
+// })
 
 
 
