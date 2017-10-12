@@ -75,7 +75,6 @@ router.put('/:userId', User.isPresident, (req, res, next) => {
 router.put('/profile/:userId', (req, res, next) => {
 	
 	let userId = req.params.userId
-	console.log(req.body)
 	
 	User.findById(userId).then((user) => {
 		

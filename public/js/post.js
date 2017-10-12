@@ -4,15 +4,15 @@ $(function() {
     const clubId = getId('clubs')
   
     // Format Date
-    let date = new Date($('#posted').text());
-    $('#posted').text( moment(date).format('MMMM Do YYYY') );
+    let date = new Date(post.publishDate);
+    console.log("Date:", date)
+    $('#posted').text(`Published ${moment(date).format('MMMM Do YYYY')}`);
+    // $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
 
     // Markdown
     $('#content').html(converter.makeHtml(post.content));
 
-    $('#post').text(post.title) // populate other fields
-
-
+    $('#title').text(post.title) // populate other fields
 
     // Managerial Buttons
     if (user && (user.role === 'president' || user.role === 'manager')) {

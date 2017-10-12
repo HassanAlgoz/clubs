@@ -12,5 +12,6 @@ $(function(){
 	$('#nav-new-post').attr('href', `/clubs/${clubId}/post-new`);
 	$('#nav-new-event').attr('href', `/clubs/${clubId}/event-new`);
 	$('#nav-edit-club').attr('href', `/clubs/${clubId}/edit`);
+	$('#login').attr('href', `/auth/login?redirect=${location.href}`)
 
 });

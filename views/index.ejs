@@ -9,12 +9,18 @@
 
 	<div class="container">
 		<h1 id="main" class="text-center">Here are all the clubs</h1>
-		<div id="clubs" class="row">
-
-		</div>
+		<div id="clubs-joined" class="row"></div>
+		<hr>
+		<div id="clubs" class="row"></div>
 	</div>
 
 	<% include ./partials/footer.ejs %>
+	<script>
+		const user = <%- JSON.stringify(user) %>
+		<%if (user){%>
+			user.role = "<%=user.role%>"
+		<%}%>
+	</script>
 	<% include ./partials/scripts.ejs %>
 	<script src="/js/index.js"></script>
 </body>

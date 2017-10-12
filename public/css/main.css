@@ -1,5 +1,6 @@
 :root {
 	--green: #007d40;
+	--red: rgb(255, 145, 0);
 }
   
 
@@ -144,6 +145,13 @@ a.no-underline:hover {
 
 .green {
     background-color: var(--green);
+    color: white;
+    font-weight: bold;
+    padding-left: 7px;
+}
+
+.red {
+    background-color: var(--red);
     color: white;
     font-weight: bold;
     padding-left: 7px;

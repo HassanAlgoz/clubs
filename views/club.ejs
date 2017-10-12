@@ -7,19 +7,10 @@
 
 	<% include ./partials/navbar.ejs %>
 
-	<div class="container-fluid" id="title">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-12">
-					<h1 id="name"></h1>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div class="container" id="section1">
-		<img id="logo" src="<%if (club) {%><%=club.logo%><%}%>" class="img-responsive center-block" alt="Club Logo">
+		<img id="logo" src="<%if (club) {%><%=club.logo%><%}%>" class="img-responsive center-block" alt="<%=club.name%>">
 		
+		<hr/>
 		<div class="row">
 			<div class="col-sm-6 col-md-8">
 				<h3 class="text-center">Events</h3>

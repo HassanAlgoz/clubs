@@ -63,6 +63,7 @@ router.post('/', User.canManage, async (req, res, next) => {
 			title: req.body.title,
 			content: req.body.content,
 			lastEditBy: req.user._id,
+			lastEditDate: new Date(),
 			sentAsEmail: sentAsEmail
 		})
 		await post.save()
@@ -116,15 +117,17 @@ router.put('/:postId', User.canManage, async (req, res, next) => {
 	}
 
 	let postId = req.params.postId
-	console.log(req.body)
-	Post.findByIdAndUpdate(postId, {
-		title: req.body.title,
-		content: req.body.content,
-		lastEditBy: req.user._id,
-		sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
-	}).then(() => {
-		res.sendStatus(204) // Successful and no content returned.
-	}).catch(next)
+	try {
+		let post = await Post.findByIdAndUpdate(postId, {
+			title: req.body.title,
+			content: req.body.content,
+			lastEditBy: req.user._id,
+			lastEditDate: new Date(),
+			sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false
+		}).exec()
+		res.json({_id: post._id})
+	}
+	catch(err){next(err)}
 });
 
 

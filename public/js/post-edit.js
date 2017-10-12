@@ -7,9 +7,10 @@ $(function(){
     console.log('clubId', clubId)
 
     // Bind input to output preview
-    markdownBind($('#content'), $('#preview-content'))
-    textBind($('#title'), $('#preview-title'))
-    
+    setTimeout(() => {
+        markdownBind($('#content'), $('#preview-content'))
+        textBind($('#title'), $('#preview-title'))
+    }, 0)
 
     if (!postId) {
             $("#btn-create").on('click', function(e) {
@@ -24,7 +25,7 @@ $(function(){
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
-                    location.href = `/clubs/${clubId}/posts/${data._id}`
+                    location = `/clubs/${clubId}/posts/${data._id}`
                 },
                 error: function(response) {
                     let {errors} = response.responseJSON
@@ -52,7 +53,7 @@ $(function(){
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
-                    location.href = `/clubs/${clubId}/posts/${data._id}`
+                    location = `/clubs/${clubId}/posts/${data._id}`
                 },
                 error: function(error) {
                     console.log(error);
@@ -67,7 +68,7 @@ $(function(){
                 method: 'DELETE',
                 url: `/api/posts/${postId}?clubId=${clubId}`,
                 success: function(data) {
-                    // location.href = '/clubs/'+clubName.replace(/\s/g, '-');;
+                    location = `/clubs/${clubId}`
                 },
                 error: function(error) {
                     console.log(error);

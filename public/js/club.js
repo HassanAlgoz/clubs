@@ -10,9 +10,10 @@
     // List all events
     for(let i = club.events.length - 1; i >= 0; i--) {
         let membersOnlyMessage = club.events[i].membersOnly ? "members only" : "open for all"
+        let membersOnlyClass = club.events[i].membersOnly ? "red" : "green"
         let numPromises = club.events[i].promisers? club.events[i].promisers.length : 0       
         let date = new Date(club.events[i].date);
-        let formattedDate = moment(date).fromNow()
+        let formattedDate = `${moment(date).format('Do MMMM')} (${moment(date).fromNow()})`
         $('#events').append(`
             <div class="col-sm-6 col-md-4">
                 <a href="/clubs/${clubId}/events/${club.events[i]._id}" class="no-underline">
@@ -20,7 +21,7 @@
                         <img src="${club.events[i].image}" alt="Image" class="center-block img-responsive">
                         <div class="green"><small>${formattedDate}</small></div>
                         <div class="green"><small>${numPromises} attending</small></div>
-                        <div class="green"><small>${membersOnlyMessage}</small></div>
+                        <div class="${membersOnlyClass}"><small>${membersOnlyMessage}</small></div>
                     </div>
                 </a>
             </div>
@@ -44,14 +45,14 @@
                 method: 'PUT',
                 url: `/api/clubs/${clubId}/join`,
                 success: (data) => {
-                    $('#btn-join').replaceWith(`<span class="text-success">Thank you for joining.. talk to the admin for approval</span>`);
+                    $('#btn-join').replaceWith(`<span class="text-success">Thank you for joining.. please wait for the president's approval</span>`);
                 },
                 error: (error) => {
-                    $('#btn-join').replaceWith(`<span class="text-danger">Sorry.. something went wrong</span>`);
+                    $('#btn-join').replaceWith(`<span class="text-danger">Sorry.. something went wrong. Make sure you are logged in and have confirmed registration through email.</span>`);
                 }
             });
         } else {
-            location.href = `/auth/login`
+            location = `/auth/login?redirect=${location.href}`
         }
     })
 
