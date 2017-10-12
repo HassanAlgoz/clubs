@@ -7,14 +7,17 @@
 	<% include ./partials/navbar.ejs %>
 	
 	<div class="container">
+		
+		<img src="<%=event.image%>" class="center-block img-responsive">
+		
 		<h1 id="title"></h1>
 		<h6>Published <span id="published"></span></h6>
 		<ul id="info">
 			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"></span></li>
 			<li><i class="glyphicon glyphicon-time"></i> <span id="time"></span></li>
 			<li><i class="glyphicon glyphicon-map-marker"></i> <span id="location"></span></li>
+			<li><i class="glyphicon glyphicon-user"></i> <span id="attendees"></span></li>
 		</ul>
-		<img src="<%=event.image%>" class="center-block img-responsive">
 		<h3>Event Briefing</h3>
 		<div id="brief"></div>
 		
