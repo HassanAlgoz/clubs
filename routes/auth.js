@@ -21,6 +21,21 @@ router.post('/signup', passport.authenticate('local-signup', {
 	failureFlash : true // allow flash messages
 }));
 
+router.get('/confirmation', async (req, res, next) => {
+	let {id, code} = req.query;
+	try {
+		let user = await User.findById(id).exec()
+		if (user.confirmationCode == code) {
+			user.confirmationCode = "0"
+			await user.save()
+			res.sendStatus(200)
+		} else {
+			res.sendStatus(403)
+		}
+	}
+	catch(err){next(err)}
+})
+
 // Login ====================================================================
 router.get('/login', (req, res, next) => {
 	if (req.user) {
@@ -34,10 +49,11 @@ router.get('/login', (req, res, next) => {
 })
 
 router.post('/login', passport.authenticate('local-login', {
-	successRedirect : '/',
 	failureRedirect : '/auth/login',
 	failureFlash : true // allow flash messages
-}));
+}), (req, res, next) => {
+	res.redirect(req.query.redirect || '/')
+});
 
 
 // LOGOUT ==============================
