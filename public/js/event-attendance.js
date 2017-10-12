@@ -5,14 +5,27 @@ $(function () {
     const clubId = getId('clubs')
 
     // Format Dates
+    let past = (moment(new Date()).isAfter(moment(new Date(event.date))))? true : false;
+    console.log("past", past)
     let publishDate = new Date(event.publishDate);
     $('#published').text( moment(publishDate).fromNow() );
     let date = new Date(event.date);
-    $('#date').text( moment(date).fromNow() +" on "+ moment(date).format('Do MMMM'));
+    $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
     // Populate title, time and location
     populateText(event, ['title', 'time', 'location'])
     
+    if (event.seatLimit > 0) {
+        $('#attendees').text(`${event.promisers.length}/${event.seatLimit} seats reserved`)
+        if (event.promisers.length >= event.seatLimit) {
+            $('#attendees').addClass("text-danger")
+        }
+    } else {
+        let subject = (event.membersOnly)? "members" : "people"
+        let verb = (past)? "attended" : "attending"
+        $('#attendees').text(`${event.promisers.length} ${subject} ${verb}`)
+    }
+
     if (event.membersOnly) {
         $('#info').append(`<li id="membersOnly"><i class="text-danger">This event is for members only</i></li>`)
     }

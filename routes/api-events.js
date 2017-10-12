@@ -48,7 +48,9 @@ router.post('/', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
 	req.checkBody('title',   "can't be empty").notEmpty()
-	req.checkBody('image', "can't be empty").notEmpty()
+	req.checkBody('image')
+		.notEmpty().withMessage("can't be empty")
+		.isURL().withMessage("must be a url")
 	req.checkBody('time', "can't be empty").notEmpty()
 	req.checkBody('location', "can't be empty").notEmpty()
 
@@ -74,7 +76,8 @@ router.post('/', User.canManage, async (req, res, next) => {
 			date: new Date(req.body.date) || new Date(),
 			membersOnly: membersOnly,
 			sentAsEmail: sentAsEmail,
-			organizers: req.body.organizers
+			organizers: req.body.organizers,
+			seatLimit: parseInt(req.body.seatLimit) || 0
 		}).save()
 		let club = await Club.findById(clubId).populate('members', 'email').exec()
 		club.events.push(event._id)
@@ -118,7 +121,9 @@ router.put('/:eventId', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
 	req.checkBody('title',   "can't be empty").notEmpty()
-	req.checkBody('image', "can't be empty").notEmpty()
+	req.checkBody('image')
+		.notEmpty().withMessage("can't be empty")
+		.isURL().withMessage("must be a url")
 	req.checkBody('time', "can't be empty").notEmpty()
 	req.checkBody('location', "can't be empty").notEmpty()
 
@@ -147,7 +152,8 @@ router.put('/:eventId', User.canManage, async (req, res, next) => {
 			date: new Date(req.body.date) || new Date(),
 			membersOnly: (req.body.membersOnly === 'true') ? true : false,
 			sentAsEmail: (req.body.sentAsEmail === 'true') ? true : false,
-			organizers: req.body.organizers
+			organizers: req.body.organizers,
+			seatLimit: parseInt(req.body.seatLimit) || 0
 		}).exec()
 		res.json(event)
 		return;
@@ -230,7 +236,7 @@ router.put('/:eventId/promise', (req, res, next) => {
 
 	})
 	.then((event) => {
-		if (event.condition === 'open') {
+		if (event.condition === 'open' && (event.seatLimit == 0 || event.promisers.length < event.seatLimit)) {
 			if (event.membersOnly === true) {
 				if (req.user.role === 'member' || req.user.role === 'manager' || req.user.role === 'president') {
 					
@@ -250,7 +256,7 @@ router.put('/:eventId/promise', (req, res, next) => {
 				})	
 			}
 		} else {
-			console.log("can't promise cuz, event is closed!")
+			console.log("can't promise cuz, event is closed or seat limit exceeded!")
 			res.sendStatus(304)
 		}
 	}).catch(next)

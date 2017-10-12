@@ -44,7 +44,8 @@ $(function(){
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
                     sentAsEmail: document.getElementById('sentAsEmail').checked,
-                    organizers: organizers
+                    organizers: organizers,
+                    seatLimit: $('#seatLimit').val()
                 },
                 success: function(data) {
                     location.href = `/clubs/${clubId}/events/${data._id}`
@@ -72,7 +73,8 @@ $(function(){
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
                     sentAsEmail: document.getElementById('sentAsEmail').checked,
-                    organizers: organizers
+                    organizers: organizers,
+                    seatLimit: $('#seatLimit').val()
                 },
                 success: function(data) {
                     location.href = `/clubs/${clubId}/events/${data._id}`
@@ -97,5 +99,19 @@ $(function(){
                 }
             })
         })
+    }
+
+    let imageElement = document.querySelector('#preview-image')
+    $('#image').on('keyup', previewImage)
+    $('#image').on('paste', previewImage)
+  
+    function previewImage(event) {
+      setTimeout(()=>{
+        imageElement.src = $('#image').val()
+      }, 0)
+    }
+  
+    if ($('#image').val().length > 0) {
+      previewImage()
     }
 });

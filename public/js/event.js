@@ -8,10 +8,11 @@ $(function(){
     // Markdown
     $('#brief').html(converter.makeHtml(event.brief));
     // Format Dates
+    let past = (moment(new Date()).isAfter(moment(new Date(event.date))))? true : false;
     let publishDate = new Date(event.publishDate);
     $('#published').text( moment(publishDate).fromNow() );
     let date = new Date(event.date);
-    $('#date').text( moment(date).fromNow() +" on "+ moment(date).format('Do MMMM'));
+    $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
     // Populate title, time and location
     populateText(event, ['title', 'time', 'location'])
@@ -19,11 +20,7 @@ $(function(){
     // $('#title').text(event.title)
     // $('#time').text(event.time)
     // $('#location').text(event.location)
-    
-    if (event.membersOnly) {
-        $('#info').append(`<li id="membersOnly"><i class="text-danger">This event is for members only</i></li>`)
-    }
-    
+
 
     // Check if the user already promised to attend this event
     let promised = false;
@@ -35,34 +32,54 @@ $(function(){
             }
         }
     }
-    
-    
+
+    // Show no. people attending
+    if (event.seatLimit > 0) {
+        $('#attendees').text(`${event.promisers.length}/${event.seatLimit} seats reserved`)
+        if (event.promisers.length >= event.seatLimit) {
+            $('#attendees').addClass("text-danger")
+        }
+    } else {
+        let subject = (event.membersOnly)? "members" : "people"
+        let verb = (past)? "attended" : "attending"
+        $('#attendees').text(`${event.promisers.length} ${subject} ${verb}`)
+    }
+
+    // Additional information
+    if (promised) {
+        $('#info').append(`<li id="promised" class="text-success">You promised to attend this event</li>`)
+    }
+    if (event.membersOnly) {
+        $('#info').append(`<li id="membersOnly"><i class="text-danger">This event is for members only</i></li>`)
+    }
+     
 
     if (!promised) {
-        // Show how many people are attending this event
-        $('#section1').append(`<h4 class="promises text-success text-center">${event.promisers.length} people attending</h4>`)
-
-        // Show "count me in" Button
-        if (user) {
-            if (event.condition === 'open') {
+        // The "count me in" Button
+        if (event.condition === 'open' && !past) {
+            if (user) {
                 if (!event.membersOnly || (event.membersOnly && (user.role === 'president' || user.role === 'manager' || user.role === 'member'))) {
                     $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
                 
-                    $('#btn-promise').on('click', () => $.ajax({
-                        url: `/api/events/${eventId}/promise?clubId=${clubId}`,
-                        method: 'PUT',
-                        success: () => { $('#btn-promise').replaceWith('<span>You promised to attend the events</span>') }
-                    }))
+                    if (event.seatLimit == 0 || event.promisers.length < event.seatLimit) {
+                        $('#btn-promise').on('click', () => $.ajax({
+                            url: `/api/events/${eventId}/promise?clubId=${clubId}`,
+                            method: 'PUT',
+                            success: () => { $('#btn-promise').replaceWith('<span class="text-success text-center">You promised to attend the event</span>') }
+                        }))
+                    } else {
+                        $('#btn-promise').attr('disabled', 'true')
+                    }
                 }
+            } else {
+                $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
+                $('#btn-promise').on('click', () => location = `/auth/login?redirect=${location.href}`)
             }
         }
-    } else {
-        // Show how many people are attending this event
-        $('#section1').append(`<h4 class="promises text-success text-center">You and ${event.promisers.length - 1} others are attending this event</h4>`)
     }
     
     
-    // Managerial Buttons
+    // Manager Buttons
     if (user && (user.role === 'president' || user.role === 'manager')) {
         if (event.condition === 'open') {
             // "Close Event" Button
@@ -88,8 +105,7 @@ $(function(){
             
         }
         // Link to Attendance Page
-        $('#section2').append(`<a href="#" id="btn-attendance" class="btn btn-success">Attendance</a>`)
-        $('#btn-attendance').attr('href', `/clubs/${clubId}/events/${eventId}/attendance`)
+        $('#section2').append(`<a href="/clubs/${clubId}/events/${eventId}/attendance" id="btn-attendance" class="btn btn-success">Attendance</a>`)
     }
     
 })

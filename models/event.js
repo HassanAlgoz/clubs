@@ -24,7 +24,8 @@ const eventSchema = new mongoose.Schema({
 	}],
 	condition: {type: String, default: 'open'},
 	membersOnly: { type: Boolean, default: false },
-	organizers: [{type: Schema.Types.ObjectId, ref: 'User'}]
+	organizers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	seatLimit: Number
 });
 
 
