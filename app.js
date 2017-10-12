@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const Promise = require("bluebird");
 const session = require('express-session');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const errorHandler = require('errorhandler');

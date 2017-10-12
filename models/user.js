@@ -19,8 +19,9 @@ const userSchema = new mongoose.Schema({
             _id: false
         }
     ],
+    isAdmin: Boolean,
+    confirmationCode: String,
     // notificationToken: String,
-    isAdmin: Boolean
 }, { timestamps: true });
 
 
@@ -61,6 +62,14 @@ userSchema.statics.getRoleFromQuery = function(req, res, next) {
     next()
 }
     
+
+userSchema.statics.isConfirmed = function(req, res, next) {
+    if (req.isAuthenticated() && req.user.confirmationCode == "0") {
+        next()
+    } else {
+        res.sendStatus(403)
+    }
+};
 
 // Admin
 userSchema.statics.isAdmin = function(req, res, next) {

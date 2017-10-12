@@ -63,18 +63,50 @@ module.exports = function(passport) {
         process.nextTick(async function() {
             try {
                 let user = await User.findOne({email : email}).exec()
-                if (user)
+                if (user) {
                     return done(null, false, req.flash('errors', 'That email is already taken.'));
+                }
+
+                // Confirmation Code
+                let confirmationCode = String(Math.floor(Math.random() * 1000000000000))
+                console.log("confirmationCode:", confirmationCode)
                 // create the user
                 let newUser = new User({
                     email: email,
                     password: User.generateHash(password),
                     username: req.body.username,
                     major: req.body.major,
-                    KFUPMID: (id)? Number(id) : 0
+                    confirmationCode: confirmationCode
+                    // KFUPMID: (id)? Number(id) : 0
                     // notificationToken: req.body.notificationToken
                 })
                 newUser = await newUser.save()
+
+                // Send Email
+                let body = {
+                    "apikey": process.env.EMAIL_API_KEY,
+                    "from": process.env.EMAIL_FROM,
+                    "fromName": "KFUPM Clubs",
+                    "to": newUser.email,
+                    "subject": "Confirmation Required",
+                    "bodyHtml": `
+                        <h1>Please Confirm Your Registration</h1>
+                        <h3><a href="${process.env.DOMAIN}/auth/confirmation?id=${newUser._id}&code=${confirmationCode}">Confirm</a></h3>
+                        <p>Features</p>
+                        <ul>
+                            <li>See all club's events such as, talks, workshops, courses, and posts, all in one place</li>
+                            <li>Join a club and be notified about future events</li>
+                            <li>Know everything about an event including how many people are going to attend</li>
+                            <li>Reserve your seat in upcoming events</li>
+                            <li>Attend members-only events</li>
+                        </ul>
+                    `,
+                    "isTransactional": true // True, if email is transactional (non-bulk, non-marketing, non-commercial). Otherwise, false
+                }
+                if (!utils.sendEmail(body)) {
+                    throw new Error("Couldn't Send Email")
+                }
+                
                 return done(null, newUser);
             }
             catch(err){done(err)};
