@@ -39,9 +39,8 @@ There will be bugs, so, when you find one kindly open a new **issue** for it, if
 
 ## Using The API
 The REST API implemented follows:
-* Plural naming of resources such as `/api/clubs/<club-ID>` and `/api/clubs/<club-ID>/events/<event-ID>`
+* Plural naming of resources such as `/api/clubs/<club-ID>` and `/api/events/<event-ID>`
 * `POST /api/clubs` Creates a new club
 * `PUT /api/clubs/<club-ID>` To Modify
 * `DELETE /api/clubs/<club-ID>` To delete
 * Use a verb with `PUT` method for other operations on a resource. Example: `PUT /api/clubs/<club-ID>/join`.
-
