@@ -1,7 +1,6 @@
 	<% include ./partials/head.ejs %>
 	<title>Post</title>
 	<!-- <link rel="stylesheet" href="/css/index.css"> -->
-
 </head>
 <body>
 	<% include ./partials/navbar.ejs %>
@@ -20,19 +19,14 @@
 		</div>
 	</div>
 
-
-
 	<% include ./partials/footer.ejs %>
-
+	<% include ./partials/scripts.ejs %>
 	<script>
-		const post = <%- JSON.stringify(post) %>
 		const user = <%- JSON.stringify(user) %>
 		<% if (user) { %>
 			user.role = <%- JSON.stringify(user.role) %>
 		<% } %>
-		console.log(post)
 	</script>
-	<% include ./partials/scripts.ejs %>
 	<script src="/js/post.js"></script>
 </body>
 </html>

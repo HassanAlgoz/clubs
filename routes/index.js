@@ -15,27 +15,13 @@ router.get('/', (req, res, next) => res.render('index'))
 
 // Club ====================================================================
 router.get('/clubs/:clubId', (req, res, next) => res.render('club'));
-
-router.get('/clubs/:clubId/edit', User.isPresident, (req, res, next) => {
-    let clubId = req.params.clubId;
-	Club.findById(clubId).then((club) => {
-		res.render('club-edit', {club})
-	}).catch(next)
-})
-router.get('/club-new', (req, res, next) => {
-    res.render('club-new')
-})
+router.get('/clubs/:clubId/edit', (req, res, next) => res.render('club-edit'));
+router.get('/club-new', (req, res, next) => res.render('club-new'))
 
 
 // Event ===================================================================
-router.get('/clubs/:clubId/events/:eventId', async (req, res, next) => {
-	try {
-		let {eventId} = req.params;
-		let event = await Event.findById(eventId).exec()
-		res.render('event', {event})
-	}
-	catch(err){next(err)}
-})
+router.get('/clubs/:clubId/events/:eventId', async (req, res, next) => res.render('event'));
+
 router.get('/clubs/:clubId/events/:eventId/edit', User.canManage, async (req, res, next) => {
     try {
 		let {clubId, eventId} = req.params;
@@ -63,12 +49,8 @@ router.get('/clubs/:clubId/events/:eventId/attendance', User.canManage, (req, re
 
 
 // Post ====================================================================
-router.get('/clubs/:clubId/posts/:postId', (req, res, next) => {
-    let postId = req.params.postId;
-	Post.findById(postId).then((post) => {
-		res.render('post', {post})
-	}).catch(next)
-})
+router.get('/clubs/:clubId/posts/:postId', (req, res, next) => res.render('post'));
+
 router.get('/clubs/:clubId/posts/:postId/edit', User.canManage, (req, res, next) => {
     let postId = req.params.postId;
 	Post.findById(postId).then((post) => {

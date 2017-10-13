@@ -11,13 +11,17 @@ const Club = require('../models/club')
 router.use(User.getRoleFromQuery)
 
 // GET
-router.get('/:eventId', (req, res, next) => {
+router.get('/:eventId', async (req, res, next) => {
 
-	let eventId = req.params.eventId;
-	Event.findById(eventId).then((event) => {
+	let {eventId} = req.params;
+	try {
+		let event = await Event.findById(eventId).exec()
+		if (!event) {
+			// return res.status(404).send(`Error finding event with id: ${eventId}`);
+			return res.sendStatus(404);
+		}
 		res.json({event})
-	}).catch(next)
-
+	}catch(err){next(err)}
 });
 
 

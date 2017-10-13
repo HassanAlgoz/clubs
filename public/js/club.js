@@ -43,9 +43,9 @@
         let membersOnlyMessage = club.events[i].membersOnly ? "members only" : "open for all"
         let membersOnlyClass = club.events[i].membersOnly ? "red" : "green"
         let numPromises = club.events[i].promisers? club.events[i].promisers.length : 0
-        // Format Date (using moment): refer to http://momentjs.com/
+        // Format Date (using moment): refer to http://momentjs.com/docs/#/displaying/format/
         let date = new Date(club.events[i].date);
-        let formattedDate = `${moment(date).format('Do MMMM')} (${moment(date).fromNow()})`
+        let formattedDate = `${moment(date).format('MMM Do, dddd')}`
         // Append HTML
         $('#events').append(`
             <div class="col-sm-6 col-md-4">

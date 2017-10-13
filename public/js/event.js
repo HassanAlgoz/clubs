@@ -1,9 +1,29 @@
-$(function(){
+(async function(){
 
     console.log('event.js loaded')
 
-    const eventId = event._id
     const clubId = getId('clubs')
+    const eventId = getId("events")
+    let response, json;
+    try {
+        response = await fetch(`/api/events/${eventId}`)
+        // (debugging)
+        console.log("response:", response)
+        if (!response.ok) {
+            // redirect to homepage
+            location = '/'
+            return;
+        }
+        json = await response.json()
+    } catch(err){console.error("ERROR:", err)}
+    let {event} = json
+    // (debugging)
+    console.log("returned JSON:", json)
+    console.log("event:", event)
+
+    document.title = event.title
+    // Fill in Event details
+    document.querySelector('#image').src = event.image
     
     // Markdown
     $('#brief').html(converter.makeHtml(event.brief));
@@ -33,7 +53,7 @@ $(function(){
         }
     }
 
-    // Show no. people attending
+    // Show NO. people attending
     if (event.seatLimit > 0) {
         $('#attendees').text(`${event.promisers.length}/${event.seatLimit} seats reserved`)
         if (event.promisers.length >= event.seatLimit) {
@@ -79,7 +99,7 @@ $(function(){
     }
     
     
-    // Manager Buttons
+    // Managers Buttons
     if (user && (user.role === 'president' || user.role === 'manager')) {
         if (event.condition === 'open') {
             // "Close Event" Button
@@ -108,4 +128,4 @@ $(function(){
         $('#section2').append(`<a href="/clubs/${clubId}/events/${eventId}/attendance" id="btn-attendance" class="btn btn-success">Attendance</a>`)
     }
     
-})
+})()

@@ -1,14 +1,11 @@
 	<% include ./partials/head.ejs %>
 	<title>Event</title>
 	<link rel="stylesheet" href="/css/event.css">
-
 </head>
 <body>
 	<% include ./partials/navbar.ejs %>
-	
 	<div class="container">
-		
-		<img src="<%=event.image%>" class="center-block img-responsive">
+		<img id="image" class="center-block img-responsive" alt="Event Image">
 		
 		<h1 id="title"></h1>
 		<h6>Published <span id="published"></span></h6>
@@ -35,7 +32,6 @@
 	<% include ./partials/footer.ejs %>
 
 	<script>
-		const event = <%- JSON.stringify(event) %>
 		const user = <%- JSON.stringify(user) %>
 		<%if (user){%>
 			user.role = "<%=user.role%>"

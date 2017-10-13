@@ -10,12 +10,17 @@ const Post = require('../models/post')
 router.use(User.getRoleFromQuery)
 
 // GET
-router.get('/:postId', (req, res, next) => {
+router.get('/:postId', async (req, res, next) => {
 
-	let postId = req.params.postId;
-	Post.findById(postId).then((post) => {
+	let {postId} = req.params;
+	try {
+		let post = await Post.findById(postId).exec()
+		if (!post) {
+			// return res.status(404).send(`Error finding post with id: ${postId}`);
+			return res.sendStatus(404);
+		}
 		res.json({post})
-	}).catch(next)
+	}catch(err){next(err)}
 
 });
 
