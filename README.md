@@ -21,18 +21,20 @@
 └───views
     └───partials
 ```
-- `/views` contains the pages in .ejs format, which is html with embedded JavaScript
-- `/views/partials` contains .ejs files that are included in other .ejs files
-- `/public` contains front-end files, e.g., `/public/js` contains front-end JavaScript files
-- `/routes/index.js` contains the pages the user would visit
+
+## Front-end developers scope
+* `/views` contains the pages in .ejs format, which is html with embedded JavaScript
+* `/views/partials` contains .ejs files that are included in other .ejs files
+* `/public` contains front-end files, e.g., `/public/js` contains front-end JavaScript files
+* As a front-end developer, you don't need to touch any folders other than these.
 
 ## Setup
-To run the server, you'll need both [node.js](https://nodejs.org/en/) and [mongodb](https://www.mongodb.com/download-center?jmp=nav#community) installed on your machine. After that, clone the repository using the `git clone` command. Then `cd` into the directory and run `npm install`. This command installs all project dependencies and puts them in a folder called `node_modules`. It is like pip if you come from Python.
-
-## Run
-Now `start mongod --port 27017` in another terminal and run `npm start`. Now you can visit `localhost:3000` in your browser. Once the server starts, it should connect to the mongoDB server. You might face a problem with mongo regarding `dbpath`, read the problem carefully and try to configure `dbpath` before trying again.
-
-Please contact me if you face any problems.
+1. Install [node.js](https://nodejs.org/en/) v7 or above.
+2. Run `git clone https://github.com/HassanAlgoz/clubs.git`.
+3. `cd` into the directory and run `npm install`. This command installs all project dependencies and puts them in a folder called `node_modules`. It is like pip if you come from Python.
+4. You'll need to add a `.env` file, so ask me to give you one
+5. Run `npm start`
+6. Open `localhost:3000` in your browser
 
 ## Bugs
 There will be bugs, so, when you find one kindly open a new **issue** for it, if none is already opened for it.
