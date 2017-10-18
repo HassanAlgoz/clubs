@@ -6,12 +6,12 @@
     const eventId = getId("events")
     let response, json;
     try {
-        response = await fetch(`/api/events/${eventId}`)
+        response = await fetch(`/api/clubs/${clubId}/events/${eventId}`)
         // (debugging)
         console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
-            location = '/'
+            location = `/clubs/${clubId}`
             return;
         }
         json = await response.json()
@@ -83,7 +83,7 @@
                 
                     if (event.seatLimit == 0 || event.promisers.length < event.seatLimit) {
                         $('#btn-promise').on('click', () => $.ajax({
-                            url: `/api/events/${eventId}/promise?clubId=${clubId}`,
+                            url: `/api/clubs/${clubId}/events/${eventId}/promise`,
                             method: 'PUT',
                             success: () => { $('#btn-promise').replaceWith('<span class="text-success text-center">You promised to attend the event</span>') }
                         }))
@@ -106,7 +106,7 @@
             $('#section2').append(`<button id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Close Event</button>`)
             
             $('#btn-close').on('click', () => $.ajax({
-                url: `/api/events/${eventId}/close?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/events/${eventId}/close`,
                 method: 'PUT',
                 success: () => { $('#btn-close').replaceWith('<span>Event Closed</span>') }
             }))
@@ -118,7 +118,7 @@
             $('#section2').append(`<button id="btn-open" class="btn btn-warning">Reopen Event</button>`)
             
             $('#btn-open').on('click', () => $.ajax({
-                url:`/api/events/${eventId}/open?clubId=${clubId}`,
+                url:`/api/clubs/${clubId}/events/${eventId}/open`,
                 method:'PUT',
                 success: () => { $('#btn-open').replaceWith('<span>Event Opened</span>') }
             }))

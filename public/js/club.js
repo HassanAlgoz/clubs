@@ -13,12 +13,12 @@
     // Fetch data of club from API (data includes club.events and club.posts)
     let response, json;
     try {
-        response = await fetch(`/api/clubs/${clubId}`)
+        response = await fetch(`/api/clubs/${clubId}?events=true&posts=true`)
         // (debugging)
         console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
-            location = '/'
+            location = `/`
             return;
         }
         json = await response.json()
@@ -36,7 +36,7 @@
     document.querySelector('#logo').src = club.logo
     // Description is written in Markdown which we have to convert to HTML
     $('#description').html(converter.makeHtml(club.description));
-    
+
     // List all events
     for(let i = club.events.length - 1; i >= 0; i--) {
         // Show different labels based on conditions

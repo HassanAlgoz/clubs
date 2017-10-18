@@ -34,7 +34,7 @@ $(function(){
 
             $.ajax({
                 method: 'POST',
-                url: `/api/events?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/events`,
                 data: {
                     title: $('#title').val(),
                     image: $('#image').val(),
@@ -63,7 +63,7 @@ $(function(){
             let organizers = commaSeparatedStringToArray($('#organizers').val()).map(organizer => organizer.match(/\((\w+)\)/)[1])
             $.ajax({
                 method: 'PUT',
-                url: `/api/events/${eventId}?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/events/${eventId}`,
                 data: {
                     title: $('#title').val(),
                     image: $('#image').val(),
@@ -90,7 +90,7 @@ $(function(){
             
             $.ajax({
                 method: 'DELETE',
-                url: `/api/events/${eventId}?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/events/${eventId}`,
                 success: function(data) {
                     // location.href = '/clubs/'+clubName.replace(/\s/g, '-');;
                 },

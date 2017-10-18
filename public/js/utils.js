@@ -6,6 +6,7 @@ console.log('utils.js loaded')
 // Moment is a library object used to format dates.
 // moment documentation: http://momentjs.com/
 moment.locale('en-us');
+const ISO_DATE_FORMAT = "YYYY-MM-DD"
 
 // Converter is an object that contains methods to convert Markdown to HTML.
 const converter = new showdown.Converter();

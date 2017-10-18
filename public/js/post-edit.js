@@ -18,7 +18,7 @@ $(function(){
             
             $.ajax({
                 method: 'POST',
-                url: `/api/posts?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/posts`,
                 data: {
                     title: $('#title').val(),
                     content: $('#content').val(),
@@ -46,7 +46,7 @@ $(function(){
             e.preventDefault();
             $.ajax({
                 method: 'PUT',
-                url: `/api/posts/${postId}?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/posts/${postId}`,
                 data: {
                     title: $('#title').val(),
                     content: $('#content').val(),
@@ -66,7 +66,7 @@ $(function(){
             
             $.ajax({
                 method: 'DELETE',
-                url: `/api/posts/${postId}?clubId=${clubId}`,
+                url: `/api/clubs/${clubId}/posts/${postId}`,
                 success: function(data) {
                     location = `/clubs/${clubId}`
                 },

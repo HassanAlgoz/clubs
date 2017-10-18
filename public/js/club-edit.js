@@ -9,7 +9,7 @@
         console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
-            location = '/'
+            location = `/`
             return;
         }
         json = await response.json()

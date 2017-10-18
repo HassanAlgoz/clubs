@@ -5,7 +5,7 @@ $(function() {
 
 	$.ajax({
 		method: 'GET',
-		url: `/api/events?clubId=${clubId}`,
+		url: `/api/clubs/${clubId}/events`,
 		success: (data) => {
 			console.log(data)
 			let events = data.events

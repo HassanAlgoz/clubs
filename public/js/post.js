@@ -5,12 +5,12 @@
     const postId = getId("posts")
     let response, json;
     try {
-        response = await fetch(`/api/posts/${postId}`)
+        response = await fetch(`/api/clubs/${clubId}/posts/${postId}`)
         // (debugging)
         console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
-            location = '/'
+            location = `/clubs/${clubId}`
             return;
         }
         json = await response.json()

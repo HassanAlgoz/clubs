@@ -12,11 +12,16 @@ router.param('clubId', User.getRoleFromParam)
 // GET
 router.get('/:clubId', async (req, res, next) => {
 	let {clubId} = req.params;
+	let {events, posts} = req.query
 	try {
-		let club = await Club.findById(clubId)
-		.populate('events', 'title date time location condition membersOnly image')
-		.populate('posts', 'title publishDate')
-		.exec()
+		let dbQuery = Club.findById(clubId)
+		if (events) {
+			dbQuery.populate('events', 'title date time location condition membersOnly image')
+		}
+		if (posts) {
+			dbQuery.populate('posts', 'title publishDate')
+		}
+		let club = await dbQuery.exec()
 		if (!club) {
 			// return res.status(404).send(`Error finding club with id: ${clubId}`);
 			return res.sendStatus(404);
@@ -27,16 +32,19 @@ router.get('/:clubId', async (req, res, next) => {
 
 
 // GET ALL
-router.get('/', (req, res, next) => {
-
-	return Promise.all([
-		Club.find({})
-			.sort({date: -1}),
-		Club.count()
-	]).then(([clubs, count]) => {
+router.get('/', async (req, res, next) => {
+	let {events, posts} = req.query
+	try {
+		let dbQuery = Club.find({}).sort({date: -1})
+		if (events) {
+			dbQuery.populate('events', 'title date time location condition membersOnly image')
+		}
+		if (posts) {
+			dbQuery.populate('posts', 'title publishDate')
+		}
+		let [clubs, count] = await Promise.all([dbQuery.exec(), dbQuery.count().exec()])
 		res.json({clubs, count})
-	}).catch(next)
-
+	}catch(err){next(err)}
 });
 
 

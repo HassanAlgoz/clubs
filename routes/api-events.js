@@ -1,6 +1,7 @@
 const router = require('express').Router();
 // util
 const utils = require('../utils.js')
+const moment = require('moment')
 // Models
 const Event = require('../models/event');
 const User = require('../models/user');
@@ -8,11 +9,11 @@ const Club = require('../models/club')
 
 
 // Attach 'role' in this club to the 'req.user' object
+router.param('clubId', User.getRoleFromParam)
 router.use(User.getRoleFromQuery)
 
 // GET
-router.get('/:eventId', async (req, res, next) => {
-
+router.get('/:clubId/events/:eventId', async (req, res, next) => {
 	let {eventId} = req.params;
 	try {
 		let event = await Event.findById(eventId).exec()
@@ -24,31 +25,33 @@ router.get('/:eventId', async (req, res, next) => {
 	}catch(err){next(err)}
 });
 
-
-// GET ALL
-router.get('/', async (req, res, next) => {
-
+// GET ALL events
+router.get('/:clubId/events', async (req, res, next) => {
+	let {clubId} = req.params
+	// Offset & Limit
+	let offset = parseInt(req.query.offset) || 0;
+	let limit  = parseInt(req.query.limit)  || 0;
+	// Date range
+	let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
+	let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
 	try {
-		if (req.query.clubId) {
-			// Get ALL Members of some Club
-			let club = await Club.findById(req.query.clubId).populate('events').exec()
-			let events = await Event.populate(club.events, {path: "organizers", select: "username"});
-			let count = events.length;
-			res.json({events, count})
-		} else {
-			let [events, count] = await Promise.all([
-				Event.find({}).sort({date: -1}).exec(),
-				Event.count().exec()
-			])
-			res.json({events, count})
+		let dbQuery = Event.find()
+		if (startDate) {
+			dbQuery.where("date").gte(startDate)
 		}
-	}
-	catch(err){next(err)}
+		if (endDate) {
+			dbQuery.where("date").lte(endDate)
+		}
+		dbQuery.sort({date: -1}).populate({path: "organizers", select: "username"})
+		let events = await dbQuery.skip(offset).limit(limit).exec()
+		
+		res.json({events})
+	}catch(err){next(err)}
 });
 
 
 // POST
-router.post('/', User.canManage, async (req, res, next) => {
+router.post('/:clubId/events', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
 	req.checkBody('title',   "can't be empty").notEmpty()
@@ -120,7 +123,7 @@ async function sendEmailsToMembers(club, event) {
 
 
 // PUT
-router.put('/:eventId', User.canManage, async (req, res, next) => {
+router.put('/:clubId/events/:eventId', User.canManage, async (req, res, next) => {
 	let {eventId} = req.params
 	let {clubId} = req.query
 
@@ -167,7 +170,7 @@ router.put('/:eventId', User.canManage, async (req, res, next) => {
 
 
 // DELETE
-router.delete('/:eventId', User.canManage, (req, res, next) => {
+router.delete('/:clubId/events/:eventId', User.canManage, (req, res, next) => {
 
 	let eventId = req.params.eventId
 	let clubId = req.query.clubId
@@ -191,10 +194,8 @@ router.delete('/:eventId', User.canManage, (req, res, next) => {
 
 
 // Close an event
-router.put('/:eventId/close', User.canManage, (req, res, next) => {
-	
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
+router.put('/:clubId/events/:eventId/close', User.canManage, (req, res, next) => {
+	let {clubId, eventId} = req.params
 
 	// Check if event belongs to this club
 	Club.findOne({ "events": eventId }).then((club) => {
@@ -210,10 +211,8 @@ router.put('/:eventId/close', User.canManage, (req, res, next) => {
 
 
 // Open an event
-router.put('/:eventId/open', User.canManage, (req, res, next) => {
-	
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
+router.put('/:clubId/events/:eventId/open', User.canManage, (req, res, next) => {
+	let {clubId, eventId} = req.params
 
 	// Check if event belongs to this club
 	Club.findOne({ "events": eventId }).then((club) => {
@@ -228,9 +227,8 @@ router.put('/:eventId/open', User.canManage, (req, res, next) => {
 
 
 // Promise to attend
-router.put('/:eventId/promise', (req, res, next) => {
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
+router.put('/:clubId/events/:eventId/promise', (req, res, next) => {
+	let {clubId, eventId} = req.params
 
 	// Check if event belongs to this club
 	Club.findOne({ "events": eventId }).then((club) => {
@@ -268,10 +266,9 @@ router.put('/:eventId/promise', (req, res, next) => {
 
 
 // Update attendance
-router.put('/:eventId/attendance', User.canManage, async (req, res, next) => {
+router.put('/:clubId/events/:eventId/attendance', User.canManage, async (req, res, next) => {
 
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
+	let {clubId, eventId} = req.params
 
 	let updatedUsers = (req.body.updatedUsers)? req.body.updatedUsers.split(",") : null;
 	let updatedAttendance = (req.body.updatedAttendance)? req.body.updatedAttendance.split(",").map((a, i) => (a == 'true') ? true : false) : null;

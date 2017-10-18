@@ -75,7 +75,7 @@ $(function () {
 
         $.ajax({
             method: 'PUT',
-            url: `/api/events/${eventId}/attendance?clubId=${clubId}`,
+            url: `/api/clubs/${clubId}/events/${eventId}/attendance`,
             data: {
                 updatedUsers: updatedUsers.join(','),
                 updatedAttendance: updatedAttendance.join(',')

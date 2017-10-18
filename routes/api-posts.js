@@ -7,11 +7,11 @@ const Club = require('../models/club')
 const Post = require('../models/post')
 
 // Attach 'role' in this club to the 'req.user' object
+router.param('clubId', User.getRoleFromParam)
 router.use(User.getRoleFromQuery)
 
 // GET
-router.get('/:postId', async (req, res, next) => {
-
+router.get('/:clubId/posts/:postId', async (req, res, next) => {
 	let {postId} = req.params;
 	try {
 		let post = await Post.findById(postId).exec()
@@ -25,32 +25,33 @@ router.get('/:postId', async (req, res, next) => {
 });
 
 
-// GET ALL
-router.get('/', (req, res, next) => {
-	
-	let clubId = req.query.clubId
-	if (clubId) {
-		// Get ALL Members of some Club
-		Club.findById(clubId)
-			.populate('posts')
-			.then((club) => {
-			res.json({posts: club.posts})
-		}).catch(next)
-	} else {
-		return Promise.all([
-			Post.find({})
-				.sort({date: -1}),
-			Post.count()
-		]).then(([posts, count]) => {
-			res.json({posts, count})
-		}).catch(next)
-	}
-
+// GET ALL posts
+router.get('/:clubId/posts', async (req, res, next) => {
+	let {clubId} = req.params
+	// Offset & Limit
+	let offset = parseInt(req.query.offset) || 0;
+	let limit  = parseInt(req.query.limit)  || 0;
+	// Date range
+	let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
+	let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
+	try {
+		let dbQuery = Post.find()
+		if (startDate) {
+			dbQuery.where("publishDate").gte(startDate)
+		}
+		if (endDate) {
+			dbQuery.where("publishDate").lte(endDate)
+		}
+		dbQuery.sort({date: -1}).populate({path: "lastEditBy", select: "username"})
+		let posts = await dbQuery.skip(offset).limit(limit).exec()
+		
+		res.json({posts})
+	}catch(err){next(err)}
 });
 
 
 // POST
-router.post('/', User.canManage, async (req, res, next) => {
+router.post('/:clubId/posts', User.canManage, async (req, res, next) => {
 	let {clubId} = req.query
 
 	req.checkBody('title',   "can't be empty").notEmpty()
@@ -110,7 +111,7 @@ async function sendEmailsToMembers(club, post) {
 
 
 // PUT
-router.put('/:postId', User.canManage, async (req, res, next) => {
+router.put('/:clubId/posts/:postId', User.canManage, async (req, res, next) => {
 	
 	req.checkBody('title',   "can't be empty").notEmpty()
 	req.checkBody('content', "can't be empty").notEmpty()
@@ -137,7 +138,7 @@ router.put('/:postId', User.canManage, async (req, res, next) => {
 
 
 // DELETE
-router.delete('/:postId', User.canManage, (req, res, next) => {
+router.delete('/:clubId/posts/:postId', User.canManage, (req, res, next) => {
 
 	let postId = req.params.postId
 	Promise.all([
