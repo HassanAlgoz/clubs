@@ -31,20 +31,29 @@ router.get('/:clubId/events', async (req, res, next) => {
 	// Offset & Limit
 	let offset = parseInt(req.query.offset) || 0;
 	let limit  = parseInt(req.query.limit)  || 0;
-	// Date range
-	let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
-	let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
 	try {
-		let dbQuery = Event.find()
+		// Date range
+		let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
+		let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
+		let match = {}
 		if (startDate) {
-			dbQuery.where("date").gte(startDate)
+			if (!match.date) {
+				match.date = {}
+			}
+			match.date.$gte = startDate
 		}
 		if (endDate) {
-			dbQuery.where("date").lte(endDate)
+			if (!match.date) {
+				match.date = {}
+			}
+			match.date.$lte = endDate
 		}
-		dbQuery.sort({date: -1}).populate({path: "organizers", select: "username"})
-		let events = await dbQuery.skip(offset).limit(limit).exec()
-		
+		let {events} = await Club.findById(clubId).select('events').populate({
+			path: 'events',
+			match: match,
+			options: { offset, limit },
+			populate: { path: 'organizers', select: 'username'}
+		}).sort({date: -1}).exec()
 		res.json({events})
 	}catch(err){next(err)}
 });

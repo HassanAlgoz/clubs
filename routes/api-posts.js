@@ -31,20 +31,29 @@ router.get('/:clubId/posts', async (req, res, next) => {
 	// Offset & Limit
 	let offset = parseInt(req.query.offset) || 0;
 	let limit  = parseInt(req.query.limit)  || 0;
-	// Date range
-	let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
-	let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
 	try {
-		let dbQuery = Post.find()
+		// Date range
+		let startDate = (req.query.startDate)? new Date(req.query.startDate) : null;
+		let endDate   = (req.query.endDate)?   new Date(req.query.endDate)   : null;
+		let match = {}
 		if (startDate) {
-			dbQuery.where("publishDate").gte(startDate)
+			if (!match.publishDate) {
+				match.publishDate = {}
+			}
+			match.publishDate.$gte = startDate
 		}
 		if (endDate) {
-			dbQuery.where("publishDate").lte(endDate)
+			if (!match.publishDate) {
+				match.publishDate = {}
+			}
+			match.publishDate.$lte = endDate
 		}
-		dbQuery.sort({date: -1}).populate({path: "lastEditBy", select: "username"})
-		let posts = await dbQuery.skip(offset).limit(limit).exec()
-		
+		let {posts} = await Club.findById(clubId).select('posts').populate({
+			path: 'posts',
+			match: match,
+			options: { offset, limit },
+			populate: { path: 'lastEditBy', select: 'username'}
+		}).sort({date: -1}).exec()
 		res.json({posts})
 	}catch(err){next(err)}
 });

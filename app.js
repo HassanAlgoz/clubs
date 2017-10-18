@@ -115,6 +115,7 @@ app.use('/api/clubs', require('./routes/api-clubs'))
 app.use('/api/clubs', require('./routes/api-events'))
 app.use('/api/clubs', require('./routes/api-posts'))
 app.use('/api/users', require('./routes/api-users'))
+app.use('/api', require('./routes/api'))
 app.use('/auth', require('./routes/auth'))
 app.use('/', require('./routes/index'))
 
