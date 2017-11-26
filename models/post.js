@@ -6,8 +6,10 @@ var Club = require('./club');
 
 // Post Schema
 var postSchema = new mongoose.Schema({
+	club: { type: Schema.Types.ObjectId, ref: 'Club' },
   	title: {type: String, default: ''},
 	content: {type: String, default: ''},
+	image: {type: String, default: ''},
 	publishDate: {type: Date, default: Date.now},
 	lastEditDate: {type: Date, default: Date.now},
 	lastEditBy: {type: Schema.Types.ObjectId, ref: 'User'},

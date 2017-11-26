@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 
 // Event Schema
 const eventSchema = new mongoose.Schema({
+	club: { type: Schema.Types.ObjectId, ref: 'Club'},
 	image: {type: String, default: ''},
 	title: {type: String, default: ''},
 	brief: {type: String, default: ''},
