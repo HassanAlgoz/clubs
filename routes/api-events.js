@@ -93,7 +93,8 @@ router.post('/:clubId/events', User.canManage, async (req, res, next) => {
 			membersOnly: membersOnly,
 			sentAsEmail: sentAsEmail,
 			organizers: req.body.organizers,
-			seatLimit: parseInt(req.body.seatLimit) || 0
+			seatLimit: parseInt(req.body.seatLimit) || 0,
+			club: clubId
 		}).save()
 		let club = await Club.findById(clubId).populate('members', 'email').exec()
 		club.events.push(event._id)

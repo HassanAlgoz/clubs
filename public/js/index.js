@@ -2,8 +2,120 @@
     console.log('index.js loaded')
 
     console.log("user", user)
-    // GET - List all clubs
+    // Fetch Events and Display Them
     let response, json;
+    try {
+        let startDate = moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD');
+        response = await fetch(`/api/events?startDate=${startDate}&limit=8`)
+        // (debugging)
+        console.log("response:", response)
+        if (!response.ok) {
+            console.error("Coudln't fetch events")
+            return;
+        }
+        json = await response.json()
+    } catch (err) { console.error("ERROR:", err) }
+    let { events } = json
+
+
+
+
+    events.forEach((event) => {
+        $('#events').html($('#events').html() + Event(event));
+    })
+
+    // Fetch Posts and Display Them
+    response = null
+    json = null;
+    try {
+        response = await fetch(`/api/posts?limit=7`)
+        // (debugging)
+        console.log("response:", response)
+        if (!response.ok) {
+            console.error("Coudln't fetch posts")
+            return;
+        }
+        json = await response.json()
+    } catch (err) { console.error("ERROR:", err) }
+    let { posts } = json
+
+    let i = 0;
+    for(i = 0; i < 2; i++) {
+        let post = posts[i];
+        $('#main-posts').html($('#main-posts').html() + `
+            <div class="col-md-6 d-flex flex-column py-3">
+                <div  class=""><img src="${post.image}" alt="" class="img-fluid" ></div>
+                <div class="">
+                    <p class="mt-2 title">${post.title}</p>
+                    <p class=" text-justify body ">${post.content.substring(0, 200)}...</p>
+                    <a class="read-more" href="/clubs/${post.club}/posts/${post._id}"> read more <i class="fa fa-arrow-right"></i></a>
+                </div>
+            </div>
+        `)
+    }
+    while(i < posts.length) {
+        let post = posts[i++];
+        $('#posts-side').html($('#posts-side').html() + `
+            <div class="row py-3 px-0 side-post">
+                <div class="col-md-4 "><img src="${post.image}" alt="" class="img-fluid"> </div>
+                <div class="col-md-8 overflow" >
+                    <p class="title">${post.title}</p>
+                    <p class="body text-justify">${post.content.substring(0, 100)}<a href="/clubs/${post.club}/posts/${post._id}" class="read-more">...read more <i class="fa fa-arrow-right"></i></a> </p>
+                </div>
+            </div>`
+        )
+    }
+    // $('#posts-side').html($('#posts-side').html() + `
+    //     <div class="row py-3 px-0 ">
+    //         <div class="col">Show More <i class="fa fa-arrow-circle-right"></i></div>
+    //     </div>`
+    // )
+
+
+    // Show Only Future Events
+    $('#btn-future').on('click', (e) => {
+        e.preventDefault()
+        $('#btn-future').addClass('active');
+        $('#btn-past').removeClass('active');
+        $('#events').html('');
+        events.forEach((event) => {
+            $('#events').html($('#events').html() + Event(event))
+        })
+    })
+
+    let oldEvents = [];
+    $('#btn-past').on('click', async (e) => {
+        e.preventDefault()
+        $('#btn-future').removeClass('active');
+        $('#btn-past').addClass('active');
+        if (oldEvents.length === 0) {
+            let response, json;
+            try {
+                let startDate = moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD');
+                let endDate = moment(new Date()).subtract(1, 'day').format('YYYY-MM-DD');
+                response = await fetch(`/api/events?startDate=${startDate}&endDate=${endDate}&limit=8`)
+                // (debugging)
+                console.log("response:", response)
+                if (!response.ok) {
+                    console.error("Coudln't fetch events")
+                    return;
+                }
+                json = await response.json()
+            } catch (err) { console.error("ERROR:", err) }
+            oldEvents = json.events
+        }
+        
+        if (oldEvents.length !== 0) {
+            $('#events').html('');
+            oldEvents.forEach((event) => {
+                $('#events').html($('#events').html() + Event(event))
+            })
+        }
+    })
+
+    // GET - List all clubs
+    response = null
+    json = null;
     try {
         response = await fetch(`/api/clubs`)
         // (debugging)
@@ -52,6 +164,20 @@
                 </a>
             </div>
         `)
+    }
+
+    function Event(event) {
+        return `<div class="col-md-6 col-lg-4 p-3 text-center">
+            <div class="position-relative">
+                <a href="/clubs/${event.club}/events/${event._id}">
+                    <img src="${event.image}" alt="" class="img-fluid">
+                    <div class="overlay overflow py-3 d-none d-md-block">
+                        <p class="title">${event.title}</p>
+                        <p class="body">${event.brief.substring(0, 80)}...</p>
+                    </div>
+                </a>
+            </div>
+        </div>`;
     }
 
     // Register Service Worker

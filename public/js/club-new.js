@@ -1,19 +1,25 @@
 /*jslint browser:true*/
-$(function() {
+(async function() {
     
     // Fetch users data and populate presidentId options
-    $.ajax({
-        method: 'GET',
-        url: '/api/users',
-        success: (data) => {
-            for(let i = 0; i < data.users.length; ++i) {
-                $('#presidentId').append(`<option value="${data.users[i]._id}">${data.users[i].username}</option>`)
-            }
-        },
-        error: (err) => {
-            console.log(err)
+    let response, json;
+    try {
+        response = await fetch(`/api/users`)
+        // (debugging)
+        console.log("response:", response)
+        if (!response.ok) {
+            console.error("Coudln't fetch users")
+            return;
         }
-    })
+        json = await response.json()
+    } catch (err) { console.error("ERROR:", err) }
+    let { users } = json
+
+    if (users) {
+        for (let i = 0; i < users.length; ++i) {
+            $('#presidentId').append(`<option value="${users[i]._id}">${users[i].username}</option>`)
+        }
+    }
     
 
     // Create new club
@@ -37,5 +43,5 @@ $(function() {
         
     });
     
-});
+})()
 

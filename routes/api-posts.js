@@ -79,7 +79,8 @@ router.post('/:clubId/posts', User.canManage, async (req, res, next) => {
 			content: req.body.content,
 			lastEditBy: req.user._id,
 			lastEditDate: new Date(),
-			sentAsEmail: sentAsEmail
+			sentAsEmail: sentAsEmail,
+			club: clubId
 		})
 		await post.save()
 		

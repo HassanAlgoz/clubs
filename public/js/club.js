@@ -39,26 +39,8 @@
 
     // List all events
     for(let i = club.events.length - 1; i >= 0; i--) {
-        // Show different labels based on conditions
-        let membersOnlyMessage = club.events[i].membersOnly ? "members only" : "open for all"
-        let membersOnlyClass = club.events[i].membersOnly ? "red" : "green"
-        let numPromises = club.events[i].promisers? club.events[i].promisers.length : 0
-        // Format Date (using moment): refer to http://momentjs.com/docs/#/displaying/format/
-        let date = new Date(club.events[i].date);
-        let formattedDate = `${moment(date).format('MMM Do, dddd')}`
         // Append HTML
-        $('#events').append(`
-            <div class="col-sm-6 col-md-4">
-                <a href="/clubs/${clubId}/events/${club.events[i]._id}" class="no-underline">
-                    <div class="thumbnail">
-                        <img src="${club.events[i].image}" alt="Image" class="center-block img-responsive">
-                        <div class="green"><small>${formattedDate}</small></div>
-                        <div class="green"><small>${numPromises} attending</small></div>
-                        <div class="${membersOnlyClass}"><small>${membersOnlyMessage}</small></div>
-                    </div>
-                </a>
-            </div>
-        `)
+        $('#events').append(Event(club.events[i]))
     }
 
     // List all posts
@@ -95,5 +77,29 @@
             location = `/auth/login?redirect=${location.href}`
         }
     })
+
+    function Event(event) {
+        // Show different labels based on conditions
+        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all"
+        let numPromises = event.promisers ? event.promisers.length : 0
+        // Format Date (using moment): refer to http://momentjs.com/docs/#/displaying/format/
+        let date = new Date(event.date);
+        let formattedDate = `${moment(date).format('MMM Do, dddd')}`
+
+        return `<div class="col-6 border">
+            <a href="/clubs/${event.club}/events/${event._id}" class="no-underline">
+                <div class="thumbnail">
+                    <div class="text-center">
+                        <img src="${event.image}" alt="Image" class="center-block img-fluid">
+                    </div>
+                    <div class="event-info">${formattedDate}</div>
+                    <div class="event-info">${numPromises} attending</div>
+                    <div class="event-info">${membersOnlyMessage}</div>
+                    </div>
+                </a>
+            </div>`;
+
+        
+    }
 
 })()
