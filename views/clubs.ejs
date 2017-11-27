@@ -1,0 +1,24 @@
+	<% include ./partials/head.ejs %>
+	<title>Homepage</title>
+	<!-- <link rel="stylesheet" href="/css/clubs.css"> -->
+</head>
+<body>
+	<% include ./partials/navbar.ejs %>
+	<div class="container">
+		<h1 id="main" class="text-center">Here are all the clubs</h1>
+		<div id="joinedClubs" class="row"></div>
+		<hr>
+		<div id="otherClubs" class="row"></div>
+	</div>
+
+	<% include ./partials/footer.ejs %>
+	<script>
+		const user = <%- JSON.stringify(user) %>
+		<%if (user){%>
+			user.role = "<%=user.role%>"
+		<%}%>
+	</script>
+	<% include ./partials/scripts.ejs %>
+	<script src="/js/clubs.js"></script>
+</body>
+</html>

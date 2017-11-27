@@ -11,6 +11,7 @@ router.use(User.getRoleFromQuery)
 
 // Homepage ================================================================
 router.get('/', (req, res, next) => res.render('index'))
+router.get('/clubs', (req, res, next) => res.render('clubs'))
 
 
 // Club ====================================================================

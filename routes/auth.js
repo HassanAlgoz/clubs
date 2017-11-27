@@ -16,7 +16,7 @@ router.get('/signup', function(req, res) {
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
-	successRedirect : '/',
+	successRedirect : '/clubs',
 	failureRedirect : '/auth/signup',
 	failureFlash : true // allow flash messages
 }));
@@ -39,7 +39,7 @@ router.get('/confirmation', async (req, res, next) => {
 // Login ====================================================================
 router.get('/login', (req, res, next) => {
 	if (req.user) {
-		res.redirect('/')
+		res.redirect('/clubs')
 	} else {
 		res.render('login', {
 			message: req.flash('loginMessage'),
@@ -52,7 +52,7 @@ router.post('/login', passport.authenticate('local-login', {
 	failureRedirect : '/auth/login',
 	failureFlash : true // allow flash messages
 }), (req, res, next) => {
-	res.redirect(req.query.redirect || '/')
+	res.redirect(req.query.redirect || '/clubs')
 });
 
 
