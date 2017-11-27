@@ -22,6 +22,7 @@
 
     document.title = post.title
     $('#title').text(post.title)
+    document.querySelector('#image').src = post.image
     // Format Date
     let date = new Date(post.publishDate);
     console.log("Date:", date)

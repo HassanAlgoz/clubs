@@ -61,7 +61,7 @@ router.get('/:clubId/events', async (req, res, next) => {
 
 // POST
 router.post('/:clubId/events', User.canManage, async (req, res, next) => {
-	let {clubId} = req.query
+	let { clubId } = req.params
 
 	req.checkBody('title',   "can't be empty").notEmpty()
 	req.checkBody('image')
@@ -134,8 +134,7 @@ async function sendEmailsToMembers(club, event) {
 
 // PUT
 router.put('/:clubId/events/:eventId', User.canManage, async (req, res, next) => {
-	let {eventId} = req.params
-	let {clubId} = req.query
+	let {clubId, eventId} = req.params;
 
 	req.checkBody('title',   "can't be empty").notEmpty()
 	req.checkBody('image')
@@ -182,8 +181,7 @@ router.put('/:clubId/events/:eventId', User.canManage, async (req, res, next) =>
 // DELETE
 router.delete('/:clubId/events/:eventId', User.canManage, (req, res, next) => {
 
-	let eventId = req.params.eventId
-	let clubId = req.query.clubId
+	let {eventId, clubId} = req.params;
 
 	// Check if event belongs to this club
 	Club.findOne({ "events": eventId }).then((club) => {

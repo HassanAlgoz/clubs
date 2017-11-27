@@ -61,7 +61,7 @@ router.get('/:clubId/posts', async (req, res, next) => {
 
 // POST
 router.post('/:clubId/posts', User.canManage, async (req, res, next) => {
-	let {clubId} = req.query
+	let {clubId} = req.params
 
 	req.checkBody('title',   "can't be empty").notEmpty()
 	req.checkBody('content', "can't be empty").notEmpty()
@@ -77,6 +77,7 @@ router.post('/:clubId/posts', User.canManage, async (req, res, next) => {
 		let post = new Post({
 			title: req.body.title,
 			content: req.body.content,
+			image: req.body.image,
 			lastEditBy: req.user._id,
 			lastEditDate: new Date(),
 			sentAsEmail: sentAsEmail,
@@ -137,6 +138,7 @@ router.put('/:clubId/posts/:postId', User.canManage, async (req, res, next) => {
 		let post = await Post.findByIdAndUpdate(postId, {
 			title: req.body.title,
 			content: req.body.content,
+			image: req.body.image,
 			lastEditBy: req.user._id,
 			lastEditDate: new Date(),
 			sentAsEmail: (req.body.sentAsEmail == 'true') ? true : false

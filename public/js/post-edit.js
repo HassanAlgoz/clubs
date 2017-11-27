@@ -22,6 +22,7 @@ $(function(){
                 data: {
                     title: $('#title').val(),
                     content: $('#content').val(),
+                    image: $('#image').val(),
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
@@ -50,6 +51,7 @@ $(function(){
                 data: {
                     title: $('#title').val(),
                     content: $('#content').val(),
+                    image: $('#image').val(),
                     sentAsEmail: document.getElementById('sentAsEmail').checked
                 },
                 success: function(data) {
@@ -75,6 +77,20 @@ $(function(){
                 }
             })
         })
+    }
+
+    let imageElement = document.querySelector('#preview-image')
+    $('#image').on('keyup', previewImage)
+    $('#image').on('paste', previewImage)
+
+    function previewImage(event) {
+        setTimeout(() => {
+            imageElement.src = $('#image').val()
+        }, 0)
+    }
+
+    if ($('#image').val().length > 0) {
+        previewImage()
     }
 });
 
