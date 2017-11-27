@@ -31,16 +31,26 @@
     // Set Browser Tab Name
     document.title = club.name
     // Fill in Club details
-    $('#name').text(club.name)
+    $('#logo').attr('alt', club.name)
     $('#members-count').text(club.members.length)
     document.querySelector('#logo').src = club.logo
     // Description is written in Markdown which we have to convert to HTML
     $('#description').html(converter.makeHtml(club.description));
 
     // List all events
-    for(let i = club.events.length - 1; i >= 0; i--) {
+    let html = ``;
+    for (let i = 0; i < club.events.length; i++) {
         // Append HTML
-        $('#events').append(Event(club.events[i]))
+        html += Event(club.events[i])
+        if ((i+1) % 2 == 0) {
+            html = `<div class="row">${html}</div>`
+            $('#events').append(html)
+            html = ``;
+        } else {
+            if (i == club.events.length - 1) {
+                $('#events').append(html)
+            }
+        }
     }
 
     // List all posts
@@ -86,20 +96,17 @@
         let date = new Date(event.date);
         let formattedDate = `${moment(date).format('MMM Do, dddd')}`
 
-        return `<div class="col-6 border">
+        return `
+        <div class="col-sm-6 col-md-6">
             <a href="/clubs/${event.club}/events/${event._id}" class="no-underline">
-                <div class="thumbnail">
-                    <div class="text-center">
-                        <img src="${event.image}" alt="Image" class="center-block img-fluid">
-                    </div>
-                    <div class="event-info">${formattedDate}</div>
-                    <div class="event-info">${numPromises} attending</div>
-                    <div class="event-info">${membersOnlyMessage}</div>
-                    </div>
-                </a>
-            </div>`;
-
-        
+                <div class="thumbnail shadow">
+                    <img src="${event.image}" alt="Image" class="center-block img-responsive">
+                    <div class="green"><small>${formattedDate}</small></div>
+                    <div class="green"><small>${numPromises} attending </small></div>
+                    <div class="green"><small>${membersOnlyMessage}</small></div>
+                </div>
+            </a>
+        </div>`;
     }
 
 })()
