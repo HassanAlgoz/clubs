@@ -19,10 +19,11 @@
 
 
 
-
-    events.forEach((event) => {
-        $('#events').html($('#events').html() + Event(event));
-    })
+    for(let i = 0; i < events.length; i++) {
+        let event = events[i];
+        let html = Event(event);
+        $('#events').append(html)
+    }
 
     // Fetch Posts and Display Them
     response = null
@@ -39,31 +40,17 @@
     } catch (err) { console.error("ERROR:", err) }
     let { posts } = json
 
-    let i = 0;
-    for(i = 0; i < 2; i++) {
+    for(let i = 0; i < posts.length; i++) {
         let post = posts[i];
-        $('#main-posts').html($('#main-posts').html() + `
-            <div class="col-md-6 d-flex flex-column py-3">
+        $('#posts').html($('#posts').html() + `
+            <div class="col-md-6">
                 <div  class=""><img src="${post.image}" alt="" class="img-fluid" ></div>
                 <div class="">
-                    <p class="mt-2 title">${post.title}</p>
-                    <p class=" text-justify body ">${post.content.substring(0, 200)}...</p>
-                    <a class="read-more" href="/clubs/${post.club}/posts/${post._id}"> read more <i class="fa fa-arrow-right"></i></a>
+                    <h4>${post.title}</h4>
+                    <p>${post.content.substring(0, 200)}...<a class="read-more" href="/clubs/${post.club}/posts/${post._id}">read more</a></p>
                 </div>
             </div>
         `)
-    }
-    while(i < posts.length) {
-        let post = posts[i++];
-        $('#posts-side').html($('#posts-side').html() + `
-            <div class="row py-3 px-0 side-post">
-                <div class="col-md-4 "><img src="${post.image}" alt="" class="img-fluid"> </div>
-                <div class="col-md-8 overflow" >
-                    <p class="title">${post.title}</p>
-                    <p class="body text-justify">${post.content.substring(0, 100)}<a href="/clubs/${post.club}/posts/${post._id}" class="read-more">...read more <i class="fa fa-arrow-right"></i></a> </p>
-                </div>
-            </div>`
-        )
     }
     // $('#posts-side').html($('#posts-side').html() + `
     //     <div class="row py-3 px-0 ">
@@ -113,70 +100,24 @@
         }
     })
 
-    // GET - List all clubs
-    response = null
-    json = null;
-    try {
-        response = await fetch(`/api/clubs`)
-        // (debugging)
-        console.log("response:", response)
-        if (!response.ok) {
-            console.error("Coudln't fetch clubs")
-            return;
-        }
-        json = await response.json()
-    } catch(err){console.error("ERROR:", err)}
-    let {clubs} = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("clubs:", clubs)
-
-    let joinedClubs = []
-    let otherClubs = []
-    clubs = clubs.filter(club => club.condition == 'approved');
-    if (user) {
-        for(let i=0; i < clubs.length; i++) {
-            for(let j=0; j < user.memberships.length; j++) {
-                if (user.memberships[j].club == clubs[i]._id) {
-                    joinedClubs.push(clubs[i])
-                } else {
-                    otherClubs.push(clubs[i])
-                }
-            }
-        }
-    } else {
-        otherClubs = clubs;
-    }
-    
-    if (joinedClubs.length >= 1) {
-        joinedClubs.forEach(club => addClub(club, 'joinedClubs'))
-    }
-    otherClubs.forEach(club => addClub(club, 'otherClubs'))
-
-    function addClub(club, section) {
-        $('#' + section).append(`
-            <div class="col-md-3 col-xs-6">
-                <a href="/clubs/${club._id}" class="no-underline">
-                    <div class="thumbnail">
-                        <img src="${club.logo}" alt="${club.name}" class="img-responsive">
-                        <div class="green"><small>${club.members.length} members</small></div>
-                    </div>
-                </a>
-            </div>
-        `)
-    }
-
     function Event(event) {
-        return `<div class="col-md-6 col-lg-4 p-3 text-center">
-            <div class="position-relative">
-                <a href="/clubs/${event.club}/events/${event._id}">
-                    <img src="${event.image}" alt="" class="img-fluid">
-                    <div class="overlay overflow py-3 d-none d-md-block">
-                        <p class="title">${event.title}</p>
-                        <p class="body">${event.brief.substring(0, 80)}...</p>
-                    </div>
-                </a>
-            </div>
+        // Show different labels based on conditions
+        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all"
+        let numPromises = event.promisers ? event.promisers.length : 0
+        // Format Date (using moment): refer to http://momentjs.com/docs/#/displaying/format/
+        let date = new Date(event.date);
+        let formattedDate = `${moment(date).format('MMM Do, dddd')}`
+
+        return `
+        <div class="col-sm-6 col-md-3">
+        <a href="/clubs/${event.club}/events/${event._id}" class="no-underline">
+            <div class="thumbnail shadow">
+                <img src="${event.image}" alt="Image" class="center-block img-responsive">
+                <div class="green"><small>${formattedDate}</small></div>
+                <div class="green"><small>${numPromises} attending </small></div>
+                <div class="green"><small>${membersOnlyMessage}</small></div>
+                </div>
+            </a>
         </div>`;
     }
 
