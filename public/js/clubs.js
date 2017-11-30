@@ -21,18 +21,24 @@
     clubs = clubs.filter(club => club.condition == 'approved');
     if (user) {
         for (let i = 0; i < clubs.length; i++) {
+            let found = false;
             for (let j = 0; j < user.memberships.length; j++) {
                 if (user.memberships[j].club == clubs[i]._id) {
-                    joinedClubs.push(clubs[i])
-                } else {
-                    otherClubs.push(clubs[i])
+                    found = true;
+                    break;
                 }
+            }
+            if (found) {
+                joinedClubs.push(clubs[i])
+            } else {
+                otherClubs.push(clubs[i])
             }
         }
     } else {
         otherClubs = clubs;
     }
 
+    
     if (joinedClubs.length >= 1) {
         joinedClubs.forEach(club => addClub(club, 'joinedClubs'))
     }
