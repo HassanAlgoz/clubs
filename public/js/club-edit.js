@@ -57,6 +57,20 @@
             })
         })
     });
-    
+
+    // Social Media Input Fields
+    let socialList = ["twitter", "youtube", "periscope", "instagram", "snapchat", "telegram", "whatsapp", "slack"];
+    let socialIcon = ["fa fa-twitter", "fa fa-youtube", "fa fa-periscop", "fa fa-instagram", "fa fa-snapchat-square", "fa fa-telegram", "fa fa-whatsapp", "fa fa-slack"];
+    for(let i = 0; i < socialList.length; i++) {
+        let media = socialList[i];
+        let icon = socialIcon[i];
+        $('#social').append(`
+            <div class="input-group" title="${media}">
+                <span class="input-group-addon"><i class="${icon} social-label"></i></span>
+                <input id="${media}" name="${media}" class="form-control" type="url" placeholder="${media}" value="${club[media] || ''}" autocomplete="off">
+            </div>
+            
+        `);
+    }
 })()
 

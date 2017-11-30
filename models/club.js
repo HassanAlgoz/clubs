@@ -10,7 +10,16 @@ var clubSchema = new mongoose.Schema({
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
     date: { type: Date, default: Date.now },
-    condition: { type: String, default: 'unapproved' }
+    condition: { type: String, default: 'unapproved' },
+    // Social Media Links
+    twitter: String,
+    youtube: String,
+    periscope: String,
+    instagram: String,
+    snapchat: String,
+    telegram: String,
+    whatsapp: String,
+    slack: String
 });
 
 

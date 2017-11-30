@@ -34,6 +34,18 @@
     $('#logo').attr('alt', club.name)
     $('#members-count').text(club.members.length)
     document.querySelector('#logo').src = club.logo
+    // Social Media Buttons
+    let socialHTML = ``;
+    if (club.twitter) socialHTML +=   `<a class="social-link" href="${club.twitter}"><i class="fa fa-twitter" aria-hidden="true"></i></a>`;
+    if (club.youtube) socialHTML +=   `<a class="social-link" href="${club.youtube}"><i class="fa fa-youtube" aria-hidden="true"></i></a>`;
+    if (club.periscope) socialHTML += `<a class="social-link" href="${club.periscope}"><i class="fa fa-periscope" aria-hidden="true"></i>p</a>`;
+    if (club.instagram) socialHTML += `<a class="social-link" href="${club.instagram}"><i class="fa fa-instagram" aria-hidden="true"></i></a>`;
+    if (club.snapchat) socialHTML += `<a class="social-link" href="${club.snapchat}"><i class="fa fa-snapchat-square" aria-hidden="true"></i></a>`;
+    if (club.telegram) socialHTML += `<a class="social-link" href="${club.telegram}"><i class="fa fa-telegram" aria-hidden="true"></i></a>`;
+    if (club.whatsapp) socialHTML += `<a class="social-link" href="${club.whatsapp}"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>`;
+    if (club.slack) socialHTML += `<a class="social-link" href="${club.slack}"><i class="fa fa-slack" aria-hidden="true"></i></a>`;
+    $('#social').append(socialHTML);
+    
     // Description is written in Markdown which we have to convert to HTML
     $('#description').html(converter.makeHtml(club.description));
 

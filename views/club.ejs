@@ -1,5 +1,6 @@
 	<% include partials/head.ejs %>
 	<title>Club</title>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 	<link rel="stylesheet" href="/css/club.css">
 </head>
 <body>
@@ -9,7 +10,15 @@
 	<!-- We are using Bootstrap 3 -->
 	<div class="container" id="content">
 		<img id="logo" src="" class="img-responsive center-block" alt="Club Logo">
-		<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i> Join the <span id="members-count"></span> members</button>
+		<div class="row">
+			<div class="col-md-6">
+				<button id="btn-join" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-check"></i> Join the <span id="members-count"></span> members</button>
+			</div>
+			<div class="col-md-6 text-right" id="social">
+				<!-- Social Media Buttons -->
+			</div>
+		</div>
+		
 		
 		<hr/>
 		<div class="row">
