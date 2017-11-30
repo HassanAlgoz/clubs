@@ -15,6 +15,7 @@ const chalk = require('chalk')
 const dotenv = require('dotenv');
 const expressValidator = require('express-validator');
 const lusca = require('lusca'); // security middleware
+const RateLimit = require('express-rate-limit');
 
 // Models
 const User = require('./models/user')
@@ -68,7 +69,7 @@ if (app.get('env') === 'production') {
     // serve secure cookies
     cookie.secure = true
     cookie.httpOnly = true
-    cookie.expires = new Date(Date.now() + 60 * 60 * 1000) // 1 hour;
+    cookie.maxAge = 1000 * 60 * 60 // 1 hour;
 }
 app.use(session({
     name: 'sessionId',
@@ -101,10 +102,20 @@ app.use(lusca({
     referrerPolicy: 'same-origin'
 }));
 
+// Rate Limiter
+const apiLimiter = new RateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    delayMs: 0 // disabled
+});
+// only apply to requests that begin with /api/
+app.use('/api/', apiLimiter);
+
 // Pass 'req.user' as 'user' to ejs templates
 app.use((req, res, next) => {
-  res.locals.user = req.user || null;
-  next();
+    // console.log("req.session:", req.session);
+    res.locals.user = req.user || null;
+    next();
 })
 
 
