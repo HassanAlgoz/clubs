@@ -14,7 +14,7 @@
 				<h1>Signup</h1>
 				<form method="POST">
 					<div class="form-group">
-						<input type="text" name='username' placeholder='Username' class="form-control" maxlength="25" required autofocus>
+						<input type="text" name='username' dir="rtl" placeholder='الاسم' class="form-control" maxlength="60" required autofocus>
 					</div>
 					<!-- Using one field for password  -->
 					<!-- But we should provide a way to double check  -->
@@ -26,21 +26,21 @@
 						<input type="email" name='email' placeholder='Email' class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="text" name='major' placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required>
+						<input type="text" name='major' placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="6" required>
 					</div>
 					<!-- <div class="form-group">
 						<input type="text" name='KFUPMID' placeholder='KFUPM ID' class="form-control" maxlength="10" required>
 					</div> -->
 					<!-- <input type="hidden" id="notificationToken" name="notificationToken" value=""> -->
 
-					<!-- <div class="form-group">
+					<div class="form-group">
 						<label for="enrollment">Date of enrollment</label>
 						<select name="enrollment" id="enrollment">
-							for(var i=0; i<8; i++) {
-							<option value="new Date().getFullYear() - i"> new Date().getFullYear() - i </option>
-							}
+							<% for(var i=0; i<8; i++) {%>
+							<option value="<%=new Date().getFullYear() - i%>"><%=new Date().getFullYear() - i%></option>
+							<% } %>
 						</select>
-					</div> -->
+					</div>
 					<input type="hidden" name="_csrf" value="<%=_csrf%>">
 					<button type="submit" class="btn btn-success">Signup</button>
 				</form>

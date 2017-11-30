@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true, lowercase: true },
     major: { type: String, default: "" },
     enrollment: Number,
-    KFUPMID: Number,
     memberships: [
         {
             club: { type: Schema.Types.ObjectId, ref: 'Club' },

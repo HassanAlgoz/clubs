@@ -12,26 +12,30 @@
 
 				<form method="PUT" action="/api/users/profile/<%=profile._id%>">
 					<div class="form-group">
-						<input type="text" name='username' value="<%= profile.username %>" placeholder='Username' class="form-control" maxlength="25" required autofocus>
+						<label for="username" dir="rtl" style="float: right;">الاسم</label>
+						<input type="text" name='username' dir="rtl" value="<%= profile.username %>" placeholder='الاسم' class="form-control" maxlength="60" required autofocus>
 					</div>
 					<div class="form-group">
+						<label for="email">Email</label>
 						<input type="email" name='email' value="<%= profile.email %>" placeholder='Email' class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="text" name='major' value="<%= profile.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="4" required autofocus>
+						<label for="major">Major</label>
+						<input type="text" name='major' value="<%= profile.major %>" placeholder='Major (e.g, SWE)' class="form-control" pattern="[A-Za-z][A-Za-z]+" maxlength="6" required autofocus>
 					</div>
 					<div class="form-group">
-						<input type="text" name='KFUPMID' value="<%= profile.KFUPMID %>" placeholder='KFUPM ID' class="form-control" maxlength="10" required>
-					</div>
-					<!-- <div class="form-group">
 						<label for="enrollment">Date of enrollment</label>
 						<select name="enrollment" id="enrollment">
-							< for(var i=0; i<8; i++) { >
-							<option value=" new Date().getFullYear() - i "> new Date().getFullYear() - i </option>
-							 } 
+							<% for(var i=0; i<9; i++) {%>
+							<% if (new Date().getFullYear() - i == profile.enrollment) {%>
+								<option value="<%=new Date().getFullYear() - i%>" selected><%=new Date().getFullYear() - i%></option>
+							<%} else {%>
+								<option value="<%=new Date().getFullYear() - i%>"><%=new Date().getFullYear() - i%></option>
+							<%}%>
+							
+							<% } %>
 						</select>
-					</div> -->
-
+					</div>
 					
 					<!-- Password -->
 					<div class="form-group">

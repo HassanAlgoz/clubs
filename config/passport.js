@@ -8,7 +8,7 @@ const ObjectId = require('mongoose').Schema.Types.ObjectId
 
 
 // =========================================================================
-module.exports = function(passport) {   
+module.exports = function(passport) {
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
@@ -76,6 +76,7 @@ module.exports = function(passport) {
                     password: User.generateHash(password),
                     username: req.body.username,
                     major: req.body.major,
+                    enrollment: req.body.enrollment,
                     confirmationCode: confirmationCode
                     // KFUPMID: (id)? Number(id) : 0
                     // notificationToken: req.body.notificationToken
