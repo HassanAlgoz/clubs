@@ -1,7 +1,9 @@
 :root {
 	/* User Defined Values */
 	--green: #007d40;
-	--red: rgb(255, 145, 0);
+	--red: rgb(255, 50, 50);
+	--gold: gold;
+	--gray: #333;
 }
 
 /* Notes on CSS
@@ -160,6 +162,26 @@ a.no-underline:hover {
     color: white;
     font-weight: bold;
     padding-left: 7px;
+}
+
+.gold {
+    background-color: var(--gold);
+    color: #333;
+    font-weight: bold;
+    padding-left: 7px;
+}
+
+.gray {
+    background-color: var(--gray);
+    color: white;
+    font-weight: bold;
+	padding-left: 7px;
+}
+
+.thumbnail {
+	padding-left: 0;
+	padding-right: 0;
+	border: 0;
 }
 
 .shadow {

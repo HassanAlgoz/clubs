@@ -34,8 +34,11 @@
     let date = new Date(event.date);
     $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
+    event.time = getAMPM(event.time);
+    console.log("event.time", event.time);
+    event.organizers = event.organizers.map(organizer => organizer.username).join(" و");
     // Populate title, time and location
-    populateText(event, ['title', 'time', 'location'])
+    populateText(event, ['title', 'time', 'location', 'organizers'])
     // Equivalent to:
     // $('#title').text(event.title)
     // $('#time').text(event.time)

@@ -16,7 +16,7 @@ router.use(User.getRoleFromQuery)
 router.get('/:clubId/events/:eventId', async (req, res, next) => {
 	let {eventId} = req.params;
 	try {
-		let event = await Event.findById(eventId).exec()
+		let event = await Event.findById(eventId).populate('organizers', 'username').exec()
 		if (!event) {
 			// return res.status(404).send(`Error finding event with id: ${eventId}`);
 			return res.sendStatus(404);

@@ -88,3 +88,20 @@ function getJSON(formData) {
     }
     return json;
 }
+
+function getAMPM(str) {
+    let time = str.split(":");
+    let hours = parseInt(time[0]);
+    let minutes = parseInt(time[1]);
+    if (hours > 12) {
+        hours -= 12;
+        if (hours < 10) {
+            hours = `0${hours}`
+        }
+        if (minutes < 10) {
+            minutes = `0${minutes}`
+        }
+        return `${hours}:${minutes} PM`;
+    }
+    return `${str} AM`;
+}

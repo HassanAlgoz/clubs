@@ -16,7 +16,11 @@ router.get('/:clubId', async (req, res, next) => {
 	try {
 		let dbQuery = Club.findById(clubId)
 		if (events) {
-			dbQuery.populate('events', 'title date time location condition membersOnly image')
+			dbQuery.populate('events', 'title date time location condition membersOnly image club seatLimit')
+				.populate({
+					path: 'events',
+					populate: { path: 'organizers', select: 'username' }
+				})
 		}
 		if (posts) {
 			dbQuery.populate('posts', 'title publishDate')
@@ -37,8 +41,13 @@ router.get('/', async (req, res, next) => {
 	try {
 		let dbQuery = Club.find({}).sort({date: -1})
 		if (events) {
-			dbQuery.populate('events', 'title date time location condition membersOnly image')
+			dbQuery.populate('events', 'title date time location condition membersOnly image club seatLimit')
+				.populate({
+					path: 'events',
+					populate: { path: 'organizers', select: 'username' }
+				})
 		}
+		
 		if (posts) {
 			dbQuery.populate('posts', 'title publishDate')
 		}

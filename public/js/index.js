@@ -102,20 +102,55 @@
 
     function Event(event) {
         // Show different labels based on conditions
-        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all"
+        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all";
+        let membersOnlyClass = "green";
         let numPromises = event.promisers ? event.promisers.length : 0
+        let past = (moment(new Date()).isAfter(moment(new Date(event.date)))) ? true : false;
+
+        // Show NO. people attending
+        let attendanceMessage = "";
+        let attendanceClass = "green";
+        if (event.seatLimit > 0) {
+            attendanceMessage = `${numPromises}/${event.seatLimit} seats reserved`;
+            if (numPromises >= event.seatLimit) {
+                attendanceClass = "red";
+            }
+        } else {
+            let subject = (event.membersOnly) ? "members" : "people"
+            let verb = (past) ? "attended" : "attending"
+            attendanceMessage = `${numPromises} ${subject} ${verb}`;
+        }
+
+        if (event.condition === "closed") {
+            membersOnlyMessage = "closed";
+            membersOnlyClass = "red";
+        }
+
         // Format Date (using moment): refer to http://momentjs.com/docs/#/displaying/format/
         let date = new Date(event.date);
         let formattedDate = `${moment(date).format('MMM Do, dddd')}`
 
+        let organizersDiv = "";
+        if (event.organizers && event.organizers.length >= 1) {
+            let organizers = event.organizers.map(organizer => organizer.username);
+            console.log("organizers", organizers);
+            if (organizers.length > 1) {
+                organizers = [organizers[0], organizers[1]].join(" و");
+            } else {
+                organizers = organizers[0]
+            }
+            organizersDiv = `<div class="gold"><small>${organizers}</small></div>`;
+        }
+
         return `
-        <div class="col-sm-6 col-md-3">
-        <a href="/clubs/${event.club}/events/${event._id}" class="no-underline">
-            <div class="thumbnail shadow">
-                <img src="${event.image}" alt="Image" class="center-block img-responsive">
-                <div class="green"><small>${formattedDate}</small></div>
-                <div class="green"><small>${numPromises} attending </small></div>
-                <div class="green"><small>${membersOnlyMessage}</small></div>
+        <div class="col-sm-6 col-md-6">
+            <a href="/clubs/${event.club}/events/${event._id}" class="no-underline">
+                <div class="thumbnail shadow">
+                    <img src="${event.image}" alt="Image" class="center-block img-responsive">
+                    <div class="gray"><small>${formattedDate}</small></div>
+                    <div class="gray"><small>${attendanceMessage}</small></div>
+                    <div class="gray"><small>${membersOnlyMessage}</small></div>
+                    ${organizersDiv}
                 </div>
             </a>
         </div>`;
