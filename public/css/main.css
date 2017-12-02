@@ -18,7 +18,7 @@ html {
 body {
 	margin: 0;
 	padding: 0;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "DroidArabicKufiRegular", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.5em;
   	color: #333;
   	height: 100%;
@@ -154,21 +154,24 @@ a.no-underline:hover {
     background-color: var(--green);
     color: white;
     font-weight: bold;
-    padding-left: 7px;
+	padding-left: 7px;
+	padding-right: 7px;
 }
 
 .red {
     background-color: var(--red);
     color: white;
     font-weight: bold;
-    padding-left: 7px;
+	padding-left: 7px;
+	padding-right: 7px;
 }
 
 .gold {
     background-color: var(--gold);
     color: #333;
     font-weight: bold;
-    padding-left: 7px;
+	padding-left: 7px;
+	padding-right: 7px;
 }
 
 .gray {
@@ -176,6 +179,7 @@ a.no-underline:hover {
     color: white;
     font-weight: bold;
 	padding-left: 7px;
+	padding-right: 7px;
 }
 
 .thumbnail {
@@ -196,4 +200,12 @@ a.no-underline:hover {
 .social-label {
 	font-size: 32px;
 	width: 24px;
+}
+
+.input-group {
+	
+}
+
+.dropdown-menu>li>a {
+	text-align: right;
 }

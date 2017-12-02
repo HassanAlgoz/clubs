@@ -1,4 +1,7 @@
 (async function(){
+
+    $('#h-clubs').text(translate("Clubs"))
+
     // GET - List all clubs
     let response, json;
     try {
@@ -50,7 +53,7 @@
                     <a href="/clubs/${club._id}" class="no-underline">
                         <div class="thumbnail">
                             <img src="${club.logo}" alt="${club.name}" class="img-responsive">
-                            <div class="green"><small>${club.members.length} members</small></div>
+                            <div class="gray"><small>${club.members.length} ${translate("members")}</small></div>
                         </div>
                     </a>
                 </div>

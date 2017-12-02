@@ -9,15 +9,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="/" id="home">Home</a>
+      <a class="navbar-brand" href="/" id="nav-home">Home</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class=""><a href="/clubs">Clubs</a></li>
+        <li class=""><a href="/clubs" id="nav-clubs">Clubs</a></li>
         <% if (user) {%>
          <% if (user.role && (user.role === 'manager' || user.role === 'president') || user.isAdmin) { %>
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Create <span class="caret"></span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span id="nav-create">Create</span> <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <% if (user.role && (user.role === 'manager' || user.role === 'president')) { %>
             <li><a id="nav-new-post" href="#">New Post</a></li>
@@ -29,7 +29,7 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage <span class="caret"></span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span id="nav-manage">Manage</span> <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <% if (user.role === 'president') { %>
             <li><a id="nav-edit-club" href="#">Edit Club</a></li>
@@ -49,17 +49,17 @@
         <!-- <li><a href="#">Page 3</a></li> -->
         <% } %>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav" id="nav-other-end">
         <% if (user) {%>
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span> <%= user.username %> <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/auth/logout">Logout</a></li>
+            <li><a href="/profile" id="nav-profile">Profile</a></li>
+            <li><a href="/auth/logout" id="nav-logout">Logout</a></li>
           </ul>
         </li>
         <%} else {%>
-        <li><a href="#" id="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li><a href="#" id="login"><span class="glyphicon glyphicon-log-in"></span> <span id="nav-login">Login</span></a></li>
         <% } %>
       </ul>
     </div>

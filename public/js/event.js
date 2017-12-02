@@ -4,6 +4,8 @@
 
     const clubId = getId('clubs')
     const eventId = getId("events")
+
+
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}/events/${eventId}`)
@@ -58,7 +60,7 @@
 
     // Show NO. people attending
     if (event.seatLimit > 0) {
-        $('#attendees').text(`${event.promisers.length}/${event.seatLimit} seats reserved`)
+        $('#attendees').text(`${translate("seats")}: ${event.promisers.length}/${event.seatLimit}`)
         if (event.promisers.length >= event.seatLimit) {
             $('#attendees').addClass("text-danger")
         }
@@ -70,19 +72,18 @@
 
     // Additional information
     if (promised) {
-        $('#info').append(`<li id="promised" class="text-success">You promised to attend this event</li>`)
+        $('#info').append(`<li id="promised" class="text-success">${translate("You promised to attend this event")}</li>`)
     }
     if (event.membersOnly) {
-        $('#info').append(`<li id="membersOnly"><i class="text-danger">This event is for members only</i></li>`)
+        $('#info').append(`<li id="membersOnly"><i class="text-danger">${translate("This event is for members only")}</i></li>`)
     }
-     
 
     if (!promised) {
         // The "count me in" Button
         if (event.condition === 'open' && !past) {
             if (user) {
                 if (!event.membersOnly || (event.membersOnly && (user.role === 'president' || user.role === 'manager' || user.role === 'member'))) {
-                    $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
+                    $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> ${translate("Count me in")}</button>`)
                 
                     if (event.seatLimit == 0 || event.promisers.length < event.seatLimit) {
                         $('#btn-promise').on('click', () => $.ajax({
@@ -95,7 +96,7 @@
                     }
                 }
             } else {
-                $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> Count me in</button>`)
+                $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> ${translate("Count me in")}</button>`)
                 $('#btn-promise').on('click', () => location = `/auth/login?redirect=${location.href}`)
             }
         }
@@ -106,29 +107,29 @@
     if (user && (user.role === 'president' || user.role === 'manager')) {
         if (event.condition === 'open') {
             // "Close Event" Button
-            $('#section2').append(`<button id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> Close Event</button>`)
+            $('#section2').append(`<button id="btn-close" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> ${translate("Close Event")}</button>`)
             
             $('#btn-close').on('click', () => $.ajax({
                 url: `/api/clubs/${clubId}/events/${eventId}/close`,
                 method: 'PUT',
-                success: () => { $('#btn-close').replaceWith('<span>Event Closed</span>') }
+                success: () => { $('#btn-close').replaceWith(`<span>${translate("Event Closed")}</span>`) }
             }))
 
-            $('#section3').append(`<a href="/clubs/${clubId}/events/${eventId}/edit" id="btn-edit" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i> Edit Event</a>`)
+            $('#section3').append(`<a href="/clubs/${clubId}/events/${eventId}/edit" id="btn-edit" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i> ${translate("Edit Event")}</a>`)
 
         } else {
             // "Open Event" Button
-            $('#section2').append(`<button id="btn-open" class="btn btn-warning">Reopen Event</button>`)
+            $('#section2').append(`<button id="btn-open" class="btn btn-warning">${translate("Reopen Event")}</button>`)
             
             $('#btn-open').on('click', () => $.ajax({
                 url:`/api/clubs/${clubId}/events/${eventId}/open`,
                 method:'PUT',
-                success: () => { $('#btn-open').replaceWith('<span>Event Opened</span>') }
+                success: () => {$('#btn-open').replaceWith(`<span>${translate("Event Opened")}</span>`) }
             }))
             
         }
         // Link to Attendance Page
-        $('#section2').append(`<a href="/clubs/${clubId}/events/${eventId}/attendance" id="btn-attendance" class="btn btn-success">Attendance</a>`)
+        $('#section2').append(`<a href="/clubs/${clubId}/events/${eventId}/attendance" id="btn-attendance" class="btn btn-success">${translate("Attendance")}</a>`)
     }
     
 })()

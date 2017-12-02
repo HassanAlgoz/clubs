@@ -1,11 +1,14 @@
 (async function(){  
     console.log('index.js loaded')
 
+    $('#h-events').text(translate('Events'))
+    $('#h-posts').text(translate('Posts'))
+
     console.log("user", user)
     // Fetch Events and Display Them
     let response, json;
     try {
-        let startDate = moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD');
+        let startDate = moment(new Date()).locale('en-US').subtract(3, 'months').format('YYYY-MM-DD');
         response = await fetch(`/api/events?startDate=${startDate}&limit=8`)
         // (debugging)
         console.log("response:", response)
@@ -47,7 +50,7 @@
                 <div  class=""><img src="${post.image}" alt="" class="img-fluid" ></div>
                 <div class="">
                     <h4>${post.title}</h4>
-                    <p>${post.content.substring(0, 200)}...<a class="read-more" href="/clubs/${post.club}/posts/${post._id}">read more</a></p>
+                    <p>${post.content.substring(0, 200)}...<a class="read-more" href="/clubs/${post.club}/posts/${post._id}">${translate("read more")}</a></p>
                 </div>
             </div>
         `)
@@ -78,8 +81,8 @@
         if (oldEvents.length === 0) {
             let response, json;
             try {
-                let startDate = moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD');
-                let endDate = moment(new Date()).subtract(1, 'day').format('YYYY-MM-DD');
+                let startDate = moment(new Date()).subtract(3, 'months').locale('en-US').format('YYYY-MM-DD');
+                let endDate = moment(new Date()).subtract(1, 'day').locale('en-US').format('YYYY-MM-DD');
                 response = await fetch(`/api/events?startDate=${startDate}&endDate=${endDate}&limit=8`)
                 // (debugging)
                 console.log("response:", response)
@@ -102,7 +105,7 @@
 
     function Event(event) {
         // Show different labels based on conditions
-        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all";
+        let membersOnlyMessage = event.membersOnly ? translate("members only") : translate("open for all");
         let membersOnlyClass = "green";
         let numPromises = event.promisers ? event.promisers.length : 0
         let past = (moment(new Date()).isAfter(moment(new Date(event.date)))) ? true : false;
@@ -111,18 +114,20 @@
         let attendanceMessage = "";
         let attendanceClass = "green";
         if (event.seatLimit > 0) {
-            attendanceMessage = `${numPromises}/${event.seatLimit} seats reserved`;
+            attendanceMessage = `${translate("seats")}: ${numPromises}/${event.seatLimit}`;
             if (numPromises >= event.seatLimit) {
                 attendanceClass = "red";
             }
-        } else {
-            let subject = (event.membersOnly) ? "members" : "people"
-            let verb = (past) ? "attended" : "attending"
+        }
+
+        if (!(event.seatLimit > 0) || event.condition === "closed") {
+            let subject = (event.membersOnly) ? translate("members") : translate("people")
+            let verb = (past) ? translate("attended") : translate("attending")
             attendanceMessage = `${numPromises} ${subject} ${verb}`;
         }
 
         if (event.condition === "closed") {
-            membersOnlyMessage = "closed";
+            membersOnlyMessage = translate("closed");
             membersOnlyClass = "red";
         }
 
@@ -133,7 +138,6 @@
         let organizersDiv = "";
         if (event.organizers && event.organizers.length >= 1) {
             let organizers = event.organizers.map(organizer => organizer.username);
-            console.log("organizers", organizers);
             if (organizers.length > 1) {
                 organizers = [organizers[0], organizers[1]].join(" و");
             } else {

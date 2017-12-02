@@ -4,19 +4,27 @@ $(function () {
     const eventId = event._id
     const clubId = getId('clubs')
 
+    $('#panel-title').text(translate("Attendance"))
+    $('#attended-col').text(translate("Attended"))
+    $('#username-col').text(translate("Username"))
+    $('#major-col').text(translate("Major"))
+    $('#enrollment-col').text(translate("Enrollment"))
+    $('#btn-submit').text(translate("Update Attendance"))
+
     // Format Dates
     let past = (moment(new Date()).isAfter(moment(new Date(event.date))))? true : false;
     console.log("past", past)
     let publishDate = new Date(event.publishDate);
-    $('#published').text( moment(publishDate).fromNow() );
+    $('#published').text( `${translate("Published")} ${moment(publishDate).fromNow()}` );
     let date = new Date(event.date);
     $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
     // Populate title, time and location
+    event.time = getAMPM(event.time);
     populateText(event, ['title', 'time', 'location'])
     
     if (event.seatLimit > 0) {
-        $('#attendees').text(`${event.promisers.length}/${event.seatLimit} seats reserved`)
+        $('#attendees').text(`${translate("seats reserved")}: ${event.promisers.length}/${event.seatLimit}`)
         if (event.promisers.length >= event.seatLimit) {
             $('#attendees').addClass("text-danger")
         }
@@ -47,7 +55,7 @@ $(function () {
                 </td>
                 <td>${event.promisers[i].user.username}</td>
                 <td>${event.promisers[i].user.major}</td>
-                <td>${event.promisers[i].user.KFUPMID}</td>
+                <td>${event.promisers[i].user.enrollment}</td>
             </tr>
         `)
 

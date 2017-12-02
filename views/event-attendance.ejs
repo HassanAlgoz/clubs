@@ -7,7 +7,7 @@
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
 		<h1 id="title"></h1>
-		<h6>Published <span id="published"></span></h6>
+		<h6 id="published"></h6>
 		<ul id="info">
 			<li><i class="glyphicon glyphicon-calendar"></i> <span id="date"></span></li>
 			<li><i class="glyphicon glyphicon-time"></i> <span id="time"></span></li>
@@ -20,7 +20,7 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col col-xs-6">
-              <h3 class="panel-title">Attendance</h3>
+              <h3 class="panel-title" id="panel-title">Attendance</h3>
             </div>
           </div>
         </div>
@@ -28,10 +28,10 @@
           <table class="table table-striped table-bordered table-list">
             <thead>
               <tr>
-                <th class="text-center">Attended</th>
-                <th>User Name</th>
-                <th>Major</th>
-                <th>KFUPMID</th>
+                <th class="text-center" id="attended-col">Attended</th>
+                <th id="username-col">User Name</th>
+                <th id="major-col">Major</th>
+                <th id="enrollment-col">enrollment</th>
               </tr> 
             </thead>
             <tbody>
@@ -43,7 +43,7 @@
       </div>
 
       <div class="row text-center">
-        <button id="btn-submit" class="btn btn-lg btn-success">Update Attendance</button>
+        <button id="btn-submit" class="btn btn-lg btn-success"></button>
       </div>
 
     </div>

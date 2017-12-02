@@ -6,6 +6,9 @@ $(function(){
     console.log('eventId', eventId)
     console.log('clubId', clubId)
 
+    $('#btn-submit-edit').text(translate("Submit Edit"))
+    $('#btn-delete').text(translate("Delete"))
+
     // Bind input to output preview
     markdownBind($('#brief'), $('#preview-brief'))
     textBind($('#title'), $('#preview-title'))

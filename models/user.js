@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         }
     ],
     isAdmin: Boolean,
-    confirmationCode: String,
+    confirmationCode: String
     // notificationToken: String,
 }, { timestamps: true });
 

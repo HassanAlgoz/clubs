@@ -5,8 +5,77 @@ console.log('utils.js loaded')
 
 // Moment is a library object used to format dates.
 // moment documentation: http://momentjs.com/
-moment.locale('en-us');
+let locale = 'ar';
+moment.locale('ar-sa');
 const ISO_DATE_FORMAT = "YYYY-MM-DD"
+
+function translate(str) {
+    if (typeof str === 'object') {
+        let array = [];
+        for(let i = 0; i < str.length; i++) {
+            array.push(translate(str[i]));
+        }
+        return array;
+    }
+    s = str.toLowerCase();
+    if (locale == 'ar') {
+        switch (s) {
+            case "members only": return "للأعضاء فقط";
+            case "open for all": return "للجميع";
+            case "members": return "أعضاء";
+            case "people": return "أشخاص";
+            case "attending": return "سيحضروا";
+            case "attended": return "حضروا";
+            case "attendance": return "الحضور";
+            case "closed": return "مغلق";
+            case "seats reserved": return "المقاعد المحجوزة";
+            case "seats": return "المقاعد";
+            case "you promised to attend this event": return "قد وعدْت بحضور الفعالية";
+            case "this event is for members only": return "هذه الفعالية للأعضاء فقط";
+            case "count me in": return "عدّني من الحاضرين";
+            case "am": return "ص";
+            case "pm": return "م";
+            case "published": return "نُشِر";
+            case "username": return "اسم المستخدم";
+            case "major": return "التخصص";
+            case "enrollment": return "الدفعة";
+            case "update attendance": return "تحديث جدول الحضور";
+            case "submit edit": return "اعتماد التعديل";
+            case "delete": return "حذف";
+            case "edit event": return "تعديل الفعالية";
+            case "reopen event": return "افتح الفعالية";
+            case "event opened": return "افتتحت الفعالية";
+            case "close event": return "أغلق الفعالية";
+            case "event closed": return "أغلقت الفعالية";
+            case "posts": return "المنشورات";
+            case "events": return "الفعاليات";
+            case "manage users": return "إدارة المستخدمين";
+            case "manage posts": return "إدارة المنشورات";
+            case "manage events": return "إدارة الفعاليات";
+            case "manage clubs": return "إدارة الأندية";
+            case "new post": return "إنشاء منشورة";
+            case "new event": return "إنشاء فعالية";
+            case "create new club": return "إنشاء نادي جديد";
+            case "edit club": return "تعديل النادي";
+            case "login": return "تسجيل دخول";
+            case "logout": return "تسجيل خروج";
+            case "signup": return "إنشاء حساب";
+            case "profile": return "الملف الشخصي";
+            case "home": return "الرئيسية";
+            case "clubs": return "الأندية";
+            case "create": return "إنشاء";
+            case "manage": return "إدارة";
+            case "read more": return "إقرأ المزيد";
+            case "your fullname helps uniquely identifying you when participating in or organizing events": return "يساعد اسمك الكامل في تمييزك عند مشاركتك بالفعاليات أو تنظيمك لها";
+        }
+    } else {
+        return str;
+    }
+}
+
+if (locale == 'ar') {
+    $('th').css('text-align', 'right');
+}
 
 // Converter is an object that contains methods to convert Markdown to HTML.
 const converter = new showdown.Converter();
@@ -101,7 +170,7 @@ function getAMPM(str) {
         if (minutes < 10) {
             minutes = `0${minutes}`
         }
-        return `${hours}:${minutes} PM`;
+        return `${hours}:${minutes} ${translate("PM")}`;
     }
-    return `${str} AM`;
+    return `${str} ${translate("AM")}`;
 }
