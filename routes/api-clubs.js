@@ -23,7 +23,7 @@ router.get('/:clubId', async (req, res, next) => {
 				})
 		}
 		if (posts) {
-			dbQuery.populate('posts', 'title publishDate')
+			dbQuery.populate('posts', 'title publishDate image')
 		}
 		let club = await dbQuery.exec()
 		if (!club) {

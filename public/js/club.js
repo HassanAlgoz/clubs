@@ -1,6 +1,7 @@
 (async function(){
     console.log('club.js loaded') // <-- I like to do this to make sure the script is loaded.
 
+
     // Take your time to read this through.
     // 1. We always use `fetch` to make a `GET` request to the API. (we could also use AJAX)
     // 2. If the resource is `Not Found`, that is, if !response.ok then, redirect the user.
@@ -28,11 +29,20 @@
     console.log("returned JSON:", json)
     console.log("club:", club)
 
+    $('#h-events').text(translate('Events'))
+    $('#h-posts').text(translate('Posts'))
+    if (locale == 'ar') {
+        $('#social').addClass('text-left')
+        $('#join-text').text(`انضم إلى الأعضاء الـ ${club.members.length}`)
+    } else {
+        $('#social').addClass('text-right')
+        $('#join-text').text(`Join the ${club.members.length} members`)
+    }
+
     // Set Browser Tab Name
     document.title = club.name
     // Fill in Club details
     $('#logo').attr('alt', club.name)
-    $('#members-count').text(club.members.length)
     document.querySelector('#logo').src = club.logo
     // Social Media Buttons
     let socialHTML = ``;
@@ -67,7 +77,13 @@
 
     // List all posts
     for(let i = club.posts.length - 1; i >= 0; i--) {
-		$('#posts').append(`<div class="list-item"><a href="/clubs/${clubId}/posts/${club.posts[i]._id}">${club.posts[i].title}</a></div>`)
+        $('#posts').append(`
+            <a href="/clubs/${clubId}/posts/${club.posts[i]._id}">
+                <img class="img-responsive" src="${club.posts[i].image}">
+                ${club.posts[i].title}
+            </a>
+            <hr>
+        `)
     }
 
 
@@ -102,7 +118,7 @@
 
     function Event(event) {
         // Show different labels based on conditions
-        let membersOnlyMessage = event.membersOnly ? "members only" : "open for all";
+        let membersOnlyMessage = event.membersOnly ? translate("members only") : translate("open for all");
         let membersOnlyClass = "green";
         let numPromises = event.promisers ? event.promisers.length : 0
         let past = (moment(new Date()).isAfter(moment(new Date(event.date)))) ? true : false;
@@ -111,18 +127,20 @@
         let attendanceMessage = "";
         let attendanceClass = "green";
         if (event.seatLimit > 0) {
-            attendanceMessage = `${numPromises}/${event.seatLimit} seats reserved`;
+            attendanceMessage = `${translate("seats")}: ${numPromises}/${event.seatLimit}`;
             if (numPromises >= event.seatLimit) {
                 attendanceClass = "red";
             }
-        } else {
-            let subject = (event.membersOnly) ? "members" : "people"
-            let verb = (past) ? "attended" : "attending"
+        }
+        
+        if (!(event.seatLimit > 0) || event.condition === "closed") {
+            let subject = (event.membersOnly) ? translate("members") : translate("people")
+            let verb = (past) ? translate("attended") : translate("attending")
             attendanceMessage = `${numPromises} ${subject} ${verb}`;
         }
 
         if (event.condition === "closed") {
-            membersOnlyMessage = "closed";
+            membersOnlyMessage = translate("closed");
             membersOnlyClass = "red";
         }
         
@@ -133,7 +151,7 @@
         let organizersDiv = "";
         if (event.organizers && event.organizers.length >= 1) {
             let organizers = event.organizers.map(organizer => organizer.username);
-            console.log("organizers", organizers);
+
             if (organizers.length > 1) {
                 organizers = [organizers[0], organizers[1]].join(" و");
             } else {
