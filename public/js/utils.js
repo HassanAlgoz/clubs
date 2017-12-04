@@ -28,6 +28,7 @@ function translate(str) {
             case "attended": return "حضروا";
             case "attendance": return "الحضور";
             case "closed": return "مغلق";
+            case "open": return "مفتوح";
             case "seats reserved": return "المقاعد المحجوزة";
             case "seats": return "المقاعد";
             case "you promised to attend this event": return "قد وعدْت بحضور الفعالية";
@@ -71,6 +72,14 @@ function translate(str) {
             case "organizers": return "المنظمون";
             case "create post": return "إنشاء النشرة";
             case "create event": return "إنشاء الفعالية";
+            case "create club": return "إنشاء النادي";
+            case "the president": return "الرئيس";
+            case "club name": return "اسم النادي";
+            case "edit profile": return "تعديل الملف الشخصي";
+
+            case "president": return "رئيس";
+            case "manager": return "مدير";
+            case "member": return "عضو";
         }
     } else {
         return str;

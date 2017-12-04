@@ -8,24 +8,25 @@
 	<% include ./partials/navbar.ejs %>
 
 	<div class="container">
-		<h1>Profile</h1>
-		<ul>
-			<li>Username: <%= profile.username %></li>
-			<li>Major: <%= profile.major %></li>
-			<li>Enrollment date: <%= profile.enrollment %></li>
-			<li>Email: <%= profile.email %></li>
-
-			<% for(let i = 0; i < profile.memberships.length; ++i) { %>
-				<li> <%= profile.memberships[i].role %> in <a href="/clubs/<%= profile.memberships[i].club._id %>"><%= profile.memberships[i].club.name %> Club </a></li>
-			<% } %>
-			
+		<h1>الملف الشخصي</h1>
+		<ul id="list">
+			<li>اسم المستخدم: <%= profile.username %></li>
+			<li>التخصص: <%= profile.major %></li>
+			<li>الدفعة: <%= profile.enrollment %></li>
+			<li>البريد الإلكتروني: <%= profile.email %></li>
 		</ul>
-		<a href="/profile-edit" class="btn btn-default">Edit Profile</a>
+		<a href="/profile-edit" class="btn btn-default" id="edit-profile">Edit Profile</a>
 	</div>
 
 	<% include ./partials/footer.ejs %>
 	<% include ./partials/scripts.ejs %>
-<!-- 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
-	<script src="/js/club.js"></script> -->
+	<script>
+		const memberships = <%- JSON.stringify(profile.memberships) %>
+		$('#edit-profile').text(translate("Edit Profile"));
+		for(let i = 0; i < memberships.length; i++) {
+			console.log(memberships[i].role)
+			$("#list").append(`<li>${translate(memberships[i].role)} في <a href="/clubs/${memberships[i].club._id}">${memberships[i].club.name}</a></li>`)	
+		}
+	</script>
 </body>
 </html>

@@ -12,20 +12,21 @@ $(function () {
                 let club = clubs[i]
 
                 // Format Date
-                let date = moment(new Date(club.date)).format('MM/D/YYYY')
+                let date = moment(new Date(club.date)).locale('en-US').format('MM/D/YYYY')
                
                 $('tbody').append(`
                     <tr>
-                        <td align="center">
+                        <td class="col-md-2" align="center">
                             <button class="btn btn-danger btn-delete"><em class="fa fa-trash"></em></button>
+                            <a class="btn btn-default btn-edit" href="/clubs/${club._id}"><em class="fa fa-eye"></em></a>
                         </td>
-                        <td class="hidden-x">${club._id}</td>
-                        <td>${club.name}</td>
-                        <td>${club.members.length}</td>
-                        <td>${club.events.length}</td>
-                        <td>${club.posts.length}</td>
-                        <td>${date}</td>
-                        <td class="last">
+                        <td class="hidden">${club._id}</td>
+                        <td class="col-md-4"> ${club.name}</td>
+                        <td class="col-md-1">${club.members.length}</td>
+                        <td class="col-md-1">${club.events.length}</td>
+                        <td class="col-md-1">${club.posts.length}</td>
+                        <td class="col-md-2">${date}</td>
+                        <td class="last" class="col-md-2">
                             <select name="condition">
                                 <option value="unapproved">Unapproved</option>
                                 <option value="approved">Approved</option>
@@ -74,9 +75,7 @@ $(function () {
 
                 })
                 $('td.last').removeClass('last')
-                
             }    
-
         },
         error: function (error) {
             console.log(error);

@@ -41,6 +41,7 @@
 
     // Set Browser Tab Name
     document.title = club.name
+    $('#club-name').text(club.name);
     // Fill in Club details
     $('#logo').attr('alt', club.name)
     document.querySelector('#logo').src = club.logo

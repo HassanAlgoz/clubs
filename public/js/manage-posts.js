@@ -11,12 +11,16 @@ $(function() {
             let posts = data.posts
             console.log(posts)
             for(let i = 0; i < posts.length; ++i) {
+                let date = moment(new Date(posts[i].publishDate)).locale('en-US').format('MM/D/YYYY')
                 $('tbody').append(`
                     <tr>
-                        <td align="center"><a href="/clubs/${clubId}/posts/${posts[i]._id}/edit" class="btn btn-default btn-edit"><em class="fa fa-pencil"></em></td>
-                        <td class="hidden-xs">${posts[i]._id}</td>
-                        <td>${posts[i].title}</td>
-                        <td>${posts[i].publishDate}</td>
+                        <td class="col-md-1">
+                            <a class="btn btn-default btn-edit" href="/clubs/${clubId}/posts/${posts[i]._id}/edit"><em class="fa fa-pencil"></em></a>
+                            <a class="btn btn-default btn-edit" href="/clubs/${clubId}/posts/${posts[i]._id}"><em class="fa fa-eye"></em></a>
+                        </td>
+                        <td class="hidden">${posts[i]._id}</td>
+                        <td class="col-md-6">${posts[i].title}</td>
+                        <td class="col-md-1">${date}</td>
                         </tr>
                     </tr>
                 `)

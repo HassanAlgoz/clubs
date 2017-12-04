@@ -31,12 +31,12 @@ $(function () {
                 }
                 html += `
                     </td>
-                    <td class="hidden-x">${user._id}</td>
+                    <td class="hidden">${user._id}</td>
                     <td>${user.username}</td>
-                    <td>${user.email}</td>
                     <td>${user.major}</td>
                     <td>${user.enrollment}</td>
-                `
+                    <td style="text-align: left;">${user.email}</td>
+                    `
                 console.log(user.username)
                 if (role !== 'president') {
                     html += `

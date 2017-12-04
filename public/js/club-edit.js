@@ -1,5 +1,7 @@
 (async function() {
     
+    $("#btn-submit").text(translate("Submit Edit"))
+
     let clubId = getId("clubs") // getId is a helper function that can be found in `/public/js/utils.js`
     // Fetch data of club from API (data includes club.events and club.posts)
     let response, json;

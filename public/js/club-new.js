@@ -1,6 +1,11 @@
 /*jslint browser:true*/
 (async function() {
     
+    $("#label-president").text(translate("President"))
+    $("#h-create-club").text(translate("Create New Club"))
+    $("#btn-submit").text(translate("Create Club"))
+    $("#label-club-name").text(translate("Club Name"))
+
     // Fetch users data and populate presidentId options
     let response, json;
     try {
