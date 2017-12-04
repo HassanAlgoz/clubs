@@ -8,13 +8,16 @@
 	<% include ./partials/navbar.ejs %>
 	
 	<div class="container">
-		<h1>Create New Club</h1>
+		<h1 id="h-create-club">Create New Club</h1>
 		<div class="form-group">
-			<input id="name" class="form-control" type="text" placeholder="Club Name.." required>
+			<div class="input-group">
+				<span class="input-group-addon" id="label-club-name"></span>
+				<input id="name" class="form-control" type="text" placeholder="..." required>
+			</div>
 		</div>
 		<div class="form-group">
-			<label for="presidentId">President </label>
-			<select name="presidentId" id="presidentId">
+			<label for="presidentId" id="label-president">President </label>
+			<select name="presidentId" id="presidentId" class="form-control" size="10" required>
 				<!-- Fetch data -->
 			</select>
 		</div>
