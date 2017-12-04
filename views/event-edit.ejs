@@ -1,8 +1,5 @@
 	<% include ./partials/head.ejs %>
 	<title>Event Edit</title>
-	<link href="/css/lib/jquery-ui.min.css" rel="stylesheet">
-	<link href="/css/lib/tokenfield-typeahead.min.css" rel="stylesheet">
-	<link href="/css/lib/bootstrap-tokenfield.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/event-edit.css">
 	
 </head>
@@ -10,7 +7,7 @@
 	<% include ./partials/navbar.ejs %>
 	<div class="container">
 
-		<img src="" id="preview-image" class="img-responsive center-block" alt="Event Image">
+		<img src="" id="preview-image" class="img-responsive center-block" alt="صورة الفعالية">
 
 		<h2 id="preview-title"><% if (event) { %><%= event.title %><% } %></h2>
 		<div id="preview-brief"></div>
@@ -19,13 +16,13 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
-						<input id="title" name="title" class="form-control" type="text" placeholder="Event Title.." <%if (event){%> value="<%= event.title %>"<%}%> required>
+						<input id="title" name="title" class="form-control" type="text" placeholder="عنوان الفعالية.." <%if (event){%> value="<%= event.title %>"<%}%> required>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-picture"></i></span>
-						<input id="image" name="image" class="form-control" type="url" placeholder="Event Image URL.." <%if (event){%> value="<%= event.image %>"<%}%>>
+						<input id="image" name="image" class="form-control" type="url" placeholder="رابط الصورة.." <%if (event){%> value="<%= event.image %>"<%}%>>
 					</div>
 				</div>
 			</div>
@@ -34,7 +31,7 @@
 				<div class="col-md-4">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-						<input id="date" name="date" class="form-control" type="date" placeholder="Date.." required>
+						<input id="date" name="date" class="form-control" type="date" placeholder="التاريخ.." required>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -46,7 +43,7 @@
 				<div class="col-md-5">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
-						<input id="location" name="location" class="form-control" type="text" placeholder="Location.." <%if (event){%> value="<%= event.location %>"<%}%> required>
+						<input id="location" name="location" class="form-control" type="text" placeholder="الموقع.." <%if (event){%> value="<%= event.location %>"<%}%> required>
 					</div>
 				</div>
 			</div>
@@ -55,26 +52,29 @@
 				<div class="col-md-3">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-						<input id="seatLimit" name="seatLimit" class="form-control" type="number" placeholder="no limit" min="0" max="9000" step="1" <%if (event){%> value="<%= event.seatLimit %>"<%}%>>
+						<input id="seatLimit" name="seatLimit" class="form-control" type="number" placeholder="غير محدود" min="0" max="9999" step="1" <%if (event){%> value="<%= event.seatLimit %>"<%}%>>
 					</div>
 				</div>
 			</div>
 			<br/>
 			<div class="form-group">
-				<textarea id="brief" name="brief" class="form-control" placeholder="Briefing.." required><%if(event){%><%=event.brief%><%}%></textarea>
+				<textarea id="brief" name="brief" class="form-control" placeholder="نبذة.." required><%if(event){%><%=event.brief%><%}%></textarea>
 			</div>
 			
 			<div class="form-group">
 				<input type="checkbox" name="membersOnly" id="membersOnly">
-				<span>Members Only</span>
+				<span id="members-only">Members Only</span>
 			</div>
 			<div class="form-group">
 				<input type="checkbox" name="sentAsEmail" id="sentAsEmail">
-				<span>Also Send an Email to all members</span>
+				<span id="also-send-email">Also Send an Email to all members</span>
 			</div>
 			<div class="form-group">
-				<label for="organizers"> Organizers:</label>
-				<input type="text" name="organizers" class="form-control" id="organizers" <%if (event){%> value="<%=members.map(m => `${m.username} (${m._id})`)%>" <%}%> />
+				<label for="organizers" id="label-organizers"> Organizers:</label>
+				<select id="organizers" multiple class="form-control" required>
+					<!-- Multiple Selection of Club Members-->
+				</select>
+				<input disabled type="text" id="organizers-summary" class="form-control">
 			</div>
 			<% if (event) { %>
 				<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>
@@ -97,9 +97,6 @@
 		<%}%>
 	</script>
 	<% include ./partials/scripts.ejs %>
-	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.4.3/dist/showdown.min.js"></script>
-	<script src="/js/lib/bootstrap-tokenfield.min.js"></script>
-	<script src="/js/lib/jquery-ui.min.js"></script>
 	<script src="/js/event-edit.js"></script>
 </body>
 </html>

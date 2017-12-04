@@ -8,33 +8,48 @@ $(function(){
 
     $('#btn-submit-edit').text(translate("Submit Edit"))
     $('#btn-delete').text(translate("Delete"))
+    $('#members-only').text(translate("Members Only"))
+    $('#also-send-email').text(translate("Also Send an Email to all members"))
+    $('#label-organizers').text(translate("Organizers"))
+    $('#btn-create').text(translate("Create Event"))
 
     // Bind input to output preview
     markdownBind($('#brief'), $('#preview-brief'))
     textBind($('#title'), $('#preview-title'))
 
 
+    $('#organizers').on('change', (evt) => {
+        let selected = $('#organizers').val();
+        // console.log(selected);
+        // for(let i = 0; i < selected.length; i++) {
+        //     console.log(selected[i]);
+        // }
+        let organizers = members.filter(member => selected.indexOf(member._id) !== -1)
+            .map(organizer => organizer.username);
+        $('#organizers-summary').val(organizers.join(" و"))
+    })
+
     // Fill in event organizers (they are ids)
-    let organizers = members.map(member => `${member.username} (${member._id})`)
+    for(let i = 0; i < members.length; i++) {
+        if (event.organizers && event.organizers.indexOf(members[i]._id) != -1) {
+            console.log("org", i);
+            $('#organizers').append(`<option value="${members[i]._id}" selected="selected">${members[i].username}</option>`)
+        } else {
+            $('#organizers').append(`<option value="${members[i]._id}">${members[i].username}</option>`)
+        }
+    }
+    $('#organizers').trigger('change')
+
     if (event) {
         // Format Date
         let date = new Date(event.date);
-        $('#date').val(moment(date).format('YYYY-MM-DD'));
+        $('#date').val(moment(date).locale('en-US').format('YYYY-MM-DD'));
     }
-    $('#organizers').tokenfield({
-		autocomplete: {
-			source: organizers,
-			delay: 100
-		},
-		showAutocompleteOnFocus: true
-	});
     
     if (!eventId) {
         $("#btn-create").on('click', function(e) {
             e.preventDefault();
             
-            let organizers = commaSeparatedStringToArray($('#organizers').val()).map(organizer => organizer.match(/\((\w+)\)/)[1])
-
             $.ajax({
                 method: 'POST',
                 url: `/api/clubs/${clubId}/events`,
@@ -47,7 +62,7 @@ $(function(){
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
                     sentAsEmail: document.getElementById('sentAsEmail').checked,
-                    organizers: organizers,
+                    organizers: $('#organizers').val(),
                     seatLimit: $('#seatLimit').val()
                 },
                 success: function(data) {
@@ -63,7 +78,6 @@ $(function(){
         $("#btn-submit-edit").on('click', function(e) {
             e.preventDefault();
 
-            let organizers = commaSeparatedStringToArray($('#organizers').val()).map(organizer => organizer.match(/\((\w+)\)/)[1])
             $.ajax({
                 method: 'PUT',
                 url: `/api/clubs/${clubId}/events/${eventId}`,
@@ -76,7 +90,7 @@ $(function(){
                     location: $('#location').val(),
                     membersOnly: document.getElementById('membersOnly').checked,
                     sentAsEmail: document.getElementById('sentAsEmail').checked,
-                    organizers: organizers,
+                    organizers: $('#organizers').val(),
                     seatLimit: $('#seatLimit').val()
                 },
                 success: function(data) {
