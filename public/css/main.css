@@ -209,3 +209,7 @@ a.no-underline:hover {
 .dropdown-menu>li>a {
 	text-align: right;
 }
+
+#attended-col {
+	text-align: center !important;
+}

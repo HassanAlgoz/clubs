@@ -8,7 +8,7 @@
 	<div class="container">
 		<div id="errors"></div>
 
-		<img src="" id="preview-image" class="img-responsive center-block" alt="Post Image">
+		<img src="" id="preview-image" class="img-responsive center-block" alt="صورة المنشورة">
 
 		<h2 id="preview-title"></h2>
 		<div id="preview-content"></div>
@@ -16,22 +16,22 @@
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">
-					<input id="title" name="title" class="form-control" type="text" placeholder="Post Title.." required>
+					<input id="title" name="title" class="form-control" type="text" placeholder="عنوان المنشورة.." required>
 				</div>
 			</div>
 			<div class="col-md-6">
 				<div class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-picture"></i> URL</span>
-					<input id="image" name="image" class="form-control" type="url" placeholder="Post Image URL..">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-picture"></i></span>
+					<input id="image" name="image" class="form-control" type="url" placeholder="رابط الصورة..">
 				</div>
 			</div>
 		</div>
 		<div class="form-group">
-			<textarea id="content" class="form-control" placeholder="Content.." required></textarea>
+			<textarea id="content" class="form-control" placeholder="المحتوى.." required></textarea>
 		</div>
 		<div class="form-group">
 			<input type="checkbox" id="sentAsEmail">
-			<span>Also Send an Email to all members</span>
+			<span id="also-send-email">Also Send an Email to all members</span>
 		</div>
 		<% if (post) { %>
 			<button id="btn-submit-edit" class="btn btn-success">Submit Edit</button>

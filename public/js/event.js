@@ -32,7 +32,7 @@
     // Format Dates
     let past = (moment(new Date()).isAfter(moment(new Date(event.date))))? true : false;
     let publishDate = new Date(event.publishDate);
-    $('#published').text( moment(publishDate).fromNow() );
+    $('#published').text(`${translate("Published")} ${moment(publishDate).fromNow()}` );
     let date = new Date(event.date);
     $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
@@ -115,8 +115,6 @@
                 success: () => { $('#btn-close').replaceWith(`<span>${translate("Event Closed")}</span>`) }
             }))
 
-            $('#section3').append(`<a href="/clubs/${clubId}/events/${eventId}/edit" id="btn-edit" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i> ${translate("Edit Event")}</a>`)
-
         } else {
             // "Open Event" Button
             $('#section2').append(`<button id="btn-open" class="btn btn-warning">${translate("Reopen Event")}</button>`)
@@ -128,6 +126,8 @@
             }))
             
         }
+        // Edit Button
+        $('#section3').append(`<a href="/clubs/${clubId}/events/${eventId}/edit" id="btn-edit" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i> ${translate("Edit Event")}</a>`)
         // Link to Attendance Page
         $('#section2').append(`<a href="/clubs/${clubId}/events/${eventId}/attendance" id="btn-attendance" class="btn btn-success">${translate("Attendance")}</a>`)
     }

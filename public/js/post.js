@@ -26,7 +26,7 @@
     // Format Date
     let date = new Date(post.publishDate);
     console.log("Date:", date)
-    $('#posted').text(`Published ${moment(date).format('MMMM Do YYYY')}`);
+    $('#posted').text(`${translate("Published")} ${moment(date).format('MMMM Do YYYY')}`);
     // $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     // Markdown
     $('#content').html(converter.makeHtml(post.content));

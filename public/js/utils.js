@@ -67,6 +67,10 @@ function translate(str) {
             case "manage": return "إدارة";
             case "read more": return "إقرأ المزيد";
             case "your fullname helps uniquely identifying you when participating in or organizing events": return "يساعد اسمك الكامل في تمييزك عند مشاركتك بالفعاليات أو تنظيمك لها";
+            case "also send an email to all members": return "أرسل رسالة إلكترونية للأعضاء";
+            case "organizers": return "المنظمون";
+            case "create post": return "إنشاء النشرة";
+            case "create event": return "إنشاء الفعالية";
         }
     } else {
         return str;

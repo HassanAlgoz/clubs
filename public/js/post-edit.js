@@ -3,6 +3,12 @@ $(function(){
     const postId = (post) ? post._id : null
     const clubId = getId('clubs')
 
+    $('#btn-submit-edit').text(translate("Submit Edit"))
+    $('#btn-delete').text(translate("Delete"))
+    $('#btn-create').text(translate("Create Post"))
+    $('#also-send-email').text(translate("Also Send an Email to all members"))
+
+
     console.log('postId', postId)
     console.log('clubId', clubId)
 
