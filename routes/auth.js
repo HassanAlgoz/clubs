@@ -34,11 +34,11 @@ router.get('/signup', function(req, res) {
 	});
 });
 
-router.post('/signup', [passport.authenticate('local-signup', {
+router.post('/signup', [authLimiter, passport.authenticate('local-signup', {
 	successRedirect : '/clubs',
 	failureRedirect : '/auth/signup',
 	failureFlash : true // allow flash messages
-}), authLimiter]);
+})]);
 
 router.get('/confirmation', authLimiter, async (req, res, next) => {
 	let {id, code} = req.query;
@@ -67,10 +67,10 @@ router.get('/login', (req, res, next) => {
 	}
 })
 
-router.post('/login', [passport.authenticate('local-login', {
+router.post('/login', [authLimiter, passport.authenticate('local-login', {
 	failureRedirect : '/auth/login',
 	failureFlash : true // allow flash messages
-}), authLimiter], (req, res, next) => {
+})], (req, res, next) => {
 	res.redirect(req.query.redirect || '/clubs')
 });
 
