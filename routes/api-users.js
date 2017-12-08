@@ -8,13 +8,13 @@ const Club = require('../models/club')
 router.use(User.getRoleFromQuery)
 
 // GET
-router.get('/:userId', (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
 
 	let userId = req.params.userId;
-	User.findById(userId).then((user) => {
-		res.json({user})
-	}).catch(next)
-
+	try {
+		let user = await User.findById(userId).select('-password -confirmationCode').exec();
+		res.json(user);
+	} catch (err) {next(err)}
 })
 
 // GET ALL
@@ -25,13 +25,13 @@ router.get('/', (req, res, next) => {
 	if (req.query.clubId) {
 		// Get ALL Members of some Club
 		Club.findById(req.query.clubId)
-			.populate('members')
+			.populate('members', '-password -confirmationCode')
 			.then((club) => {
 			res.json({users: club.members})
 		}).catch(next)
 	} else {
 		return Promise.all([
-			User.find({}),
+			User.find({}).select('-password -confirmationCode'),
 			User.count()
 		]).then(([users, count]) => {
 			res.json({users, count})
