@@ -31,7 +31,7 @@ $(function(){
 
     // Fill in event organizers (they are ids)
     for(let i = 0; i < members.length; i++) {
-        if (event.organizers && event.organizers.indexOf(members[i]._id) != -1) {
+        if (event && event.organizers && event.organizers.indexOf(members[i]._id) != -1) {
             console.log("org", i);
             $('#organizers').append(`<option value="${members[i]._id}" selected="selected">${members[i].username}</option>`)
         } else {
