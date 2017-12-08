@@ -4,7 +4,7 @@
   "background_color": "#fff",
   "theme_color" : "#262729",
   "display": "standalone",
-  "description": "Be notified of KFUPM clubs' events through push notifications and email.",
+  "description": "All KFUPM Clubs in one place. Be notified when things happen.",
   "dir": "ltr",
   "lang": "en-US",
   "start_url": "/",
