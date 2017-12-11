@@ -62,6 +62,10 @@
 
     // List all events
     let html = ``;
+    // sort events based on date
+    club.events.sort((a, b) => {
+        return moment(new Date(b.date)).diff(moment(new Date(a.date)));
+    })
     for (let i = 0; i < club.events.length; i++) {
         // Append HTML
         html += Event(club.events[i])

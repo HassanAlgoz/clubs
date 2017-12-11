@@ -33,7 +33,7 @@ function translate(str) {
             case "seats": return "المقاعد";
             case "you promised to attend this event": return "قد وعدْت بحضور الفعالية";
             case "this event is for members only": return "هذه الفعالية للأعضاء فقط";
-            case "count me in": return "عدّني من الحاضرين";
+            case "count me in": return "سجلني مع الحاضرين";
             case "am": return "ص";
             case "pm": return "م";
             case "published": return "نُشِر";

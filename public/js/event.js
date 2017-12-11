@@ -67,7 +67,7 @@
     } else {
         let subject = (event.membersOnly)? "members" : "people"
         let verb = (past)? "attended" : "attending"
-        $('#attendees').text(`${event.promisers.length} ${subject} ${verb}`)
+        $('#attendees').text(`${event.promisers.length} ${translate(subject)} ${translate(verb)}`)
     }
 
     // Additional information
