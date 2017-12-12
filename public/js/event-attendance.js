@@ -13,7 +13,6 @@ $(function () {
 
     // Format Dates
     let past = (moment(new Date()).isAfter(moment(new Date(event.date))))? true : false;
-    console.log("past", past)
     let publishDate = new Date(event.publishDate);
     $('#published').text( `${translate("Published")} ${moment(publishDate).fromNow()}` );
     let date = new Date(event.date);

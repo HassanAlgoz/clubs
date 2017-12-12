@@ -1,7 +1,6 @@
 (async function(){
     console.log('club.js loaded') // <-- I like to do this to make sure the script is loaded.
 
-
     // Take your time to read this through.
     // 1. We always use `fetch` to make a `GET` request to the API. (we could also use AJAX)
     // 2. If the resource is `Not Found`, that is, if !response.ok then, redirect the user.
@@ -15,8 +14,6 @@
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}?events=true&posts=true`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
             location = `/`
@@ -25,9 +22,6 @@
         json = await response.json()
     } catch(err){console.error("ERROR:", err)}
     let {club} = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("club:", club)
 
     $('#h-events').text(translate('Events'))
     $('#h-posts').text(translate('Posts'))

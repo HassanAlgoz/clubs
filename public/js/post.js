@@ -6,8 +6,6 @@
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}/posts/${postId}`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
             location = `/clubs/${clubId}`
@@ -16,16 +14,12 @@
         json = await response.json()
     } catch(err){console.error("ERROR:", err)}
     let {post} = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("post:", post)
 
     document.title = post.title
     $('#title').text(post.title)
     document.querySelector('#image').src = post.image
     // Format Date
     let date = new Date(post.publishDate);
-    console.log("Date:", date)
     $('#posted').text(`${translate("Published")} ${moment(date).format('MMMM Do YYYY')}`);
     // $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     // Markdown

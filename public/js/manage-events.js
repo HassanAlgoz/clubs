@@ -7,9 +7,7 @@ $(function() {
 		method: 'GET',
 		url: `/api/clubs/${clubId}/events`,
 		success: (data) => {
-			console.log(data)
 			let events = data.events
-			console.log(events)
 			for(let i = 0; i < events.length; ++i) {
 				let date = moment(new Date(events[i].publishDate)).locale('en-US').format("DD/MM/YYYY")
 				$('tbody').append(`

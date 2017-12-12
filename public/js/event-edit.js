@@ -3,9 +3,6 @@ $(function(){
     const eventId = (event) ? event._id : null
     const clubId = getId('clubs')
 
-    console.log('eventId', eventId)
-    console.log('clubId', clubId)
-
     $('#btn-submit-edit').text(translate("Submit Edit"))
     $('#btn-delete').text(translate("Delete"))
     $('#members-only').text(translate("Members Only"))
@@ -20,10 +17,6 @@ $(function(){
 
     $('#organizers').on('change', (evt) => {
         let selected = $('#organizers').val();
-        // console.log(selected);
-        // for(let i = 0; i < selected.length; i++) {
-        //     console.log(selected[i]);
-        // }
         let organizers = members.filter(member => selected.indexOf(member._id) !== -1)
             .map(organizer => organizer.username);
         $('#organizers-summary').val(organizers.join(" و"))
@@ -32,7 +25,6 @@ $(function(){
     // Fill in event organizers (they are ids)
     for(let i = 0; i < members.length; i++) {
         if (event && event.organizers && event.organizers.indexOf(members[i]._id) != -1) {
-            console.log("org", i);
             $('#organizers').append(`<option value="${members[i]._id}" selected="selected">${members[i].username}</option>`)
         } else {
             $('#organizers').append(`<option value="${members[i]._id}">${members[i].username}</option>`)

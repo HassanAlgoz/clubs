@@ -7,8 +7,6 @@
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
             location = `/`
@@ -17,9 +15,6 @@
         json = await response.json()
     } catch(err){console.error("ERROR:", err)}
     let {club} = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("club:", club)
 
     populateInputFields(club, ["name", "logo", "description"])
     document.querySelector('#logo').src = club.logo

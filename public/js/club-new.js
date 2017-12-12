@@ -10,8 +10,6 @@
     let response, json;
     try {
         response = await fetch(`/api/users`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             console.error("Coudln't fetch users")
             return;

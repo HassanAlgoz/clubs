@@ -6,8 +6,6 @@
     let response, json;
     try {
         response = await fetch(`/api/clubs`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             console.error("Coudln't fetch clubs")
             return;
@@ -15,9 +13,6 @@
         json = await response.json()
     } catch (err) { console.error("ERROR:", err) }
     let { clubs } = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("clubs:", clubs)
 
     let joinedClubs = []
     let otherClubs = []

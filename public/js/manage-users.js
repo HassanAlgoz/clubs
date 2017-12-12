@@ -7,7 +7,6 @@ $(function () {
         method: 'GET',
         url: `/api/users?clubId=${clubId}`,
         success: function (data) {
-            console.log(data);
             let users = data.users;
             let html = ``;
             for(let i = 0; i < users.length; ++i) {
@@ -37,7 +36,6 @@ $(function () {
                     <td>${user.enrollment}</td>
                     <td style="text-align: left;">${user.email}</td>
                     `
-                console.log(user.username)
                 if (role !== 'president') {
                     html += `
                         <td class="last">
@@ -60,7 +58,6 @@ $(function () {
                 $('tbody').append(html)
 
                 if (role !== 'president') {
-                    console.log(user);
                     // Set selected option to actual role
                     $(`td.last select option[value="${role}"]`).attr("selected", true)
 

@@ -6,7 +6,6 @@ $(function () {
         method: 'GET',
         url: `/api/clubs`,
         success: function (data) {
-            console.log(data);
             let clubs = data.clubs;
             for(let i = 0; i < clubs.length; ++i) {
                 let club = clubs[i]
@@ -34,9 +33,6 @@ $(function () {
                         </td>
                     </tr>
                 `)
-
-
-                console.log(club);
                 // Set selected option to actual condition
                 $(`td.last select option[value="${club.condition}"]`).attr("selected", true)
 

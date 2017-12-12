@@ -8,8 +8,6 @@
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}/events/${eventId}`)
-        // (debugging)
-        console.log("response:", response)
         if (!response.ok) {
             // redirect to homepage
             location = `/clubs/${clubId}`
@@ -18,9 +16,6 @@
         json = await response.json()
     } catch(err){console.error("ERROR:", err)}
     let {event} = json
-    // (debugging)
-    console.log("returned JSON:", json)
-    console.log("event:", event)
 
     document.title = event.title
     // Fill in Event details
@@ -36,7 +31,6 @@
     $('#date').text(`${moment(date).fromNow()} (${moment(date).format('Do MMMM')})`);
     
     event.time = getAMPM(event.time);
-    console.log("event.time", event.time);
     event.organizers = event.organizers.map(organizer => organizer.username).join(" و");
     // Populate title, time and location
     populateText(event, ['title', 'time', 'location', 'organizers'])

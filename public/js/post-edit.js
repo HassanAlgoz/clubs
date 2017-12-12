@@ -8,10 +8,6 @@ $(function(){
     $('#btn-create').text(translate("Create Post"))
     $('#also-send-email').text(translate("Also Send an Email to all members"))
 
-
-    console.log('postId', postId)
-    console.log('clubId', clubId)
-
     // Bind input to output preview
     setTimeout(() => {
         markdownBind($('#content'), $('#preview-content'))
