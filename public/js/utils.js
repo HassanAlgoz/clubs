@@ -80,6 +80,8 @@ function translate(str) {
             case "president": return "رئيس";
             case "manager": return "مدير";
             case "member": return "عضو";
+
+            case "please confirm registration through email to be able to promise to attend": return "فضلاً قم بتنشيط حسابك من الرابط الذي أرسِِل إلى بريدك الإلكتروني لتتمكن من التسجيل في الفعالية";
         }
     } else {
         return str;

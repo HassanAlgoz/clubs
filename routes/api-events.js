@@ -235,7 +235,7 @@ router.put('/:clubId/events/:eventId/open', User.canManage, (req, res, next) => 
 
 
 // Promise to attend
-router.put('/:clubId/events/:eventId/promise', (req, res, next) => {
+router.put('/:clubId/events/:eventId/promise', User.isConfirmed, (req, res, next) => {
 	let {clubId, eventId} = req.params
 
 	// Check if event belongs to this club

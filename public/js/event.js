@@ -5,7 +5,6 @@
     const clubId = getId('clubs')
     const eventId = getId("events")
 
-
     let response, json;
     try {
         response = await fetch(`/api/clubs/${clubId}/events/${eventId}`)
@@ -81,7 +80,7 @@
     if (!promised) {
         // The "count me in" Button
         if (event.condition === 'open' && !past) {
-            if (user) {
+            if (user && user.confirmationCode == '0') {
                 if (!event.membersOnly || (event.membersOnly && (user.role === 'president' || user.role === 'manager' || user.role === 'member'))) {
                     $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> ${translate("Count me in")}</button>`)
                 
@@ -96,8 +95,12 @@
                     }
                 }
             } else {
-                $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> ${translate("Count me in")}</button>`)
-                $('#btn-promise').on('click', () => location = `/auth/login?redirect=${location.href}`)
+                if (user) {
+                    $('#section1').append(`<div class="text-danger center-block">${translate("Please confirm registration through email to be able to promise to attend")}</div>`)
+                } else {
+                    $('#section1').append(`<button id="btn-promise" class="btn btn-success center-block"><i class="glyphicon glyphicon-plus"></i> ${translate("Count me in")}</button>`)
+                    $('#btn-promise').on('click', () => location = `/auth/login?redirect=${location.href}`)
+                }
             }
         }
     }
