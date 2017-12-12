@@ -18,6 +18,4 @@
     if (redirect) {
         $('#signup').attr('href', `/auth/signup?redirect=${redirect}`)
     }
-
-    console.log($('#login').text());
 })()
