@@ -102,6 +102,16 @@ app.use(lusca({
     referrerPolicy: 'same-origin'
 }));
 
+
+app.get('*', (req, res, next) => {
+    if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] != 'https') {
+        res.redirect("https://" + req.headers.host + req.url)
+    } else {
+        next()
+    }
+})
+
+
 // Rate Limiter
 const apiLimiter = new RateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
