@@ -24,21 +24,22 @@ router.use((req, res, next) => {
 	next();
 })
 
-// router.use(lusca.csrf())
+router.use(lusca.csrf())
 
 //  Signup ====================================================================
 router.get('/signup', function(req, res) {
 	res.render('signup', {
-		errors: req.flash('errors')
-		// _csrf: req.csrfToken()
+		errors: req.flash('errors'),
+		_csrf: req.csrfToken()
 	});
 });
 
 router.post('/signup', [authLimiter, passport.authenticate('local-signup', {
-	successRedirect : '/clubs',
 	failureRedirect : '/auth/signup',
 	failureFlash : true // allow flash messages
-})]);
+})], (req, res, next) => {
+	res.redirect(req.query.redirect || '/clubs')
+});
 
 router.get('/confirmation', authLimiter, async (req, res, next) => {
 	let {id, code} = req.query;
@@ -61,8 +62,8 @@ router.get('/login', (req, res, next) => {
 		res.redirect('/clubs')
 	} else {
 		res.render('login', {
-			message: req.flash('loginMessage')
-			// _csrf: req.csrfToken()
+			message: req.flash('loginMessage'),
+			_csrf: req.csrfToken()
 		})
 	}
 })
