@@ -24,13 +24,13 @@ router.use((req, res, next) => {
 	next();
 })
 
-router.use(lusca.csrf())
+// router.use(lusca.csrf())
 
 //  Signup ====================================================================
 router.get('/signup', function(req, res) {
 	res.render('signup', {
-		errors: req.flash('errors'),
-		_csrf: req.csrfToken()
+		errors: req.flash('errors')
+		// _csrf: req.csrfToken()
 	});
 });
 
@@ -61,8 +61,8 @@ router.get('/login', (req, res, next) => {
 		res.redirect('/clubs')
 	} else {
 		res.render('login', {
-			message: req.flash('loginMessage'),
-			_csrf: req.csrfToken()
+			message: req.flash('loginMessage')
+			// _csrf: req.csrfToken()
 		})
 	}
 })
