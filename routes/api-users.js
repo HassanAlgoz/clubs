@@ -72,31 +72,36 @@ router.put('/:userId', User.isPresident, (req, res, next) => {
 
 
 // PUT - Profile
-router.put('/profile/:userId', (req, res, next) => {
+router.put('/profile/:userId', async (req, res, next) => {
 	
 	let userId = req.params.userId
+
+	req.checkBody('email', 'must be a valid email.').isEmail()
+	req.checkBody('password', 'a minimum length of 6 characters.').len({ min: 6 })
+	let errors = await utils.getValidationErrors(req)
+	if (errors.length > 0) {
+		return done(null, false, req.flash('errors', errors));
+	}
 	
-	User.findById(userId).then((user) => {
-		
+	try {
+		let user = await User.findById(userId).exec()
 		// Password check
 		let currentPassword = req.body.currentPassword.trim()
 		if (currentPassword && user.validPassword(currentPassword)) {
-			user.password = user.generateHash(req.body.newPassword)	
+			user.password = user.generateHash(req.body.newPassword)
 			console.log('password changed successfully!')
 		} else {
 			console.log('password remains unchanged')
 		}
-		
+
 		user.email = req.body.email;
 		user.username = req.body.username;
 		user.enrollment = req.body.enrollment;
 		user.major = req.body.major;
-		user.KFUPMID = Number(req.body.KFUPMID)
-						
-		user.save()
-			.then(() => res.sendStatus(204))
-			.catch(next)
-	})
+
+		await user.save()
+		res.sendStatus(204)
+	} catch (err) {next(err)}
 	
 });
 
